@@ -24,10 +24,17 @@ public class ArmControlOpMode extends LinearOpMode {
         while (opModeIsActive()){
             arm.update();
             if (gamepad1.dpad_up){
-                arm.setTargetRelative(10);
+                telemetry.addData("ArmUp", "");
+                arm.setTargetRelative(4);
             }else if (gamepad1.dpad_down){
-                arm.setTargetRelative(-10);
+                telemetry.addData("ArmDown", "");
+                arm.setTargetRelative(-4);
             }
+
+            telemetry.addData("Target_Pos", arm.getTargetPosition());
+            telemetry.addData("Arm_Pos:", arm.getCurrentTicks());
+            telemetry.update();
+            sleep(50);
         }
     }
 }

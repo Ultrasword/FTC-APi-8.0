@@ -29,12 +29,14 @@ public class MotorWrapper {
         // check if there is a target
         if(hasTarget){
             // move
-            if(target > start && current > target)
-                // if out of bounds
-                setPower(0);
-            else if(target < start && current < target)
-                // out of bounds
-                setPower(0);
+            if(target > start){
+                if(current > target) setPower(0);
+                else setPower(power);
+            }
+            else if(target < start){
+                if(current < target) setPower(0);
+                else setPower(-power);
+            }
         }
     }
 
@@ -67,11 +69,18 @@ public class MotorWrapper {
     }
 
     public void setTargetPosition(int position){
+        hasTarget = true;
         this.target = position; this.hasTarget = true; start = current;
     }
 
     public void setTargetRelative(int relative){
-        setTargetPosition(current + relative);
+        hasTarget = true;
+        target += relative;
+        setTargetPosition(target);
+    }
+
+    public int getTargetPosition(){
+        return this.target;
     }
 
 }
