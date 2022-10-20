@@ -103,5 +103,4 @@ public class MotorWrapper {
     public int getTargetPosition(){
         return this.target;
     }
-
 }
