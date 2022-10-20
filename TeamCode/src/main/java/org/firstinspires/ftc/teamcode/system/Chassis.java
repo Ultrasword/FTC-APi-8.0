@@ -9,22 +9,22 @@ import java.lang.Math;
 
 public class Chassis extends System{
 
-    DcMotor motorLeft;
-    DcMotor motorRight;
-    ColorSensor color1;
-    DistanceSensor distance1;
-    BNO055IMU imu;
+    private DcMotor motorLeft;
+    private DcMotor motorRight;
+    private ColorSensor color1;
+    private DistanceSensor distance1;
+    private BNO055IMU imu;
 
-    float chassisWidth = 9f;
+    private float chassisWidth = 9f;
 
-    float x = 0f;
-    float y = 0f;
+    private float x = 0f;
+    private float y = 0f;
 
-    int leftPos;
-    int rightPos;
+    private int leftPos;
+    private int rightPos;
 
-    static float prevError = 0f;
-    static float integral = 0f;
+    private static float prevError = 0f;
+    private static float integral = 0f;
 
     public Chassis(Telemetry telemetry){
         super(telemetry);
@@ -43,8 +43,8 @@ public class Chassis extends System{
     }
 
     @Override
-    public void update() {
-        waitForStart();
+    public void update(){
+
     }
 
     // with use of encoders
@@ -59,14 +59,9 @@ public class Chassis extends System{
         motorRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         this.move(speed, speed);
-
-        // prevent other code from running until it gets to target position
-        while(opModeIsActive() && leftMotor.isBusy() && rightMotor.isBusy()){
-            idle();
-        }
     }
 
-    public void move(double left, double right){
+    public void move(float left, float right){
         motorLeft.setPower(left);
         motorRight.setPower(right);
     }
@@ -84,8 +79,8 @@ public class Chassis extends System{
         float averageDistance = (leftDistance + rightDistance) / 2;
 
         while(averageDistance != distance){
-            float left = this.PID(leftDistance, distance, 0.1, 0.1, 0.1);
-            float right = this.PID(rightDistance, distance, 0.1, 0.1, 0.1);
+            float left = this.PID(leftDistance, distance, 0.1f, 0.1f, 0.1f);
+            float right = this.PID(rightDistance, distance, 0.1f, 0.1f, 0.1f);
             this.move(left, right);
 
             // Update
@@ -109,14 +104,14 @@ public class Chassis extends System{
         double theta = (degree * Math.PI) / 180;
         //S = theta * radius;
 
-        double distanceLeft = theta *(radius - this.chassisWidth);
-        double distanceRight = theta *(radius + this.chassisWidth);
+        float distanceLeft = (float) (theta *(radius - this.chassisWidth));
+        float distanceRight = (float) (theta *(radius + this.chassisWidth));
 
         float traveledLeft = 0f;
         float traveledRight = 0f;
         while(distanceLeft != traveledLeft || distanceRight != traveledRight){
-            double left = this.PID(traveledLeft, distanceLeft, 0.1f, 0.1f, 0.1f);
-            double right = this.PID(traveledRight, distanceRight, 0.1f, 0.1f, 0.1f);
+            float left = this.PID(traveledLeft, distanceLeft, 0.1f, 0.1f, 0.1f);
+            float right = this.PID(traveledRight, distanceRight, 0.1f, 0.1f, 0.1f);
             move(left, right);
 
             distanceLeft = this.checkDistance(this.motorLeft);
@@ -142,15 +137,15 @@ public class Chassis extends System{
         float hypo = 0f;
         if (theta != 0)
         {
-            hypo = (distanceMiddle/theta) * Math.sin(theta/Math.cos(theta/2));
+            hypo = (float) ((distanceMiddle/theta) * Math.sin(theta/Math.cos(theta/2)));
         }
         else
         {
             hypo = distanceMiddle;
         }
         //delats
-        float deltaX = hypo * Math.cos(initialAngle + phi);
-        float deltaY = hypo * Math.sin(initialAngle + phi);
+        float deltaX = (float) (hypo * Math.cos(initialAngle + phi));
+        float deltaY = (float) (hypo * Math.sin(initialAngle + phi));
         float deltaAngle = theta;
         //values
         this.x += deltaX;
