@@ -16,9 +16,10 @@ public class ArmControlOpMode extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         // setup
-        arm = new MotorWrapper(hardwareMap.get(DcMotor.class, "m1"));
+        arm = new MotorWrapper(hardwareMap.get(DcMotor.class, "m1"), 2.0, 0);
         // prerun
         waitForStart();
+        arm.setTargetPower(0.4);
 
         // run loop
         while (opModeIsActive()){
@@ -31,6 +32,9 @@ public class ArmControlOpMode extends LinearOpMode {
                 arm.setTargetRelative(-4);
             }
 
+            telemetry.addData("Distance Travelled", arm.getTotalDistanceTravelled());
+            telemetry.addData("TargetPower", arm.getTargetPower());
+            telemetry.addData("Power", arm.getPower());
             telemetry.addData("Target_Pos", arm.getTargetPosition());
             telemetry.addData("Arm_Pos:", arm.getCurrentTicks());
             telemetry.update();
