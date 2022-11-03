@@ -18,8 +18,8 @@ public class ArmControlOpMode extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         // setup
-        arm = new MotorWrapper(hardwareMap.get(DcMotor.class, "m1"), 2.0, 0,
-                new MotorRatio(new Gear[]{new Gear(MotorWrapper.TICKS_TORQNADO)}));
+        arm = new MotorWrapper(hardwareMap.get(DcMotor.class, "test"), 2.0, 0, new MotorRatio());
+        arm.motorRatio.addGear(new Gear(100));
         // prerun
         waitForStart();
         arm.setTargetPower(0.4);

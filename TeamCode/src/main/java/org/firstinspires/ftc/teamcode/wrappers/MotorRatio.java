@@ -11,6 +11,10 @@ public class MotorRatio {
         for(Gear gear : gears) addGear(gear);
     }
 
+    public MotorRatio(){
+
+    }
+
     public void addGear(Gear gear){
         gearList.add(gear);
     }
@@ -24,7 +28,7 @@ public class MotorRatio {
 
     public double reverseTicksToFinal(double spinTicks){
         if(gearList.size() <= 1) return spinTicks;
-        for(int i = gearList.size(); i > 1; i--)
+        for(int i = gearList.size()-1; i > 1; i--)
             spinTicks = gearList.get(i).convertRatio(gearList.get(i), spinTicks);
         return spinTicks;
     }

@@ -13,7 +13,6 @@ public class Chassis extends System{
     private DcMotor motorRight;
     private ColorSensor color1;
     private DistanceSensor distance1;
-    private BNO055IMU imu;
 
     private float chassisWidth = 9f;
 
@@ -31,9 +30,9 @@ public class Chassis extends System{
 
         motorLeft = hardwareMap.get(DcMotor.class, "motorLeft");
         motorRight = hardwareMap.get(DcMotor.class, "motorRight");
-        color1  = hardwareMap.get(ColorSensor.class, "color1");
-        distance1  = hardwareMap.get(DistanceSensor.class, "distance1");
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
+//        color1  = hardwareMap.get(ColorSensor.class, "color1");
+//        distance1  = hardwareMap.get(DistanceSensor.class, "distance1");
+//        imu = hardwareMap.get(BNO055IMU.class, "imu");
 
         // reset encoders to 0
         motorLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -118,6 +117,7 @@ public class Chassis extends System{
             distanceRight = this.checkDistance(this.motorRight);
         }
     }
+
     void ohno(float distanceLeft, float distanceRight, float initialAngle)
     {
         //angle of center of rotation to new point (rad)

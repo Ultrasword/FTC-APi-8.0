@@ -37,7 +37,7 @@ public class TestServo extends LinearOpMode {
             telemetry.addData("Power", servo.getPower());
             telemetry.addData("Pos", gamepad1.right_stick_y);
             telemetry.update();
-            Thread.sleep(100);
+            Thread.sleep(50);
         }
 
     }

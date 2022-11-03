@@ -2,12 +2,13 @@ package org.firstinspires.ftc.teamcode.wrappers;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.checkerframework.checker.index.qual.LTEqLengthOf;
+import org.firstinspires.ftc.teamcode.system.OpModeSGlobals;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class MotorWrapper {
-
-
     // -------------------------------------------------- //
     // constants
 
@@ -16,8 +17,8 @@ public class MotorWrapper {
 
     // -------------------------------------------------- //
     // variables
+    public MotorRatio motorRatio;
     private DcMotor motor;
-    private MotorRatio motorRatio;
     private int deltaTicks, currentTicks;
     private int ticksPerSpin = 1440;
 
@@ -113,9 +114,13 @@ public class MotorWrapper {
     public void setTargetRelative(int relative){
         hasTarget = true;
         reachedTarget = false;
-        targetPos += motorRatio.reverseTicksToFinal(relative);
+        targetPos += (int)motorRatio.reverseTicksToFinal(relative);
+        OpModeSGlobals.telemetry.addData("Testing", "No error at 118 in setTargetRelative()");
         setTargetPosition(targetPos);
     }
+
+    // create distance + relative distance stuffs
+
 
     public int getTargetPosition(){
         return this.targetPos;
