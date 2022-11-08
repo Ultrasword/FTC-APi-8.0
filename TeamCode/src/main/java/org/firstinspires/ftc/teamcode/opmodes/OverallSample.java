@@ -54,10 +54,10 @@ public class OverallSample extends LinearOpMode {
             arm.update();
             if (gamepad1.dpad_up){
                 telemetry.addData("ArmUp", "");
-                arm.setTargetRelative(4);
+                arm.setTargetPosition(100);
             }else if (gamepad1.dpad_down){
                 telemetry.addData("ArmDown", "");
-                arm.setTargetRelative(-4);
+                arm.setTargetPosition(0);
             }
 
             left_motor.setPower(power+turn_power);
@@ -70,7 +70,7 @@ public class OverallSample extends LinearOpMode {
             telemetry.addData("Arm_Pos", arm.getCurrentTicks());
             telemetry.addData("Motor Power", String.format("%d, %d", left_motor.getCurrentPosition(), right_motor.getCurrentPosition()));
             telemetry.update();
-            sleep(50);
+            sleep(15);
         }
 
 
