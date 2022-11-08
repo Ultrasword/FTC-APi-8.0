@@ -21,7 +21,8 @@ public class TwoMotorWheelsOpMode extends LinearOpMode {
         left = new MotorWrapper(hardwareMap.get(DcMotor.class, "ml"), 5, MotorWrapper.TICKS_COREHEX, new MotorRatio());
         right = new MotorWrapper(hardwareMap.get(DcMotor.class, "mr"), 5, MotorWrapper.TICKS_COREHEX, new MotorRatio());
 
-
+        left.setTargetPower(0.4);
+        right.setTargetPower(0.4);
 
         telemetry.addData("hi", "gu");
         telemetry.update();
@@ -29,16 +30,22 @@ public class TwoMotorWheelsOpMode extends LinearOpMode {
         int amp = 10;
         waitForStart();
         while(opModeIsActive()){
-            if(gamepad1.left_stick_y != 0)
-                left.setTargetRelative((int)(gamepad1.left_stick_y * amp));
-            if(gamepad1.right_stick_y != 0)
-                right.setTargetRelative((int)(gamepad1.right_stick_y * amp));
+//            if(gamepad1.a) {
+//                left.setTargetRelative(MotorWrapper.TICKS_COREHEX);
+//                right.setTargetRelative(MotorWrapper.TICKS_COREHEX);
+//            }
+
+//            if(gamepad1.left_stick_y != 0)
+//                left.setPower(gamepad1.left_stick_y);
+//            if(gamepad1.right_stick_y != 0)
+//                right.setPower(gamepad1.right_stick_y);
+            left.setPower(gamepad1.left_stick_y*0.4);
 
             left.update();
             right.update();
 
             telemetry.addData("Left Target + Position", String.format("%d, %d", left.getTargetPosition(), left.getCurrentTicks()));
-            telemetry.addData("RightTarget + Position", String.format("%d, %d", left.getTargetPosition(), left.getCurrentTicks()));
+            telemetry.addData("RightTarget + Position", String.format("%d, %d", right.getTargetPosition(), right.getCurrentTicks()));
 
             telemetry.update();
         }
