@@ -5,12 +5,14 @@ import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.*;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.wrappers.MotorWrapper;
+
 import java.lang.Math;
 
 public class Chassis extends System{
 
-    private DcMotor motorLeft;
-    private DcMotor motorRight;
+    private MotorWrapper motorLeft;
+    private MotorWrapper motorRight;
     private ColorSensor color1;
     private DistanceSensor distance1;
 
@@ -28,36 +30,23 @@ public class Chassis extends System{
     public Chassis(Telemetry telemetry){
         super(telemetry);
 
-        motorLeft = hardwareMap.get(DcMotor.class, "motorLeft");
-        motorRight = hardwareMap.get(DcMotor.class, "motorRight");
-//        color1  = hardwareMap.get(ColorSensor.class, "color1");
-//        distance1  = hardwareMap.get(DistanceSensor.class, "distance1");
-//        imu = hardwareMap.get(BNO055IMU.class, "imu");
-
-        // reset encoders to 0
-        motorLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        motorLeft.setDirection(DcMotor.Direction.REVERSE);
+        motorLeft = hardwareMap.get(MotorWrapper.class, "motorLeft");
+        motorRight = hardwareMap.get(MotorWrapper.class, "motorRight");
     }
 
     @Override
     public void update(){
-
+        motorLeft.update();
+        motorRight.update();
     }
 
-    // with use of encoders
     public void drive(int leftTarget, int rightTarget, float speed){
-        leftPos += leftTarget;
-        rightPos += rightTarget;
-
-        motorLeft.setTargetPosition(leftPos);
-        motorRight.setTargetPosition(rightPos);
-
-        motorLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        motorRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        this.move(speed, speed);
+        motorLeft.setTargetRelative(leftTarget);
+        motorRight.setTargetRelative(rightTarget);
+        while(true){
+            motorRight.update();
+            motorLeft.update();
+        }
     }
 
     public void move(float left, float right){
@@ -65,8 +54,8 @@ public class Chassis extends System{
         motorRight.setPower(right);
     }
 
-    public float checkDistance(DcMotor motor){
-        float value = motor.getCurrentPosition();
+    public float checkDistance(MotorWrapper motor){
+        float value = motor.getCurrentTicks();
         return value;
     }
 
@@ -100,6 +89,8 @@ public class Chassis extends System{
     }
 
     public void turn(float degree, float radius){
+        //fix later
+
         double theta = (degree * Math.PI) / 180;
         //S = theta * radius;
 
