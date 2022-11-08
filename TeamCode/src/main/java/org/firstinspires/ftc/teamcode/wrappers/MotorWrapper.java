@@ -57,6 +57,7 @@ public class MotorWrapper {
             if(currentTicks > targetPos){
                 setPower(0);
                 reachedTarget = true;
+                hasTarget = false;
             }
             else{
                 setPower(mTargetPower);
@@ -65,6 +66,7 @@ public class MotorWrapper {
             if( currentTicks < targetPos){
                 setPower(0);
                 reachedTarget = true;
+                hasTarget = false;
             }else {
                 setPower(-mTargetPower);
             }
