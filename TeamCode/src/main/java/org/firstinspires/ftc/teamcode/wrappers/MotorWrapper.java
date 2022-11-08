@@ -108,6 +108,7 @@ public class MotorWrapper {
     }
 
     public void setTargetPosition(int position){
+        // stupido moment
         setTargetRelative(currentTicks-position);
     }
 
@@ -116,7 +117,8 @@ public class MotorWrapper {
         reachedTarget = false;
         targetPos += (int)motorRatio.reverseTicksToFinal(relative);
         OpModeSGlobals.telemetry.addData("Testing", "No error at 118 in setTargetRelative()");
-        setTargetPosition(targetPos);
+//        setTargetPosition(targetPos);
+
     }
 
     // create distance + relative distance stuffs
