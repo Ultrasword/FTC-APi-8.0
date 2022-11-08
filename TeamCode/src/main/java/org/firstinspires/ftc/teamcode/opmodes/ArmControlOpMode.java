@@ -4,6 +4,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.firstinspires.ftc.teamcode.wrappers.Gear;
+import org.firstinspires.ftc.teamcode.wrappers.MotorRatio;
 import org.firstinspires.ftc.teamcode.wrappers.MotorWrapper;
 
 @TeleOp(name="ArmTestOpMode")
@@ -16,7 +18,8 @@ public class ArmControlOpMode extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         // setup
-        arm = new MotorWrapper(hardwareMap.get(DcMotor.class, "m1"), 2.0, 0);
+        arm = new MotorWrapper(hardwareMap.get(DcMotor.class, "test"), 2.0, 0, new MotorRatio());
+        arm.motorRatio.addGear(new Gear(100));
         // prerun
         waitForStart();
         arm.setTargetPower(0.4);
