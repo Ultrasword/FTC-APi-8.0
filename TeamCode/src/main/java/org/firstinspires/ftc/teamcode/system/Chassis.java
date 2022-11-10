@@ -55,7 +55,7 @@ public class Chassis extends System{
     }
 
     public float checkDistance(MotorWrapper motor){
-        float value = motor.getCurrentTicks();
+        float value = motor.getDistanceTravelled();
         return value;
     }
 
@@ -88,24 +88,46 @@ public class Chassis extends System{
         return Kp * error + Kd * derivative + Ki * this.integral;
     }
 
-    public void turn(float degree, float radius){
+    public void turn(float degree, float radius, float baseVolt){
         //fix later
 
-        double theta = (degree * Math.PI) / 180;
+        float desiredAngle = imu_sensor.get_current_heading() + degree;
         //S = theta * radius;
+        float baseVoltR;
+        float baseVoltL;
 
-        float distanceLeft = (float) (theta *(radius - this.chassisWidth));
-        float distanceRight = (float) (theta *(radius + this.chassisWidth));
+        //turning elses
+        if (degree > 0){
+            baseVoltR = baseVolt * (1/2 + this.chassisWidth/radius);
+            baseVoltL = baseVolt * (1/2 - this.chassisWidth/radius);
 
-        float traveledLeft = 0f;
-        float traveledRight = 0f;
-        while(distanceLeft != traveledLeft || distanceRight != traveledRight){
-            float left = this.PID(traveledLeft, distanceLeft, 0.1f, 0.1f, 0.1f);
-            float right = this.PID(traveledRight, distanceRight, 0.1f, 0.1f, 0.1f);
-            move(left, right);
+            while (imu_sensor.get_current_heading() < desiredAngle){
+                move(baseVoltL, baseVoltR);
+            }
+        }
 
-            distanceLeft = this.checkDistance(this.motorLeft);
-            distanceRight = this.checkDistance(this.motorRight);
+        else if (degree < 0){
+            baseVoltR = -1 * baseVolt * (1/2 - this.chassisWidth/radius);
+            baseVoltL = -1 * baseVolt * (1/2 + this.chassisWidth/radius);
+
+            while (imu_sensor.get_current_heading() > desiredAngle){
+                move(baseVoltL, baseVoltR);
+        }
+
+        if (radius == 0 && degree > 0){
+            baseVoltR = baseVolt;
+            baseVoltL = -1 * baseVolt;
+
+            while (imu_sensor.get_current_heading() < desiredAngle){
+                move(baseVoltL, baseVoltR);
+        }
+
+        else if (radius == 0 && degree < 0){
+            baseVoltR = -1 * baseVolt;
+            baseVoltL = baseVolt;
+
+            while (imu_sensor.get_current_heading() > desiredAngle){
+                move(baseVoltL, baseVoltR);
         }
     }
 
