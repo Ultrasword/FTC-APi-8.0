@@ -26,8 +26,6 @@ public class Chassis extends System{
     private static float integral = 0f;
 
     public Chassis(Telemetry telemetry){
-        super(telemetry);
-
         motorLeft = hardwareMap.get(DcMotor.class, "motorLeft");
         motorRight = hardwareMap.get(DcMotor.class, "motorRight");
 //        color1  = hardwareMap.get(ColorSensor.class, "color1");

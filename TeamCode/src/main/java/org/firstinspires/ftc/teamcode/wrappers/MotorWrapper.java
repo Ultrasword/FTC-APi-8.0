@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.wrappers;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.checkerframework.checker.index.qual.LTEqLengthOf;
 import org.firstinspires.ftc.teamcode.system.OpModeSGlobals;
@@ -12,7 +13,7 @@ public class MotorWrapper {
     // -------------------------------------------------- //
     // constants
 
-    public static final int TICKS_TORQNADO = 1440, TICKS_COREHEX = 1440;
+    public static final int TICKS_TORQNADO = 1440, TICKS_COREHEX = 1440, TICKS_HD_HEX_MOTOR_20_1 = 530;
     public static final double PI = 3.14159265;
 
     // -------------------------------------------------- //
@@ -90,7 +91,7 @@ public class MotorWrapper {
     }
 
     public double getTotalDistanceTravelled(){
-        return wheelDiameter * PI * ((double)motorRatio.findFinalRotation(currentTicks) / (double)(ticksPerSpin));
+        return wheelDiameter * PI * ((double) motorRatio.findFinalRotation(currentTicks) / (double) (ticksPerSpin));
     }
 
     public void setPower(double power){
@@ -127,5 +128,13 @@ public class MotorWrapper {
 
     public int getTargetPosition(){
         return this.targetPos;
+    }
+
+    public MotorRatio getMotorRatio(){
+        return motorRatio;
+    }
+
+    public void setDirection(DcMotorSimple.Direction direction){
+        motor.setDirection(direction);
     }
 }

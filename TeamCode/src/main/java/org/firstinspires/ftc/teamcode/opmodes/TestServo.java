@@ -29,15 +29,15 @@ public class TestServo extends LinearOpMode {
         waitForStart();
 
         while(opModeIsActive()){
-            if(gamepad1.left_stick_y > 0.5||gamepad1.left_stick_y < -0.5){
-                servo.setPower(gamepad1.right_stick_y/2);
+            if(gamepad1.left_stick_y > 0.5|| gamepad1.left_stick_y < -0.5){
+                servo.setPower(gamepad1.left_stick_y/2);
             }else{
                 servo.setPower(0.0);
             }
             telemetry.addData("Power", servo.getPower());
-            telemetry.addData("Pos", gamepad1.right_stick_y);
+            telemetry.addData("Pos", gamepad1.left_stick_y);
             telemetry.update();
-            Thread.sleep(50);
+            sleep(50);
         }
 
     }
