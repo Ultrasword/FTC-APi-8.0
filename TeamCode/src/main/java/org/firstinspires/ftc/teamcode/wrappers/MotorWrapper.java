@@ -52,6 +52,11 @@ public class MotorWrapper {
         motor.setPower(mPower);
     }
 
+    public boolean failSafeActive(){
+        // check if deltaTicks = 0  but  power is not 0
+        return deltaTicks == 0 && Math.abs(Math.round(getCurrentMotorPower() * 100.0) / 100.0) > 0;
+    }
+
     public void updateTarget(){
         // move
         if(targetPos > startPos){
@@ -116,18 +121,17 @@ public class MotorWrapper {
 
     public void setTargetPosition(int position){
         // stupido moment
-        setTargetRelative(currentTicks-position);
-    }
-
-    public void setTargetRelative(int relative){
         if(hasTarget) return;
         hasTarget = true;
         reachedTarget = false;
-        targetPos += (int)motorRatio.reverseTicksToFinal(relative);
+        targetPos = (int)motorRatio.reverseTicksToFinal(position);
         startPos = getCurrentTicks();
+    }
+
+    public void setTargetRelative(int relative){
+        setTargetPosition(getCurrentTicks() + relative);
 //        OpModeSGlobals.telemetry.addData("Testing", "No error at 118 in setTargetRelative()");
 //        setTargetPosition(targetPos);
-
     }
 
     public int getTargetPosition(){
