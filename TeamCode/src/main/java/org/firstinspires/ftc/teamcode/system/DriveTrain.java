@@ -22,11 +22,11 @@ public class DriveTrain extends System{
     public DriveTrain(String fl, String fr, String bl, String br) {
         this.fl = new MotorWrapper(OpModeSGlobals.opmode.hardwareMap.get(DcMotor.class, fl), OpModeSGlobals.DRIVETRAIN_WHEEL_DIAMETER_INCHES,
                     MotorWrapper.TICKS_HD_HEX_MOTOR_20_1, new MotorRatio());
-        this.fr = new MotorWrapper(OpModeSGlobals.opmode.hardwareMap.get(DcMotor.class, fl), OpModeSGlobals.DRIVETRAIN_WHEEL_DIAMETER_INCHES,
+        this.fr = new MotorWrapper(OpModeSGlobals.opmode.hardwareMap.get(DcMotor.class, fr), OpModeSGlobals.DRIVETRAIN_WHEEL_DIAMETER_INCHES,
                 MotorWrapper.TICKS_HD_HEX_MOTOR_20_1, new MotorRatio());
-        this.bl = new MotorWrapper(OpModeSGlobals.opmode.hardwareMap.get(DcMotor.class, fl), OpModeSGlobals.DRIVETRAIN_WHEEL_DIAMETER_INCHES,
+        this.bl = new MotorWrapper(OpModeSGlobals.opmode.hardwareMap.get(DcMotor.class, bl), OpModeSGlobals.DRIVETRAIN_WHEEL_DIAMETER_INCHES,
                 MotorWrapper.TICKS_HD_HEX_MOTOR_20_1, new MotorRatio());
-        this.br = new MotorWrapper(OpModeSGlobals.opmode.hardwareMap.get(DcMotor.class, fl), OpModeSGlobals.DRIVETRAIN_WHEEL_DIAMETER_INCHES,
+        this.br = new MotorWrapper(OpModeSGlobals.opmode.hardwareMap.get(DcMotor.class, br), OpModeSGlobals.DRIVETRAIN_WHEEL_DIAMETER_INCHES,
                 MotorWrapper.TICKS_HD_HEX_MOTOR_20_1, new MotorRatio());
 
         // reverse right side motors for positive movement on both sides
@@ -46,15 +46,20 @@ public class DriveTrain extends System{
         dn = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
 
         double flp, frp, blp, brp;
-        flp = (y + x + rx) / dn;
+        flp = (y + x - rx) / dn;
         frp = (y - x + rx) / dn;
         blp = (y - x - rx) / dn;
-        brp = (y + x - rx) / dn;
+        brp = (y + x + rx) / dn;
 
         fl.setPower(flp);
         fr.setPower(frp);
         bl.setPower(blp);
         br.setPower(brp);
+
+        fl.update();
+        fr.update();
+        bl.update();
+        br.update();
 
     }
 

@@ -10,10 +10,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MotorWrapper {
+
+    public static final int POWERMODE = 0, ENCODERMODE = 1;
+
     // -------------------------------------------------- //
     // constants
 
-    public static final int TICKS_TORQNADO = 1440, TICKS_COREHEX = 1440, TICKS_HD_HEX_MOTOR_20_1 = 530;
+    public static final int TICKS_TORQNADO = 1440, TICKS_COREHEX = 240, TICKS_HD_HEX_MOTOR_20_1 = 530;
     public static final double PI = 3.14159265;
 
     // -------------------------------------------------- //
@@ -24,9 +27,11 @@ public class MotorWrapper {
     private int ticksPerSpin = 1440;
 
     private double wheelDiameter = 0.0;
-    private boolean hasTarget = false, reachedTarget = true;
+    private boolean hasTarget = false;
     private int targetPos = 0, startPos = 0;
     private double mPower = 0.0, mTargetPower = 0.0;
+
+    private int currentRunMode = POWERMODE;
 
     // -------------------------------------------------- //
     // code
@@ -43,12 +48,15 @@ public class MotorWrapper {
 
     public void update()
     {
+        // update ticks -- is good no bad
         int pastTicks = currentTicks;
         currentTicks = getCurrentTicks();
         deltaTicks = currentTicks - pastTicks;
-        // check if there is a target
-        if(hasTarget && !reachedTarget)
+        // check which runmode and then run motor code -- is bad -- big sad
+        if (ENCODERMODE == currentRunMode) {
+            // encoder runmode
             updateTarget();
+        }
         motor.setPower(mPower);
     }
 
@@ -58,25 +66,20 @@ public class MotorWrapper {
     }
 
     public void updateTarget(){
-        // move
+        if(!hasTarget) return;
+        // move motor to position
         if(targetPos > startPos){
-            if(currentTicks > targetPos){
-                setPower(0);
-                reachedTarget = true;
-                hasTarget = false;
-            }
-            else{
-                setPower(mTargetPower);
-            }
-        }else if(targetPos < startPos){
-            if( currentTicks < targetPos){
-                setPower(0);
-                reachedTarget = true;
-                hasTarget = false;
-            }else {
-                setPower(-mTargetPower);
-            }
+            // move forward
+            setPower(mTargetPower);
+        }else if(targetPos < startPos) {
+            // move backward
+            setPower(-mTargetPower);
         }
+    }
+
+    public void setRunMode(int mode){
+        if(mode != 0 && mode != 1) setRunMode(0);
+        setRunMode(mode);
     }
 
     public DcMotor getMotor(){
@@ -123,9 +126,10 @@ public class MotorWrapper {
         // stupido moment
         if(hasTarget) return;
         hasTarget = true;
-        reachedTarget = false;
         targetPos = (int)motorRatio.reverseTicksToFinal(position);
         startPos = getCurrentTicks();
+        // set ftc api target
+        motor.setTargetPosition(targetPos);
     }
 
     public void setTargetRelative(int relative){
