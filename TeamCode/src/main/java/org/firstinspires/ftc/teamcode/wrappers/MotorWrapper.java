@@ -102,6 +102,10 @@ public class MotorWrapper {
         return this.mPower;
     }
 
+    public double getCurrentMotorPower(){
+        return this.motor.getPower();
+    }
+
     public void setTargetPower(double power){
         this.mTargetPower = power;
     }
