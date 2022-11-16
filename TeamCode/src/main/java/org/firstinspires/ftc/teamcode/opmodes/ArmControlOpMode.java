@@ -18,23 +18,34 @@ public class ArmControlOpMode extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         // setup
-        arm = new MotorWrapper(hardwareMap.get(DcMotor.class, "test"), 2.0, 0, new MotorRatio());
-        arm.motorRatio.addGear(new Gear(100));
+        arm = new MotorWrapper(hardwareMap.get(DcMotor.class, "fl"), 2.0, 0, new MotorRatio());
+//        arm.motorRatio.addGear(new Gear(100));
         // prerun
         waitForStart();
-        arm.setTargetPower(0.4);
+        arm.setTargetPower(0.1);
+
+        int MAXARMPOS = MotorWrapper.TICKS_COREHEX / 3;
+
+        boolean toggle = false; int cnt = 0;
 
         // run loop
         while (opModeIsActive()){
             arm.update();
-            if (gamepad1.dpad_up){
-                telemetry.addData("ArmUp", "");
-                arm.setTargetRelative(4);
-            }else if (gamepad1.dpad_down){
-                telemetry.addData("ArmDown", "");
-                arm.setTargetRelative(-4);
+            if(gamepad1.x){
+                if(toggle) continue;
+                cnt++;
+                toggle = true;
+                if(cnt % 2 != 0) {
+                    arm.setTargetPosition(80);
+                }else {
+                    arm.setTargetPosition(10);
+                }
+            }else{
+                toggle = false;
             }
 
+            telemetry.addData("Count", cnt);
+            telemetry.addData("Toggle", toggle);
             telemetry.addData("Distance Travelled", arm.getTotalDistanceTravelled());
             telemetry.addData("TargetPower", arm.getTargetPower());
             telemetry.addData("Power", arm.getPower());

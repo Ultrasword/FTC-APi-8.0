@@ -27,13 +27,7 @@ public class Lift2Motor extends System {
         }
         // update motorwrappers
         left.update(); right.update();
-    }
 
-    public void failSafe(){
-        // check failsafe for both motors
-        if(Math.abs(left.getCurrentMotorPower()) > 0){
-            
-        }
     }
 
 }
