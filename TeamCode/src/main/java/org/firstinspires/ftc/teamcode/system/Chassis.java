@@ -5,38 +5,31 @@ import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.*;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.wrappers.MotorRatio;
+import org.firstinspires.ftc.teamcode.wrappers.MotorWrapper;
+
 import java.lang.Math;
 
 public class Chassis extends System{
 
-    private DcMotor motorLeft;
-    private DcMotor motorRight;
-    private ColorSensor color1;
-    private DistanceSensor distance1;
+    private MotorWrapper fr, fl, br, bl;
 
-    private float chassisWidth = 9f;
+    private double chassisWidth = 9f;
 
-    private float x = 0f;
-    private float y = 0f;
+    private double x = 0f;
+    private double y = 0f;
 
     private int leftPos;
     private int rightPos;
 
-    private static float prevError = 0f;
-    private static float integral = 0f;
+    private static double prevError = 0f;
+    private static double integral = 0f;
 
     public Chassis(Telemetry telemetry){
-        motorLeft = hardwareMap.get(DcMotor.class, "motorLeft");
-        motorRight = hardwareMap.get(DcMotor.class, "motorRight");
-//        color1  = hardwareMap.get(ColorSensor.class, "color1");
-//        distance1  = hardwareMap.get(DistanceSensor.class, "distance1");
-//        imu = hardwareMap.get(BNO055IMU.class, "imu");
-
-        // reset encoders to 0
-        motorLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        motorLeft.setDirection(DcMotor.Direction.REVERSE);
+        fl = new MotorWrapper(hardwareMap.get(DcMotor.class, "fl"), 2.0, 0, new MotorRatio());
+        fr = new MotorWrapper(hardwareMap.get(DcMotor.class, "fr"), 2.0, 0, new MotorRatio());
+        bl = new MotorWrapper(hardwareMap.get(DcMotor.class, "bl"), 2.0, 0, new MotorRatio());
+        br = new MotorWrapper(hardwareMap.get(DcMotor.class, "br"), 2.0, 0, new MotorRatio());
     }
 
     @Override
@@ -45,7 +38,7 @@ public class Chassis extends System{
     }
 
     // with use of encoders
-    public void drive(int leftTarget, int rightTarget, float speed){
+    public void drive(int leftTarget, int rightTarget, double speed){
         leftPos += leftTarget;
         rightPos += rightTarget;
 
@@ -58,26 +51,26 @@ public class Chassis extends System{
         this.move(speed, speed);
     }
 
-    public void move(float left, float right){
+    public void move(double left, double right){
         motorLeft.setPower(left);
         motorRight.setPower(right);
     }
 
-    public float checkDistance(DcMotor motor){
-        float value = motor.getCurrentPosition();
+    public double checkDistance(MotorWrapper motor){
+        double value = motor.getTotalDistanceTravelled();
         return value;
     }
 
-    public void goStraight(float distance){
+    public void goStraight(double distance){
         // convert
-        float leftDistance = this.checkDistance(this.motorLeft);
-        float rightDistance = this.checkDistance(this.motorRight);
+        double leftDistance = this.checkDistance(this.motorLeft);
+        double rightDistance = this.checkDistance(this.motorRight);
 
-        float averageDistance = (leftDistance + rightDistance) / 2;
+        double averageDistance = (leftDistance + rightDistance) / 2;
 
         while(averageDistance != distance){
-            float left = this.PID(leftDistance, distance, 0.1f, 0.1f, 0.1f);
-            float right = this.PID(rightDistance, distance, 0.1f, 0.1f, 0.1f);
+            double left = this.PID(leftDistance, distance, 0.1f, 0.1f, 0.1f);
+            double right = this.PID(rightDistance, distance, 0.1f, 0.1f, 0.1f);
             this.move(left, right);
 
             // Update
@@ -88,27 +81,27 @@ public class Chassis extends System{
         }
     }
 
-    public float PID(float input, float target, float Kp, float Ki, float Kd) {
-        float error = (target - input);
-        float derivative = error - this.prevError;  // only an approximation
+    public double PID(double input, double target, double Kp, double Ki, double Kd) {
+        double error = (target - input);
+        double derivative = error - this.prevError;  // only an approximation
         this.integral = 0.5f * this.integral + error;  // only an approximation
         this.prevError = error;
 
         return Kp * error + Kd * derivative + Ki * this.integral;
     }
 
-    public void turn(float degree, float radius){
+    public void turn(double degree, double radius){
         double theta = (degree * Math.PI) / 180;
         //S = theta * radius;
 
-        float distanceLeft = (float) (theta *(radius - this.chassisWidth));
-        float distanceRight = (float) (theta *(radius + this.chassisWidth));
+        double distanceLeft = (double) (theta *(radius - this.chassisWidth));
+        double distanceRight = (double) (theta *(radius + this.chassisWidth));
 
-        float traveledLeft = 0f;
-        float traveledRight = 0f;
+        double traveledLeft = 0f;
+        double traveledRight = 0f;
         while(distanceLeft != traveledLeft || distanceRight != traveledRight){
-            float left = this.PID(traveledLeft, distanceLeft, 0.1f, 0.1f, 0.1f);
-            float right = this.PID(traveledRight, distanceRight, 0.1f, 0.1f, 0.1f);
+            double left = this.PID(traveledLeft, distanceLeft, 0.1f, 0.1f, 0.1f);
+            double right = this.PID(traveledRight, distanceRight, 0.1f, 0.1f, 0.1f);
             move(left, right);
 
             distanceLeft = this.checkDistance(this.motorLeft);
@@ -116,35 +109,35 @@ public class Chassis extends System{
         }
     }
 
-    void ohno(float distanceLeft, float distanceRight, float initialAngle)
+    void ohno(double distanceLeft, double distanceRight, double initialAngle)
     {
         //angle of center of rotation to new point (rad)
-        float theta = (distanceRight - distanceLeft)/this.chassisWidth;
+        double theta = (distanceRight - distanceLeft)/this.chassisWidth;
 
         //distance traveled by the middle point on the robot
-        float distanceMiddle = (distanceRight+distanceLeft)/2;
+        double distanceMiddle = (distanceRight+distanceLeft)/2;
         //center of rotation radius to points on the robot
-        float leftRadius = distanceLeft/theta;
-        float rightRadius = distanceRight/theta;
-        float middleRadius = leftRadius + this.chassisWidth/2;
-        float r = distanceMiddle/theta;
+        double leftRadius = distanceLeft/theta;
+        double rightRadius = distanceRight/theta;
+        double middleRadius = leftRadius + this.chassisWidth/2;
+        double r = distanceMiddle/theta;
 
         //angle between initial heading to destination point
-        float phi = theta/2;
+        double phi = theta/2;
         //hypo
-        float hypo = 0f;
+        double hypo = 0f;
         if (theta != 0)
         {
-            hypo = (float) ((distanceMiddle/theta) * Math.sin(theta/Math.cos(theta/2)));
+            hypo = (double) ((distanceMiddle/theta) * Math.sin(theta/Math.cos(theta/2)));
         }
         else
         {
             hypo = distanceMiddle;
         }
         //delats
-        float deltaX = (float) (hypo * Math.cos(initialAngle + phi));
-        float deltaY = (float) (hypo * Math.sin(initialAngle + phi));
-        float deltaAngle = theta;
+        double deltaX = (double) (hypo * Math.cos(initialAngle + phi));
+        double deltaY = (double) (hypo * Math.sin(initialAngle + phi));
+        double deltaAngle = theta;
         //values
         this.x += deltaX;
         this.y += deltaY;
