@@ -2,63 +2,75 @@ package org.firstinspires.ftc.teamcode.opmodes;
 
 import com.qualcomm.hardware.bosch.BHI260IMU;
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Gyroscope;
+
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 @TeleOp(name = "IMUTest")
 public class IMUOpmode extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         // Retrieve the IMU from the hardware map
+
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        // calibration file == doesn't exist
+        parameters.loggingEnabled = true;
+        parameters.loggingTag = "IMU";
+        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
+        // imu init
         BNO055IMU imu = hardwareMap.get(BNO055IMU.class, "imu");
+        // init
+        imu.initialize(parameters);
 
-        BNO055IMU.Parameters params = new BNO055IMU.Parameters();
-        if(!imu.initialize(params)){
-            // Declare our motors
-            // Make sure your ID's match your configuration
-            DcMotor motorFrontLeft = hardwareMap.dcMotor.get("motorFrontLeft");
-            DcMotor motorBackLeft = hardwareMap.dcMotor.get("motorBackLeft");
-            DcMotor motorFrontRight = hardwareMap.dcMotor.get("motorFrontRight");
-            DcMotor motorBackRight = hardwareMap.dcMotor.get("motorBackRight");
-
-            // Reverse the right side motors
-            // Reverse left motors if you are using NeveRests
-            motorFrontRight.setDirection(DcMotorSimple.Direction.REVERSE);
-            motorBackRight.setDirection(DcMotorSimple.Direction.REVERSE);
-
-            // Retrieve the IMU from the hardware map
-            BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-            // Technically this is the default, however specifying it is clearer
-            parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
-            // Without this, data retrieving from the IMU throws an exception
-            imu.initialize(parameters);
-
-            waitForStart();
-
-            if (isStopRequested()) return;
-        }
 
         while(opModeIsActive()){
-            telemetry.addData("Angle1", imu.getAngularOrientation().firstAngle);
-            telemetry.addData("Angle2", imu.getAngularOrientation().secondAngle);
-            telemetry.addData("Angle3", imu.getAngularOrientation().thirdAngle);
+            // set current angle first
+            telemetry.addData("Yaw", getHeadingAngle(imu));
+            telemetry.update();
             sleep(100);
-
-            double y = -gamepad1.left_stick_y; // Remember, this is reversed!
-            double x = gamepad1.left_stick_x * 1.1; // Counteract imperfect strafing
-            double rx = gamepad1.right_stick_x;
-
-            // Read inverse IMU heading, as the IMU heading is CW positive
-            double botHeading = -imu.getAngularOrientation().firstAngle;
-
-            double rotX = x * Math.cos(botHeading) - y * Math.sin(botHeading);
-            double rotY = x * Math.sin(botHeading) + y * Math.cos(botHeading);
-
         }
+    }
 
+    public double getHeadingAngle(BNO055IMU imu){
+        // firstAngle = yaw
+        // secondAngle =
+        // thirdAngle =
+
+        double lastYawReading = 0;
+        Orientation orientation = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        // get yaw
+        double theta = AngleUnit.DEGREES.fromUnit(orientation.angleUnit, orientation.firstAngle);
+        // get change
+        if (Math.abs(theta)%360>180) {
+            return Math.signum(theta)*(Math.abs(theta)%360-360);
+        } else {
+            return Math.signum(theta)*(Math.abs(theta)%360);
+        }
+//
+//        double delta = yawReading - lastYawReading;
+//        if(Math.abs(delta) >= 180){
+//            if(lastYawReading < 0){
+//                delta = yawReading - 180 - (180 + lastYawReading);
+//            }
+//            if(lastYawReading > 0){
+//                delta = 180 - lastYawReading + 180 + yawReading;
+//            }
+//        }
+//        double headingAngle = headingAngle + delta;
+//        lastYawReading = yawReading;
+//        return (headingAngle) * Math.PI / 180.0;
 
 
     }
+
 }
