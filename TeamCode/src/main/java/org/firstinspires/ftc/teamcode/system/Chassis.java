@@ -25,7 +25,7 @@ public class Chassis extends System{
     private static double prevError = 0f;
     private static double integral = 0f;
 
-    public Chassis(Telemetry telemetry){
+    public Chassis(){
         fl = new MotorWrapper(hardwareMap.get(DcMotor.class, "fl"), 2.0, 0, new MotorRatio());
         fr = new MotorWrapper(hardwareMap.get(DcMotor.class, "fr"), 2.0, 0, new MotorRatio());
         bl = new MotorWrapper(hardwareMap.get(DcMotor.class, "bl"), 2.0, 0, new MotorRatio());
