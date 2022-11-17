@@ -27,7 +27,7 @@ public class MotorWrapper {
     private int ticksPerSpin = 1440;
 
     private double wheelDiameter = 0.0;
-    private boolean hasTarget = false;
+    private boolean hasTarget = false, reachedTarget = false;
     private int targetPos = 0, startPos = 0;
     private double mPower = 0.0, mTargetPower = 0.0;
 
@@ -74,6 +74,8 @@ public class MotorWrapper {
         }else if(targetPos < startPos) {
             // move backward
             setPower(-mTargetPower);
+        }else{
+            reachedTarget = true;
         }
     }
 
@@ -125,7 +127,7 @@ public class MotorWrapper {
     public void setTargetPosition(int position){
         // stupido moment
         if(hasTarget) return;
-        hasTarget = true;
+        hasTarget = true; reachedTarget = false;
         targetPos = (int)motorRatio.reverseTicksToFinal(position);
         startPos = getCurrentTicks();
         // set ftc api target
@@ -149,4 +151,6 @@ public class MotorWrapper {
     public void setDirection(DcMotorSimple.Direction direction){
         motor.setDirection(direction);
     }
+
+    public boolean getReachedTarget(){return this.reachedTarget;}
 }

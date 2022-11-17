@@ -14,7 +14,7 @@ public class Chassis extends System{
 
     private MotorWrapper fr, fl, br, bl;
 
-    private double chassisWidth = 9f;
+    private double chassisWidth = 9;
 
     private double x = 0f;
     private double y = 0f;
@@ -34,7 +34,10 @@ public class Chassis extends System{
 
     @Override
     public void update(){
-
+        fl.update();
+        bl.update();
+        fr.update();
+        br.update();
     }
 
     // with use of encoders
@@ -42,29 +45,35 @@ public class Chassis extends System{
         leftPos += leftTarget;
         rightPos += rightTarget;
 
-        motorLeft.setTargetPosition(leftPos);
-        motorRight.setTargetPosition(rightPos);
+        fl.setTargetPosition(leftPos);
+        bl.setTargetPosition(leftPos);
 
-        motorLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        motorRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        fr.setTargetPosition(rightPos);
+        br.setTargetPosition(rightPos);
 
-        this.move(speed, speed);
+        while (!fl.getReachedTarget()){
+            fl.updateTarget();
+            bl.updateTarget();
+
+            fr.updateTarget();
+            br.updateTarget();
+        }
     }
 
     public void move(double left, double right){
-        motorLeft.setPower(left);
-        motorRight.setPower(right);
+        fl.setPower(left);
+        bl.setPower(left);
+
+        fr.setPower(right);
+        br.setPower(right);
     }
 
-    public double checkDistance(MotorWrapper motor){
-        double value = motor.getTotalDistanceTravelled();
-        return value;
-    }
+    public double checkDistance(MotorWrapper motor){return motor.getTotalDistanceTravelled();}
 
     public void goStraight(double distance){
         // convert
-        double leftDistance = this.checkDistance(this.motorLeft);
-        double rightDistance = this.checkDistance(this.motorRight);
+        double leftDistance = (this.checkDistance(this.fl) + this.checkDistance(this.bl))/2;
+        double rightDistance = (this.checkDistance(this.fr) + this.checkDistance(this.br))/2;
 
         double averageDistance = (leftDistance + rightDistance) / 2;
 
@@ -73,12 +82,16 @@ public class Chassis extends System{
             double right = this.PID(rightDistance, distance, 0.1f, 0.1f, 0.1f);
             this.move(left, right);
 
+            this.update();
+
             // Update
-            leftDistance = this.checkDistance(this.motorLeft);
-            rightDistance = this.checkDistance(this.motorRight);
+            leftDistance = (this.checkDistance(this.fl) + this.checkDistance(this.bl))/2;
+            rightDistance = (this.checkDistance(this.fr) + this.checkDistance(this.br))/2;
 
             averageDistance = (leftDistance + rightDistance) / 2;
         }
+        move(0, 0);
+        this.update();
     }
 
     public double PID(double input, double target, double Kp, double Ki, double Kd) {
@@ -90,24 +103,49 @@ public class Chassis extends System{
         return Kp * error + Kd * derivative + Ki * this.integral;
     }
 
-    public void turn(double degree, double radius){
-        double theta = (degree * Math.PI) / 180;
-        //S = theta * radius;
-
-        double distanceLeft = (double) (theta *(radius - this.chassisWidth));
-        double distanceRight = (double) (theta *(radius + this.chassisWidth));
-
-        double traveledLeft = 0f;
-        double traveledRight = 0f;
-        while(distanceLeft != traveledLeft || distanceRight != traveledRight){
-            double left = this.PID(traveledLeft, distanceLeft, 0.1f, 0.1f, 0.1f);
-            double right = this.PID(traveledRight, distanceRight, 0.1f, 0.1f, 0.1f);
-            move(left, right);
-
-            distanceLeft = this.checkDistance(this.motorLeft);
-            distanceRight = this.checkDistance(this.motorRight);
-        }
-    }
+//    public void turn(double degree, double radius, double baseVolt){
+//        //fix later
+//
+//        double desiredAngle = imu_sensor.get_current_heading() + degree;
+//        //S = theta * radius;
+//        double baseVoltR;
+//        double baseVoltL;
+//
+//        //turning elses
+//        if (degree > 0){
+//            baseVoltR = baseVolt * (1/2 + this.chassisWidth/radius);
+//            baseVoltL = baseVolt * (1/2 - this.chassisWidth/radius);
+//
+//            while (imu_sensor.get_current_heading() < desiredAngle){
+//                move(baseVoltL, baseVoltR);
+//            }
+//        }
+//
+//        else if (degree < 0) {
+//            baseVoltR = -1 * baseVolt * (1 / 2 - this.chassisWidth / radius);
+//            baseVoltL = -1 * baseVolt * (1 / 2 + this.chassisWidth / radius);
+//
+//            while (imu_sensor.get_current_heading() > desiredAngle) {
+//                move(baseVoltL, baseVoltR);
+//            }
+//
+//            if (radius == 0 && degree > 0) {
+//                baseVoltR = baseVolt;
+//                baseVoltL = -1 * baseVolt;
+//
+//                while (imu_sensor.get_current_heading() < desiredAngle) {
+//                    move(baseVoltL, baseVoltR);
+//                }
+//            } else if (radius == 0 && degree < 0) {
+//                baseVoltR = -1 * baseVolt;
+//                baseVoltL = baseVolt;
+//
+//                while (imu_sensor.get_current_heading() > desiredAngle) {
+//                    move(baseVoltL, baseVoltR);
+//                }
+//            }
+//        }
+//    }
 
     void ohno(double distanceLeft, double distanceRight, double initialAngle)
     {
