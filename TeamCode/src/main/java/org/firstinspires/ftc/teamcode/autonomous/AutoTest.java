@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.opmodes;
+package org.firstinspires.ftc.teamcode.autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -11,20 +11,16 @@ import org.firstinspires.ftc.teamcode.system.Chassis;
 
 @TeleOp(name="susssy bajkakds afmdksa")
 public class AutoTest extends LinearOpMode {
-
-    MotorWrapper fl;
-    MotorWrapper fr;
-    MotorWrapper bl;
-    MotorWrapper br;
-
     @Override
     public void runOpMode() throws InterruptedException {
-        fl = new MotorWrapper(hardwareMap.get(DcMotor.class, "fl"), 2.0, 0, new MotorRatio());
-        fr = new MotorWrapper(hardwareMap.get(DcMotor.class, "fr"), 2.0, 0, new MotorRatio());
-        bl = new MotorWrapper(hardwareMap.get(DcMotor.class, "bl"), 2.0, 0, new MotorRatio());
-        br = new MotorWrapper(hardwareMap.get(DcMotor.class, "br"), 2.0, 0, new MotorRatio());
+        Chassis chassis = new Chassis();
 
+        waitForStart();
 
+        while(opModeIsActive()){
+            chassis.goStraight(6);
+            wait(1000);
+        }
 
     }
 }
