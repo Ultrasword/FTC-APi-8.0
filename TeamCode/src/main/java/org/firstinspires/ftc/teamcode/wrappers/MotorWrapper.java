@@ -55,11 +55,6 @@ public class MotorWrapper {
 
     public void update()
     {
-        // update ticks -- is good no bad
-        long curTime = System.nanoTime();
-        double cursecs = curTime/1000000000.0;
-        double deltaTime = cursecs - lastTime;
-
         int pastTicks = currentTicks;
         currentTicks = getCurrentTicks();
         deltaTicks = currentTicks - pastTicks;
@@ -69,9 +64,8 @@ public class MotorWrapper {
             updateTarget();
         }
         // make sure it doesnt overflow -- cap to 4 decimal places
-        cPower = (double)Math.round(RobotMath.lerp(cPower, mPower, deaccelerationCoef) * 10000.0) / 10000.0;
+        if(lerping) cPower = (double)Math.round(RobotMath.lerp(cPower, mPower, deaccelerationCoef) * 10000.0) / 10000.0;
         motor.setPower(cPower);
-        lastTime = cursecs;
     }
 
     public boolean failSafeActive(){
@@ -90,13 +84,14 @@ public class MotorWrapper {
             // move backward
             setPower(-mTargetPower);
         }else{
+            setPower(0);
             reachedTarget = true;
         }
     }
 
     public void setRunMode(int mode){
-        if(mode != 0 && mode != 1) setRunMode(0);
-        setRunMode(mode);
+        if(mode != 0 && mode != 1) currentRunMode = POWERMODE;
+        currentRunMode = mode;
     }
 
     public DcMotor getMotor(){

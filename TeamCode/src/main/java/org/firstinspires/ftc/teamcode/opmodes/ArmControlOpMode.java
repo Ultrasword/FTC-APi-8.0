@@ -22,9 +22,6 @@ public class ArmControlOpMode extends LinearOpMode {
         left = new MotorWrapper(hardwareMap.get(DcMotor.class, "fl"), 2.0, 0, new MotorRatio());
         right = new MotorWrapper(hardwareMap.get(DcMotor.class, "fr"), 2.0, 0, new MotorRatio());
 
-        left.setRunMode(MotorWrapper.ENCODERMODE);
-        right.setRunMode(MotorWrapper.ENCODERMODE);
-
         // prerun
         waitForStart();
         left.setTargetPower(0.1);
@@ -33,6 +30,9 @@ public class ArmControlOpMode extends LinearOpMode {
         right.setLerping(true);
         left.setDirection(DcMotorSimple.Direction.FORWARD);
         right.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        left.setRunMode(MotorWrapper.ENCODERMODE);
+        right.setRunMode(MotorWrapper.ENCODERMODE);
 
         int MAXARMPOS = MotorWrapper.TICKS_TORQNADO / 3;
 
