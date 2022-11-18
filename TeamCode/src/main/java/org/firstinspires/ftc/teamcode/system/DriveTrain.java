@@ -7,7 +7,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.wrappers.MotorRatio;
 import org.firstinspires.ftc.teamcode.wrappers.MotorWrapper;
 
-public class DriveTrain extends System{
+public class DriveTrain extends RobotSystem {
     /* gear ratio:
 
     motor -> gearbox = 20:1
