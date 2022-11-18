@@ -30,7 +30,7 @@ public class MotorWrapper {
     private boolean hasTarget = false, reachedTarget = false;
     private int targetPos = 0, startPos = 0;
     private double mPower = 0.0, mTargetPower = 0.0;
-
+    private double lastTime = 0.0;
     private int currentRunMode = POWERMODE;
 
     // -------------------------------------------------- //
@@ -49,6 +49,10 @@ public class MotorWrapper {
     public void update()
     {
         // update ticks -- is good no bad
+        long curTime = System.nanoTime();
+        double cursecs = curTime/1000000000.0;
+        double deltaTime = cursecs - lastTime;
+
         int pastTicks = currentTicks;
         currentTicks = getCurrentTicks();
         deltaTicks = currentTicks - pastTicks;
@@ -58,6 +62,7 @@ public class MotorWrapper {
             updateTarget();
         }
         motor.setPower(mPower);
+        lastTime = cursecs;
     }
 
     public boolean failSafeActive(){
