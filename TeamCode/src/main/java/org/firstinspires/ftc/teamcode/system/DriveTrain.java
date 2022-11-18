@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.wrappers.IMUWrapper;
 import org.firstinspires.ftc.teamcode.wrappers.MotorRatio;
 import org.firstinspires.ftc.teamcode.wrappers.MotorWrapper;
 
@@ -17,6 +18,8 @@ public class DriveTrain extends RobotSystem {
 
     private MotorWrapper fl, fr, bl, br;
     private double x, y, rx, dn;
+
+    private IMUWrapper imuWrapper;
 
 
     public DriveTrain(String fl, String fr, String bl, String br) {
@@ -32,6 +35,8 @@ public class DriveTrain extends RobotSystem {
         // reverse right side motors for positive movement on both sides
         this.fr.setDirection(DcMotorSimple.Direction.REVERSE);
         this.br.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        imuWrapper = new IMUWrapper("imu");
     }
 
     @Override
@@ -50,6 +55,12 @@ public class DriveTrain extends RobotSystem {
         frp = (y - x + rx) / dn;
         blp = (y - x - rx) / dn;
         brp = (y + x + rx) / dn;
+
+        // get imu orientations
+        double yaw = imuWrapper.getYaw();
+        // if yaw < 0; we want spin right
+        // if yaw > 0; we want spin left
+        // this depends on if we need to orient
 
         fl.setPower(flp);
         fr.setPower(frp);

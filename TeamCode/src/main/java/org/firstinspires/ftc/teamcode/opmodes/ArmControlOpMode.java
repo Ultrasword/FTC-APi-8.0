@@ -21,11 +21,13 @@ public class ArmControlOpMode extends LinearOpMode {
         MotorWrapper left, right;
         left = new MotorWrapper(hardwareMap.get(DcMotor.class, "fl"), 2.0, 0, new MotorRatio());
         right = new MotorWrapper(hardwareMap.get(DcMotor.class, "fr"), 2.0, 0, new MotorRatio());
+        left.getMotorRatio().addGear(new Gear(128));
+        right.getMotorRatio().addGear(new Gear(128));
 
         // prerun
         waitForStart();
-        left.setTargetPower(0.1);
-        right.setTargetPower(0.1);
+        left.setTargetPower(0.2);
+        right.setTargetPower(0.2);
         left.setLerping(true);
         right.setLerping(true);
         left.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -41,15 +43,17 @@ public class ArmControlOpMode extends LinearOpMode {
         // run loop
         while (opModeIsActive()){
             if(gamepad1.x){
-                if(toggle) continue;
-                cnt++;
-                toggle = true;
-                if(cnt % 2 != 0) {
-                    left.setTargetPosition(80);
-                    right.setTargetPosition(80);
-                }else {
-                    left.setTargetPosition(10);
-                    right.setTargetPosition(10);
+                if(!toggle) {
+                    toggle = true;
+
+                    cnt++;
+                    if (cnt % 2 != 0) {
+                        left.setTargetPosition(MAXARMPOS);
+                        right.setTargetPosition(MAXARMPOS);
+                    } else {
+                        left.setTargetPosition(0);
+                        right.setTargetPosition(0);
+                    }
                 }
             }else{
                 toggle = false;

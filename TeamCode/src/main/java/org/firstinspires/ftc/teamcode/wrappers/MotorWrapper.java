@@ -33,7 +33,6 @@ public class MotorWrapper {
     private boolean hasTarget = false, reachedTarget = false;
     private int targetPos = 0, startPos = 0;
     private double cPower = 0.0, mPower = 0.0, mTargetPower = 0.0;
-    private double lastTime = 0.0;
     private int currentRunMode = POWERMODE;
 
     private double deaccelerationCoef = DEF_COEF;
@@ -77,14 +76,15 @@ public class MotorWrapper {
     public void updateTarget(){
         if(!hasTarget) return;
         // move motor to position
-        if(targetPos > startPos){
+        if(targetPos > startPos && currentTicks <= targetPos){
             // move forward
             setPower(mTargetPower);
-        }else if(targetPos < startPos) {
+        }else if(targetPos < startPos && currentTicks >= targetPos) {
             // move backward
             setPower(-mTargetPower);
         }else{
             setPower(0);
+            hasTarget = false;
             reachedTarget = true;
         }
     }
