@@ -1,16 +1,15 @@
 package org.firstinspires.ftc.teamcode.system;
 
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
-import com.qualcomm.hardware.bosch.BNO055IMU;
+
 import com.qualcomm.robotcore.hardware.*;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.wrappers.MotorRatio;
 import org.firstinspires.ftc.teamcode.wrappers.MotorWrapper;
 
 import java.lang.Math;
 
-public class Chassis extends System{
+public class Chassis extends RobotSystem {
 
     private MotorWrapper fr, fl, br, bl;
 

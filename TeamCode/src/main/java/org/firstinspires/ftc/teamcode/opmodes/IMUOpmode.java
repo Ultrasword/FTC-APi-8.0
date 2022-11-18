@@ -36,42 +36,27 @@ public class IMUOpmode extends LinearOpMode {
 
         while(opModeIsActive()){
             // set current angle first
-            telemetry.addData("Yaw", getHeadingAngle(imu));
+            Orientation orientation = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+            telemetry.addData("Yaw", getHeadingAngle(imu, AngleUnit.DEGREES.fromUnit(orientation.angleUnit, orientation.firstAngle)));
+            telemetry.addData("Pitch", getHeadingAngle(imu, AngleUnit.DEGREES.fromUnit(orientation.angleUnit, orientation.secondAngle)));
+            telemetry.addData("Roll", getHeadingAngle(imu, AngleUnit.DEGREES.fromUnit(orientation.angleUnit, orientation.thirdAngle)));
             telemetry.update();
             sleep(100);
         }
     }
 
-    public double getHeadingAngle(BNO055IMU imu){
+    public double getHeadingAngle(BNO055IMU imu, double angleValue){
         // firstAngle = yaw
-        // secondAngle =
-        // thirdAngle =
-
-        double lastYawReading = 0;
-        Orientation orientation = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-        // get yaw
-        double theta = AngleUnit.DEGREES.fromUnit(orientation.angleUnit, orientation.firstAngle);
+        // secondAngle = pitch
+        // thirdAngle = roll
         // get change
-        if (Math.abs(theta)%360>180) {
-            return Math.signum(theta)*(Math.abs(theta)%360-360);
+        if (Math.abs(angleValue)%360>180) {
+            return Math.signum(angleValue)*(Math.abs(angleValue)%360-360);
         } else {
-            return Math.signum(theta)*(Math.abs(theta)%360);
+            return Math.signum(angleValue)*(Math.abs(angleValue)%360);
         }
-//
-//        double delta = yawReading - lastYawReading;
-//        if(Math.abs(delta) >= 180){
-//            if(lastYawReading < 0){
-//                delta = yawReading - 180 - (180 + lastYawReading);
-//            }
-//            if(lastYawReading > 0){
-//                delta = 180 - lastYawReading + 180 + yawReading;
-//            }
-//        }
-//        double headingAngle = headingAngle + delta;
-//        lastYawReading = yawReading;
-//        return (headingAngle) * Math.PI / 180.0;
-
-
     }
+
+
 
 }

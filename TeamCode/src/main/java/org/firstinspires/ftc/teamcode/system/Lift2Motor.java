@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import org.firstinspires.ftc.teamcode.wrappers.MotorRatio;
 import org.firstinspires.ftc.teamcode.wrappers.MotorWrapper;
 
-public class Lift2Motor extends System {
+public class Lift2Motor extends RobotSystem {
 
     private MotorWrapper left, right;
     private int maxTicksRotate;
