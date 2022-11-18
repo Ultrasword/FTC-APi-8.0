@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.checkerframework.checker.index.qual.LTEqLengthOf;
 import org.firstinspires.ftc.teamcode.system.OpModeSGlobals;
+import org.firstinspires.ftc.teamcode.system.RobotMath;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +20,8 @@ public class MotorWrapper {
     public static final int TICKS_TORQNADO = 1440, TICKS_COREHEX = 240, TICKS_HD_HEX_MOTOR_20_1 = 530;
     public static final double PI = 3.14159265;
 
+    public static final double COEF = 0.3;
+
     // -------------------------------------------------- //
     // variables
     public MotorRatio motorRatio;
@@ -29,9 +32,10 @@ public class MotorWrapper {
     private double wheelDiameter = 0.0;
     private boolean hasTarget = false, reachedTarget = false;
     private int targetPos = 0, startPos = 0;
-    private double mPower = 0.0, mTargetPower = 0.0;
+    private double cPower = 0.0, mPower = 0.0, mTargetPower = 0.0;
     private double lastTime = 0.0;
     private int currentRunMode = POWERMODE;
+
 
     // -------------------------------------------------- //
     // code
@@ -61,12 +65,14 @@ public class MotorWrapper {
             // encoder runmode
             updateTarget();
         }
-        motor.setPower(mPower);
+        cPower = RobotMath.lerp(cPower, mPower, MotorWrapper.COEF);
+        motor.setPower(cPower);
         lastTime = cursecs;
     }
 
     public boolean failSafeActive(){
         // check if deltaTicks = 0  but  power is not 0
+        // rounds up
         return deltaTicks == 0 && Math.abs(Math.round(getCurrentMotorPower() * 100.0) / 100.0) > 0;
     }
 
@@ -112,6 +118,8 @@ public class MotorWrapper {
     public void setPower(double power){
         this.mPower = power;
     }
+
+    public double getCurrentPower() {return this.cPower;}
 
     public double getPower(){
         return this.mPower;

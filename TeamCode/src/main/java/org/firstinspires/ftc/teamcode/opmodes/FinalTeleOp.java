@@ -7,8 +7,8 @@ import org.firstinspires.ftc.teamcode.system.Clock;
 import org.firstinspires.ftc.teamcode.system.DriveTrain;
 import org.firstinspires.ftc.teamcode.system.OpModeSGlobals;
 
-@TeleOp(name="Vroom11-Mecanum")
-public class MecanumDrive extends LinearOpMode {
+@TeleOp(name="Vroom11-WeBest")
+public class FinalTeleOp extends LinearOpMode {
 
 
     @Override
