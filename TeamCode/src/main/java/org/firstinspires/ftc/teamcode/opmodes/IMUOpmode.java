@@ -32,6 +32,7 @@ public class IMUOpmode extends LinearOpMode {
         // init
         imu.initialize(parameters);
 
+        waitForStart();
 
         while(opModeIsActive()){
             // set current angle first
