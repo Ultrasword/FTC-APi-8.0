@@ -30,15 +30,15 @@ public class TwoMotorWheelsOpMode extends LinearOpMode {
         int amp = 10;
         waitForStart();
         while(opModeIsActive()){
-//            if(gamepad1.a) {
-//                left.setTargetRelative(MotorWrapper.TICKS_COREHEX);
-//                right.setTargetRelative(MotorWrapper.TICKS_COREHEX);
-//            }
+            if(gamepad1.a) {
+                left.setTargetRelative(MotorWrapper.TICKS_COREHEX);
+                right.setTargetRelative(MotorWrapper.TICKS_COREHEX);
+            }
 
-//            if(gamepad1.left_stick_y != 0)
-//                left.setPower(gamepad1.left_stick_y);
-//            if(gamepad1.right_stick_y != 0)
-//                right.setPower(gamepad1.right_stick_y);
+            if(gamepad1.left_stick_y != 0)
+                left.setPower(gamepad1.left_stick_y);
+            if(gamepad1.right_stick_y != 0)
+                right.setPower(gamepad1.right_stick_y);
             left.setPower(gamepad1.left_stick_y*0.4);
 
             left.update();

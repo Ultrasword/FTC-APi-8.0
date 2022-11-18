@@ -12,11 +12,16 @@ public class MotorRatio {
     }
 
     public MotorRatio(){
-
+        // this is always the motor gear (the gear that represents the motor)
+        addGear(new Gear(1));
     }
 
     public void addGear(Gear gear){
         gearList.add(gear);
+    }
+
+    public void removeGear(int pos){
+        gearList.remove(pos);
     }
 
     public double findFinalRotation(double spinTicks){
