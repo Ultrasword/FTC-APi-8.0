@@ -13,12 +13,16 @@ public class MotorRotationTickTester extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         // takes the motor in the first slot and lets user test the rotation!
         MotorWrapper wrap = new MotorWrapper(hardwareMap.get(DcMotor.class, "fl"), 1.0, 28, new MotorRatio());
+        wrap.setLerping(true);
+        wrap.setDeAccelCoef(0.5);
+
 
         waitForStart();
 
         double spinPower = 0.5;
         double factor = 1.0;
         double increment = 0.01;
+        double accelCoef = 0.5;
         boolean pressed = false;
         boolean rpressed = false;
 
@@ -48,9 +52,20 @@ public class MotorRotationTickTester extends LinearOpMode {
                 if(pressed) continue;
                 pressed = true;
                 spinPower -= factor * increment;
-            }else{
+            }
+            // press dpad - right or left - increase/decrease coef
+            else if(gamepad1.dpad_right){
+                if(pressed) continue;
+                pressed = true;
+                accelCoef += factor * increment;
+            }else if(gamepad1.dpad_left){
+                if(pressed) continue;
+                pressed = true;
+                accelCoef -= factor * increment;
+            } else{
                 pressed = false;
             }
+
 
             // motor control
             if(gamepad1.a){
@@ -58,12 +73,15 @@ public class MotorRotationTickTester extends LinearOpMode {
             } else{
                 wrap.setPower(0);
             }
+            wrap.setDeAccelCoef(accelCoef);
             wrap.update();
 
             telemetry.addData("To Spin", "Press 'a'");
             telemetry.addData("Change Power", "Press dpad `up` and `down`");
-            telemetry.addData("Current Spin Power", spinPower);
+            telemetry.addData("Current Target Power", wrap.getPower());
+            telemetry.addData("Current Wrapper Power", wrap.getCurrentWrapperPower());
             telemetry.addData("Motor Ticks", wrap.getCurrentTicks());
+            telemetry.addData("Deaccel Coef", wrap.getDeAccelCoef());
             telemetry.update();
 
             sleep(50);

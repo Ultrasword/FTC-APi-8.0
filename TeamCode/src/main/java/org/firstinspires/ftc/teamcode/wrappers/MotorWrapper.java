@@ -20,7 +20,7 @@ public class MotorWrapper {
     public static final int TICKS_TORQNADO = 1440, TICKS_COREHEX = 240, TICKS_HD_HEX_MOTOR_20_1 = 530;
     public static final double PI = 3.14159265;
 
-    public static final double COEF = 0.3;
+    public static final double DEF_COEF = 0.5;
 
     // -------------------------------------------------- //
     // variables
@@ -35,6 +35,9 @@ public class MotorWrapper {
     private double cPower = 0.0, mPower = 0.0, mTargetPower = 0.0;
     private double lastTime = 0.0;
     private int currentRunMode = POWERMODE;
+
+    private double deaccelerationCoef = DEF_COEF;
+    private boolean lerping = false;
 
 
     // -------------------------------------------------- //
@@ -65,7 +68,8 @@ public class MotorWrapper {
             // encoder runmode
             updateTarget();
         }
-        cPower = RobotMath.lerp(cPower, mPower, MotorWrapper.COEF);
+        // make sure it doesnt overflow -- cap to 4 decimal places
+        cPower = (double)Math.round(RobotMath.lerp(cPower, mPower, deaccelerationCoef) * 10000.0) / 10000.0;
         motor.setPower(cPower);
         lastTime = cursecs;
     }
@@ -119,7 +123,7 @@ public class MotorWrapper {
         this.mPower = power;
     }
 
-    public double getCurrentPower() {return this.cPower;}
+    public double getCurrentWrapperPower() {return this.cPower;}
 
     public double getPower(){
         return this.mPower;
@@ -166,4 +170,20 @@ public class MotorWrapper {
     }
 
     public boolean getReachedTarget(){return this.reachedTarget;}
+
+    public void setDeAccelCoef(double coef){
+        this.deaccelerationCoef = coef;
+    }
+
+    public double getDeAccelCoef(){
+        return this.deaccelerationCoef;
+    }
+
+    public void setLerping(boolean lerping){
+        this.lerping = lerping;
+    }
+
+    public boolean isLerping(){
+        return lerping;
+    }
 }
