@@ -7,11 +7,17 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import org.firstinspires.ftc.teamcode.system.OpModeSGlobals;
 import org.firstinspires.ftc.teamcode.wrappers.MotorRatio;
 import org.firstinspires.ftc.teamcode.wrappers.MotorWrapper;
+import org.firstinspires.ftc.teamcode.wrappers.OpModeWrapper;
 
 @TeleOp(name = "Two Motor Opmode")
-public class TwoMotorWheelsOpMode extends LinearOpMode {
+public class TwoMotorWheelsOpMode extends OpModeWrapper {
 
     MotorWrapper left, right;
+
+    @Override
+    public void initOpMode() {
+
+    }
 
     @Override
     public void runOpMode() throws InterruptedException {
