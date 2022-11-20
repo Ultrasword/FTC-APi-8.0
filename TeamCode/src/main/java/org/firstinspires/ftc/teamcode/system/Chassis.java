@@ -4,6 +4,7 @@ import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.har
 
 import com.qualcomm.robotcore.hardware.*;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.wrappers.MotorRatio;
 import org.firstinspires.ftc.teamcode.wrappers.MotorWrapper;
 
@@ -37,6 +38,11 @@ public class Chassis extends RobotSystem {
         bl.update();
         fr.update();
         br.update();
+    }
+
+    @Override
+    public void updateTelemetry(Telemetry telemetry) {
+
     }
 
     // with use of encoders
