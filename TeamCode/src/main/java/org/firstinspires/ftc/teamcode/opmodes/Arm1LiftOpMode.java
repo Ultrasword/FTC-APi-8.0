@@ -9,10 +9,8 @@ import org.firstinspires.ftc.teamcode.wrappers.Gear;
 import org.firstinspires.ftc.teamcode.wrappers.MotorRatio;
 import org.firstinspires.ftc.teamcode.wrappers.MotorWrapper;
 
-@TeleOp(name="ArmTestOpMode")
-
-
-public class ArmControlOpMode extends LinearOpMode {
+@TeleOp(name="1ArmTestMode")
+public class Arm1LiftOpMode extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -20,52 +18,41 @@ public class ArmControlOpMode extends LinearOpMode {
         // arms are 1:1 ratio so no need for motor ratios
         MotorWrapper left, right;
         left = new MotorWrapper(hardwareMap.get(DcMotor.class, "fl"), 2.0, 0, new MotorRatio());
-        right = new MotorWrapper(hardwareMap.get(DcMotor.class, "fr"), 2.0, 0, new MotorRatio());
-        left.getMotorRatio().addGear(new Gear(128));
-        right.getMotorRatio().addGear(new Gear(128));
 
         // prerun
         waitForStart();
         left.setTargetPower(0.2);
-        right.setTargetPower(0.2);
         left.setLerping(true);
-        right.setLerping(true);
         left.setDirection(DcMotorSimple.Direction.FORWARD);
-        right.setDirection(DcMotorSimple.Direction.REVERSE);
+        left.setMotorLocking(true);
 
         left.setRunMode(MotorWrapper.ENCODERMODE);
-        right.setRunMode(MotorWrapper.ENCODERMODE);
 
-        int MAXARMPOS = MotorWrapper.TICKS_TORQNADO / 3;
-
+        int MAXARMPOS = MotorWrapper.TICKS_COREHEX / 3;
+        MAXARMPOS = 50;
         boolean toggle = false; int cnt = 0;
-
         // run loop
         while (opModeIsActive()){
             if(gamepad1.x){
                 if(!toggle) {
                     toggle = true;
-
                     cnt++;
                     if (cnt % 2 != 0) {
                         left.setTargetPosition(MAXARMPOS);
-                        right.setTargetPosition(MAXARMPOS);
                     } else {
                         left.setTargetPosition(0);
-                        right.setTargetPosition(0);
                     }
                 }
             }else{
                 toggle = false;
             }
             left.update();
-            right.update();
 
-            telemetry.addData("Distance Travelled", String.format("%.2f, %.2f", left.getTotalDistanceTravelled(), right.getTotalDistanceTravelled()));
-            telemetry.addData("TargetPower", String.format("%.2f, %.2f", left.getTargetPower(), right.getTargetPower()));
-            telemetry.addData("Power", String.format("%.2f, %.2f", left.getCurrentMotorPower(), right.getCurrentMotorPower()));
-            telemetry.addData("Target_Pos", String.format("%d, %d", left.getTargetPosition(), right.getTargetPosition()));
-            telemetry.addData("Arm_Pos:", String.format("%d, %d", left.getCurrentTicks(), right.getCurrentTicks()));
+            telemetry.addData("Distance Travelled", String.format("%.2f", left.getTotalDistanceTravelled()));
+            telemetry.addData("TargetPower", String.format("%.2f", left.getTargetPower()));
+            telemetry.addData("Power", String.format("%.2f", left.getCurrentMotorPower()));
+            telemetry.addData("Target_Pos", String.format("%d", left.getTargetPosition()));
+            telemetry.addData("Arm_Pos:", String.format("%d", left.getCurrentTicks()));
             telemetry.update();
             sleep(50);
         }

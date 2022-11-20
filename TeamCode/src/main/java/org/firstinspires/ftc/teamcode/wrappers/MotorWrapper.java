@@ -36,7 +36,7 @@ public class MotorWrapper {
     private int currentRunMode = POWERMODE;
 
     private double deaccelerationCoef = DEF_COEF;
-    private boolean lerping = false;
+    private boolean lerping = false, lockMotor = false;
 
 
     // -------------------------------------------------- //
@@ -83,7 +83,8 @@ public class MotorWrapper {
             // move backward
             setPower(-mTargetPower);
         }else{
-            setPower(0);
+            if(lockMotor) setPower(0.001);
+            else setPower(0);
             hasTarget = false;
             reachedTarget = true;
         }
@@ -180,5 +181,13 @@ public class MotorWrapper {
 
     public boolean isLerping(){
         return lerping;
+    }
+
+    public void setMotorLocking(boolean locking){
+        lockMotor = locking;
+    }
+
+    public boolean isMotorLocked(){
+        return lockMotor;
     }
 }
