@@ -36,8 +36,7 @@ public class MotorWrapper {
     private int currentRunMode = POWERMODE;
 
     private double deaccelerationCoef = DEF_COEF;
-    private boolean lerping = false;
-
+    private boolean lerping = false, lockMotor = false;
 
     // -------------------------------------------------- //
     // code
@@ -52,16 +51,14 @@ public class MotorWrapper {
         this.motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
-    public void update()
-    {
+    public void update() {
         int pastTicks = currentTicks;
         currentTicks = getCurrentTicks();
         deltaTicks = currentTicks - pastTicks;
         // check which runmode and then run motor code -- is bad -- big sad
-        if (ENCODERMODE == currentRunMode) {
+        if (ENCODERMODE == currentRunMode)
             // encoder runmode
             updateTarget();
-        }
         // make sure it doesnt overflow -- cap to 4 decimal places
         if(lerping) cPower = (double)Math.round(RobotMath.lerp(cPower, mPower, deaccelerationCoef) * 10000.0) / 10000.0;
         motor.setPower(cPower);
@@ -83,7 +80,6 @@ public class MotorWrapper {
             // move backward
             setPower(-mTargetPower);
         }else{
-            setPower(0);
             hasTarget = false;
             reachedTarget = true;
         }
@@ -91,7 +87,7 @@ public class MotorWrapper {
 
     public void setRunMode(int mode){
         if(mode != 0 && mode != 1) currentRunMode = POWERMODE;
-        currentRunMode = mode;
+        else currentRunMode = mode;
     }
 
     public DcMotor getMotor(){
@@ -144,6 +140,7 @@ public class MotorWrapper {
         startPos = getCurrentTicks();
         // set ftc api target
         motor.setTargetPosition(targetPos);
+        motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
     public void setTargetRelative(int relative){
@@ -181,4 +178,15 @@ public class MotorWrapper {
     public boolean isLerping(){
         return lerping;
     }
+
+    public void setLockMotor(boolean locking){
+        this.lockMotor = locking;
+        if (locking) this.motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        else this.motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+    }
+
+    public boolean isMotorLocked(){
+        return this.lockMotor;
+    }
+
 }

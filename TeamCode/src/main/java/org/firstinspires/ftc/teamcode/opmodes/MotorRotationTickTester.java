@@ -23,19 +23,27 @@ public class MotorRotationTickTester extends LinearOpMode {
         double factor = 1.0;
         double increment = 0.01;
         double accelCoef = 0.5;
-        boolean pressed = false;
-        boolean rpressed = false;
+        boolean pressed = false, rpressed = false, tpressed = false;
 
         while(opModeIsActive()){
+            // set motor locking or not
+            if (gamepad1.right_trigger > 0){
+                if (!tpressed) {
+                    tpressed = true;
+                    wrap.setLockMotor(!wrap.isMotorLocked());
+                }
+            }else{
+                tpressed = false;
+            }
             // reversing speed
             if(gamepad1.y){
-                if(rpressed) continue;
-                rpressed = true;
-                spinPower *= -1;
+                if(!rpressed) {
+                    rpressed = true;
+                    spinPower *= -1;
+                }
             }else{
                 rpressed = false;
             }
-
             // check for user inputs
             if(gamepad1.b){
                 factor = 10.0;
@@ -45,23 +53,23 @@ public class MotorRotationTickTester extends LinearOpMode {
             // press dpad - up or down - increase/decrease power
             // press b, factor = 10, else = 1
             if(gamepad1.dpad_up){
-                if(pressed) continue;
+                if(!pressed){
                 pressed = true;
-                spinPower += factor * increment;
+                spinPower += factor * increment;}
             }else if(gamepad1.dpad_down){
-                if(pressed) continue;
+                if(!pressed){
                 pressed = true;
-                spinPower -= factor * increment;
+                spinPower -= factor * increment;}
             }
             // press dpad - right or left - increase/decrease coef
             else if(gamepad1.dpad_right){
-                if(pressed) continue;
+                if(!pressed){
                 pressed = true;
-                accelCoef += factor * increment;
+                accelCoef += factor * increment;}
             }else if(gamepad1.dpad_left){
-                if(pressed) continue;
+                if(!pressed){
                 pressed = true;
-                accelCoef -= factor * increment;
+                accelCoef -= factor * increment;}
             } else{
                 pressed = false;
             }
@@ -82,6 +90,7 @@ public class MotorRotationTickTester extends LinearOpMode {
             telemetry.addData("Current Wrapper Power", wrap.getCurrentWrapperPower());
             telemetry.addData("Motor Ticks", wrap.getCurrentTicks());
             telemetry.addData("Deaccel Coef", wrap.getDeAccelCoef());
+            telemetry.addData("Motor Locking", wrap.isMotorLocked());
             telemetry.update();
 
             sleep(50);

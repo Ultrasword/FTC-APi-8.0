@@ -1,33 +1,76 @@
 package org.firstinspires.ftc.teamcode.system;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.wrappers.MotorRatio;
 import org.firstinspires.ftc.teamcode.wrappers.MotorWrapper;
 
 public class Lift2Motor extends RobotSystem {
 
+
     private MotorWrapper left, right;
     private int maxTicksRotate;
+    private int leewayTicks;
 
-    public Lift2Motor(String m1, String m2, int maxTicksRotate){
+    // for arm position stuff
+    private boolean toggle = false;
+    private int cnt = 0;
+
+    private int restPosition[] = {0,0}, maxPosition[] = {0,0};
+
+    public Lift2Motor(MotorWrapper left, MotorWrapper right, int maxTicksRotate, int leewayTicks){
+        // default value for leeWay ticks is 10; (or should be)
         super();
-        left = new MotorWrapper(OpModeSGlobals.hwMap.get(DcMotor.class, m1), 0.0, MotorWrapper.TICKS_TORQNADO, new MotorRatio());
-        right = new MotorWrapper(OpModeSGlobals.hwMap.get(DcMotor.class, m2), 0.0, MotorWrapper.TICKS_TORQNADO, new MotorRatio());
-        // set max rotation for arms
+        // set motors
+        this.left = left; this.right = right;
+        // set motor directions
+        this.leewayTicks = leewayTicks;
         this.maxTicksRotate = maxTicksRotate;
+        this.left.setDirection(DcMotorSimple.Direction.FORWARD);
+        this.right.setDirection(DcMotorSimple.Direction.REVERSE);
+        // locking
+        this.left.setLockMotor(true);
+        this.right.setLockMotor(true);
+        // notes --
+        /*
+            make sure you set lerping to true
+            and also make sure your power is low for the arm motors
+         */
+        // accounting for deacceleration and cringe...
+        this.restPosition[0] = this.left.getCurrentTicks() + this.leewayTicks;
+        this.restPosition[1] = this.right.getCurrentTicks() - this.leewayTicks;
+        this.maxPosition[0] = this.maxTicksRotate - this.leewayTicks;
+        this.maxPosition[1] = -this.maxTicksRotate + this.leewayTicks;
     }
 
     @Override
     public void update() {
-        // check if we need to spin
-        if(OpModeSGlobals.gamepad1.y){
-            // set rotating stuff
+        if(OpModeSGlobals.gamepad1.x){
+            if(!toggle){
+                toggle = true;
 
+                cnt ++;
+                if(cnt%2 != 0){
+                    left.setTargetPosition(maxPosition[0]);
+                    right.setTargetPosition(maxPosition[1]);
+                }else{
+                    left.setTargetPosition(restPosition[0]);
+                    right.setTargetPosition(restPosition[1]);
+                }
+            }
         }
+
         // update motorwrappers
-        left.update(); right.update();
+        left.update();
+        right.update();
 
     }
 
+    @Override
+    public void updateTelemetry(Telemetry telemetry) {
+        telemetry.addData("Current Arm Position: ", String.format("%d, %d", left.getCurrentTicks(), right.getCurrentTicks()));
+        telemetry.addData("Target Arm Position: ", String.format("%d, %d", left.getTargetPosition(), right.getTargetPosition()));
+    }
 }

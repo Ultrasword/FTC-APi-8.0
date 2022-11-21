@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.checkerframework.checker.index.qual.LTEqLengthOf;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.wrappers.OpModeWrapper;
 
 public class OpModeSGlobals {
 
@@ -14,9 +15,10 @@ public class OpModeSGlobals {
     public static Gamepad gamepad1, gamepad2;
     public static HardwareMap hwMap;
 
-    public static double DRIVETRAIN_WHEEL_DIAMETER_INCHES = 3.0;
+    public static double DRIVETRAIN_WHEEL_DIAMETER_INCHES = 3.0,
+                        ARMDISTANCE_THING = 0.0;
 
-    public static void initOpMode(LinearOpMode mode){
+    public static void initOpMode(OpModeWrapper mode){
         opmode = mode;
         telemetry = mode.telemetry;
         gamepad1 = mode.gamepad1;

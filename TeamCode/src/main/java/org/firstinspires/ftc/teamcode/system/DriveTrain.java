@@ -22,21 +22,15 @@ public class DriveTrain extends RobotSystem {
     private IMUWrapper imuWrapper;
 
 
-    public DriveTrain(String fl, String fr, String bl, String br) {
-        this.fl = new MotorWrapper(OpModeSGlobals.opmode.hardwareMap.get(DcMotor.class, fl), OpModeSGlobals.DRIVETRAIN_WHEEL_DIAMETER_INCHES,
-                    MotorWrapper.TICKS_HD_HEX_MOTOR_20_1, new MotorRatio());
-        this.fr = new MotorWrapper(OpModeSGlobals.opmode.hardwareMap.get(DcMotor.class, fr), OpModeSGlobals.DRIVETRAIN_WHEEL_DIAMETER_INCHES,
-                MotorWrapper.TICKS_HD_HEX_MOTOR_20_1, new MotorRatio());
-        this.bl = new MotorWrapper(OpModeSGlobals.opmode.hardwareMap.get(DcMotor.class, bl), OpModeSGlobals.DRIVETRAIN_WHEEL_DIAMETER_INCHES,
-                MotorWrapper.TICKS_HD_HEX_MOTOR_20_1, new MotorRatio());
-        this.br = new MotorWrapper(OpModeSGlobals.opmode.hardwareMap.get(DcMotor.class, br), OpModeSGlobals.DRIVETRAIN_WHEEL_DIAMETER_INCHES,
-                MotorWrapper.TICKS_HD_HEX_MOTOR_20_1, new MotorRatio());
+    public DriveTrain(MotorWrapper fl, MotorWrapper fr, MotorWrapper bl, MotorWrapper br) {
+        this.fl = fl; this.fr = fr; this.bl = bl; this.br = br;
 
         // reverse right side motors for positive movement on both sides
         this.fr.setDirection(DcMotorSimple.Direction.REVERSE);
         this.br.setDirection(DcMotorSimple.Direction.REVERSE);
 
         imuWrapper = new IMUWrapper("imu");
+        // setup imu stuffs?
     }
 
     @Override
@@ -76,12 +70,8 @@ public class DriveTrain extends RobotSystem {
 
     @Override
     public void updateTelemetry(Telemetry telemetry){
-        telemetry.addData("Power", "");
-        telemetry.addData("FL", fl.getPower());
-        telemetry.addData("FR", fr.getPower());
-        telemetry.addData("BL", bl.getPower());
-        telemetry.addData("BR", br.getPower());
-        telemetry.addData("Values", String.format("x = %.2f | y = %.2f | rx = %.2f", x, y, rx));
+        telemetry.addData("Motor Power", String.format("fl: %.2f | fr: %.2f | bl: %.2f | br: %.2f", fl.getCurrentMotorPower(),
+                                    fr.getCurrentMotorPower(), bl.getCurrentMotorPower(), br.getCurrentMotorPower()));
     }
 
 

@@ -8,8 +8,6 @@ public abstract class RobotSystem {
 
     public abstract void update();
 
-    public void updateTelemetry(Telemetry telemetry){
-
-    }
+    public abstract void updateTelemetry(Telemetry telemetry);
 
 }
