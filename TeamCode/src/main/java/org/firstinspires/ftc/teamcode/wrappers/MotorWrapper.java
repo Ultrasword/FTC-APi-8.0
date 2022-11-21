@@ -38,7 +38,6 @@ public class MotorWrapper {
     private double deaccelerationCoef = DEF_COEF;
     private boolean lerping = false, lockMotor = false;
 
-
     // -------------------------------------------------- //
     // code
 
@@ -52,16 +51,14 @@ public class MotorWrapper {
         this.motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
-    public void update()
-    {
+    public void update() {
         int pastTicks = currentTicks;
         currentTicks = getCurrentTicks();
         deltaTicks = currentTicks - pastTicks;
         // check which runmode and then run motor code -- is bad -- big sad
-        if (ENCODERMODE == currentRunMode) {
+        if (ENCODERMODE == currentRunMode)
             // encoder runmode
             updateTarget();
-        }
         // make sure it doesnt overflow -- cap to 4 decimal places
         if(lerping) cPower = (double)Math.round(RobotMath.lerp(cPower, mPower, deaccelerationCoef) * 10000.0) / 10000.0;
         motor.setPower(cPower);
@@ -83,8 +80,7 @@ public class MotorWrapper {
             // move backward
             setPower(-mTargetPower);
         }else{
-            if(lockMotor) setPower(0.001);
-            else setPower(0);
+            if(!lockMotor) setPower(0);
             hasTarget = false;
             reachedTarget = true;
         }
@@ -185,6 +181,9 @@ public class MotorWrapper {
 
     public void setMotorLocking(boolean locking){
         lockMotor = locking;
+        if(locking)
+        this.motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        else this.motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.UNKNOWN);
     }
 
     public boolean isMotorLocked(){

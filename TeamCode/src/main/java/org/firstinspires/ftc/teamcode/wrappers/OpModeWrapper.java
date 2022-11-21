@@ -37,7 +37,6 @@ public abstract class OpModeWrapper extends LinearOpMode {
             sleep(5);
 
         }
-
     }
 
     public <T extends RobotSystem> void addSystem(String name, T system){
