@@ -31,8 +31,8 @@ public class Lift2Motor extends RobotSystem {
         this.left.setDirection(DcMotorSimple.Direction.FORWARD);
         this.right.setDirection(DcMotorSimple.Direction.REVERSE);
         // locking
-        this.left.setMotorLocking(true);
-        this.right.setMotorLocking(true);
+        this.left.setLockMotor(true);
+        this.right.setLockMotor(true);
         // notes --
         /*
             make sure you set lerping to true

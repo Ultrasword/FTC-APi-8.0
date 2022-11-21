@@ -80,7 +80,6 @@ public class MotorWrapper {
             // move backward
             setPower(-mTargetPower);
         }else{
-            if(!lockMotor) setPower(0);
             hasTarget = false;
             reachedTarget = true;
         }
@@ -88,7 +87,7 @@ public class MotorWrapper {
 
     public void setRunMode(int mode){
         if(mode != 0 && mode != 1) currentRunMode = POWERMODE;
-        currentRunMode = mode;
+        else currentRunMode = mode;
     }
 
     public DcMotor getMotor(){
@@ -141,6 +140,7 @@ public class MotorWrapper {
         startPos = getCurrentTicks();
         // set ftc api target
         motor.setTargetPosition(targetPos);
+        motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
     public void setTargetRelative(int relative){
@@ -179,14 +179,14 @@ public class MotorWrapper {
         return lerping;
     }
 
-    public void setMotorLocking(boolean locking){
-        lockMotor = locking;
-        if(locking)
-        this.motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        else this.motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.UNKNOWN);
+    public void setLockMotor(boolean locking){
+        this.lockMotor = locking;
+        if (locking) this.motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        else this.motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
     }
 
     public boolean isMotorLocked(){
-        return lockMotor;
+        return this.lockMotor;
     }
+
 }

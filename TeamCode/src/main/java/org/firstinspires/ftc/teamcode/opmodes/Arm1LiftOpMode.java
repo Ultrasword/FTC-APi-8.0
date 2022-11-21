@@ -24,7 +24,7 @@ public class Arm1LiftOpMode extends LinearOpMode {
         left.setTargetPower(0.2);
         left.setLerping(true);
         left.setDirection(DcMotorSimple.Direction.FORWARD);
-        left.setMotorLocking(true);
+//        left.setMotorLocking(false);
 
         left.setRunMode(MotorWrapper.ENCODERMODE);
 

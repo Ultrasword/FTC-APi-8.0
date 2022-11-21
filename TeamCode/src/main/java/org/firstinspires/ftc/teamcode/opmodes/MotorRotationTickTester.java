@@ -30,7 +30,7 @@ public class MotorRotationTickTester extends LinearOpMode {
             if (gamepad1.right_trigger > 0){
                 if (!tpressed) {
                     tpressed = true;
-                    wrap.setMotorLocking(!wrap.isMotorLocked());
+                    wrap.setLockMotor(!wrap.isMotorLocked());
                 }
             }else{
                 tpressed = false;
