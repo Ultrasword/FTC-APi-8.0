@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.wrappers;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.system.Clock;
+import org.firstinspires.ftc.teamcode.system.OpModeSGlobals;
 import org.firstinspires.ftc.teamcode.system.RobotSystem;
 
 import java.util.HashMap;
@@ -16,7 +17,8 @@ public abstract class OpModeWrapper extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException{
-
+        OpModeSGlobals.initOpMode(this);
+        initOpMode();
         telemetry.addData("We waiting for the gogo!", "");
         telemetry.update();
         waitForStart();

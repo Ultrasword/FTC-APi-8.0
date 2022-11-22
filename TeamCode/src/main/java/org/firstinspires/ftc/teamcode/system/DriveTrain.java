@@ -44,17 +44,18 @@ public class DriveTrain extends RobotSystem {
         // dn to ensure constant power ratios
         dn = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
 
-        double flp, frp, blp, brp;
-        flp = (y + x - rx) / dn;
-        frp = (y - x + rx) / dn;
-        blp = (y - x - rx) / dn;
-        brp = (y + x + rx) / dn;
-
         // get imu orientations
         double yaw = imuWrapper.getYaw();
         // if yaw < 0; we want spin right
         // if yaw > 0; we want spin left
         // this depends on if we need to orient
+        // create a function that determines power offset when moving
+
+        double flp, frp, blp, brp;
+        flp = (y + x - rx) / dn;
+        frp = (y - x + rx) / dn;
+        blp = (y - x - rx) / dn;
+        brp = (y + x + rx) / dn;
 
         fl.setPower(flp);
         fr.setPower(frp);

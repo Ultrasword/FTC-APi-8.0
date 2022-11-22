@@ -19,7 +19,6 @@ public class FinalTeleOp extends OpModeWrapper {
 
     @Override
     public void initOpMode() {
-        OpModeSGlobals.initOpMode(this);
         // drivetrain
         DriveTrain driveTrain = new DriveTrain(new MotorWrapper(OpModeSGlobals.opmode.hardwareMap.get(DcMotor.class, "fl"), OpModeSGlobals.DRIVETRAIN_WHEEL_DIAMETER_INCHES,
                 MotorWrapper.TICKS_HD_HEX_MOTOR_20_1, new MotorRatio()), new MotorWrapper(OpModeSGlobals.opmode.hardwareMap.get(DcMotor.class, "fr"), OpModeSGlobals.DRIVETRAIN_WHEEL_DIAMETER_INCHES,
@@ -33,7 +32,7 @@ public class FinalTeleOp extends OpModeWrapper {
                 new MotorWrapper(OpModeSGlobals.opmode.hardwareMap.get(DcMotor.class, "arr"),
                         OpModeSGlobals.ARMDISTANCE_THING,
                         MotorWrapper.TICKS_TORQNADO, new MotorRatio()),
-                100, 10);
+                MotorWrapper.TICKS_TORQNADO/4, 0, 0.1);
         // intake
         Intake intake = new Intake(OpModeSGlobals.hwMap.get(CRServoImplEx.class, "inS"));
 
