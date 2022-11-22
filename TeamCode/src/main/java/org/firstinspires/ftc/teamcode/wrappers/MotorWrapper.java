@@ -61,6 +61,7 @@ public class MotorWrapper {
             updateTarget();
         // make sure it doesnt overflow -- cap to 4 decimal places
         if(lerping) cPower = (double)Math.round(RobotMath.lerp(cPower, mPower, deaccelerationCoef) * 10000.0) / 10000.0;
+        else cPower = mPower;
         motor.setPower(cPower);
     }
 

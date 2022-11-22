@@ -10,8 +10,6 @@ import org.firstinspires.ftc.teamcode.wrappers.MotorRatio;
 import org.firstinspires.ftc.teamcode.wrappers.MotorWrapper;
 
 @TeleOp(name="2ArmTestMode")
-
-
 public class Arm2LiftOpMode extends LinearOpMode {
 
     @Override
