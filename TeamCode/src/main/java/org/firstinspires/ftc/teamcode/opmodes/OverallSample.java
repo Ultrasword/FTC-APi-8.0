@@ -72,8 +72,5 @@ public class OverallSample extends LinearOpMode {
             telemetry.update();
             sleep(15);
         }
-
-
-
     }
 }
