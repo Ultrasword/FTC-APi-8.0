@@ -32,7 +32,6 @@ public class TestOpMode extends LinearOpMode {
 
 //        int loc = motor.getCurrentPosition();
 
-
         waitForStart();
 
         while (opModeIsActive()) {
