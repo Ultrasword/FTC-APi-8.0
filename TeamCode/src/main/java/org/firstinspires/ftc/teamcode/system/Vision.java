@@ -36,8 +36,8 @@ public class Vision extends OpenCvPipeline {
             upper_yellow_bounds  = new Scalar(255, 255, 130, 255),
             lower_cyan_bounds    = new Scalar(0, 170, 170, 255),
             upper_cyan_bounds    = new Scalar(150, 255, 255, 255),
-            lower_magenta_bounds = new Scalar(170, 0, 170, 255),
-            upper_magenta_bounds = new Scalar(255, 60, 255, 255);
+            lower_magenta_bounds = new Scalar(152, 18, 86, 255),
+            upper_magenta_bounds = new Scalar(255, 95, 175, 255);
 
     // Color definitions
     private final Scalar
@@ -96,7 +96,7 @@ public class Vision extends OpenCvPipeline {
                         YELLOW,
                         2
                 );
-                funny = false;
+                //funny = false;
             } else if (maxPercent == cyaPercent) {
                 position = ParkingPosition.CENTER;
                 Imgproc.rectangle(
@@ -106,7 +106,7 @@ public class Vision extends OpenCvPipeline {
                         CYAN,
                         2
                 );
-                funny = false;
+                //funny = false;
             } else if (maxPercent == magPercent) {
                 position = ParkingPosition.RIGHT;
                 Imgproc.rectangle(
@@ -116,7 +116,7 @@ public class Vision extends OpenCvPipeline {
                         MAGENTA,
                         2
                 );
-                funny = false;
+                //funny = false;
             }
 
             // Memory cleanup

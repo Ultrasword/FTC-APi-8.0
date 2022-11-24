@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.system;
 
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
-
 import com.qualcomm.robotcore.hardware.*;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -26,10 +24,15 @@ public class Chassis extends RobotSystem {
     private static double integral = 0f;
 
     public Chassis(){
+        HardwareMap hardwareMap = OpModeSGlobals.hwMap;
         fl = new MotorWrapper(hardwareMap.get(DcMotor.class, "fl"), 2.0, 0, new MotorRatio());
         fr = new MotorWrapper(hardwareMap.get(DcMotor.class, "fr"), 2.0, 0, new MotorRatio());
         bl = new MotorWrapper(hardwareMap.get(DcMotor.class, "bl"), 2.0, 0, new MotorRatio());
         br = new MotorWrapper(hardwareMap.get(DcMotor.class, "br"), 2.0, 0, new MotorRatio());
+        fl.setRunMode(MotorWrapper.ENCODERMODE);
+        fr.setRunMode(MotorWrapper.ENCODERMODE);
+        bl.setRunMode(MotorWrapper.ENCODERMODE);
+        br.setRunMode(MotorWrapper.ENCODERMODE);
     }
 
     @Override
@@ -76,26 +79,34 @@ public class Chassis extends RobotSystem {
     public double checkDistance(MotorWrapper motor){return motor.getTotalDistanceTravelled();}
 
     public void goStraight(double distance){
-        // convert
-        double leftDistance = (this.checkDistance(this.fl) + this.checkDistance(this.bl))/2;
-        double rightDistance = (this.checkDistance(this.fr) + this.checkDistance(this.br))/2;
+        this.fl.setTargetDistance(distance);
+        this.fr.setTargetDistance(distance);
+        this.bl.setTargetDistance(distance);
+        this.br.setTargetDistance(distance);
 
-        double averageDistance = (leftDistance + rightDistance) / 2;
-
-        while(averageDistance != distance){
-            double left = this.PID(leftDistance, distance, 0.1f, 0.1f, 0.1f);
-            double right = this.PID(rightDistance, distance, 0.1f, 0.1f, 0.1f);
-            this.move(left, right);
-
+        while(!this.fl.getReachedTarget()){
             this.update();
-
-            // Update
-            leftDistance = (this.checkDistance(this.fl) + this.checkDistance(this.bl))/2;
-            rightDistance = (this.checkDistance(this.fr) + this.checkDistance(this.br))/2;
-
-            averageDistance = (leftDistance + rightDistance) / 2;
         }
-        move(0, 0);
+        // convert
+//        double leftDistance = (this.checkDistance(this.fl) + this.checkDistance(this.bl))/2;
+//        double rightDistance = (this.checkDistance(this.fr) + this.checkDistance(this.br))/2;
+//
+//        double averageDistance = (leftDistance + rightDistance) / 2;
+//
+//        while(averageDistance != distance){
+//            double left = this.PID(leftDistance, distance, 0.1f, 0.1f, 0.1f);
+//            double right = this.PID(rightDistance, distance, 0.1f, 0.1f, 0.1f);
+//            this.move(left, right);
+//
+//            this.update();
+//
+//            // Update
+//            leftDistance = (this.checkDistance(this.fl) + this.checkDistance(this.bl))/2;
+//            rightDistance = (this.checkDistance(this.fr) + this.checkDistance(this.br))/2;
+//
+//            averageDistance = (leftDistance + rightDistance) / 2;
+//        }
+//        move(0, 0);
         this.update();
     }
 

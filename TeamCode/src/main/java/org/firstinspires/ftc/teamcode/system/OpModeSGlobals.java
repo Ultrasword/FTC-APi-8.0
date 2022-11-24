@@ -18,6 +18,14 @@ public class OpModeSGlobals {
     public static double DRIVETRAIN_WHEEL_DIAMETER_INCHES = 3.0,
                         ARMDISTANCE_THING = 0.0;
 
+    public static void initOpMode(LinearOpMode mode){
+        opmode = mode;
+        telemetry = mode.telemetry;
+        gamepad1 = mode.gamepad1;
+        gamepad2 = mode.gamepad2;
+        hwMap = mode.hardwareMap;
+    }
+
     public static void initOpMode(OpModeWrapper mode){
         opmode = mode;
         telemetry = mode.telemetry;

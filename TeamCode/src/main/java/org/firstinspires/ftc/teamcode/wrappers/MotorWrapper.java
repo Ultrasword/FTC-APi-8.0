@@ -22,6 +22,8 @@ public class MotorWrapper {
 
     public static final double DEF_COEF = 0.5;
 
+    public static final double TETRIX_WHEEL_DIAMETER = 3.9;
+
     // -------------------------------------------------- //
     // variables
     public MotorRatio motorRatio;
@@ -114,6 +116,12 @@ public class MotorWrapper {
 
     public double getTotalDistanceTravelled(){
         return wheelDiameter * PI * ((double) motorRatio.findFinalRotation(currentTicks) / (double) (ticksPerSpin));
+    }
+
+    public void setTargetDistance(double inches){
+        double circ = wheelDiameter * PI * 2;
+        double targetTicks = (inches / circ) * ticksPerSpin;
+        setTargetRelative((int)targetTicks);
     }
 
     public void setPower(double power){
