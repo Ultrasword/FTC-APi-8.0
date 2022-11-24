@@ -38,6 +38,8 @@ public class MotorWrapper {
     private double deaccelerationCoef = DEF_COEF;
     private boolean lerping = false, lockMotor = false;
 
+    private PID pid;
+
     // -------------------------------------------------- //
     // code
 
@@ -49,6 +51,7 @@ public class MotorWrapper {
         // set motor to use encoders
         this.motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         this.motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        this.pid = new PID(1.0, 1.0, 1.0);
     }
 
     public void update() {
@@ -76,9 +79,11 @@ public class MotorWrapper {
         // move motor to position
         if(targetPos > startPos && currentTicks <= targetPos){
             // move forward
+//            setPower(pid.calculatePower(currentTicks, targetPos));
             setPower(mTargetPower);
         }else if(targetPos < startPos && currentTicks >= targetPos) {
             // move backward
+//            setPower(pid.calculatePower(currentTicks, targetPos));
             setPower(-mTargetPower);
         }else{
             hasTarget = false;
