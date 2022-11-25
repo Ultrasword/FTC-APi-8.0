@@ -19,7 +19,6 @@ public class ArmMotorTestOpMode extends LinearOpMode {
         wrap1.setDeAccelCoef(0.5);
         wrap2.setDeAccelCoef(0.5);
 
-
         waitForStart();
 
         double spinPower = 0.5;

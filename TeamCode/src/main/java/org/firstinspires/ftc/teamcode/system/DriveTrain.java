@@ -35,6 +35,8 @@ public class DriveTrain extends RobotSystem {
 
     @Override
     public void update() {
+        // slow or fast mode stuff
+
         // mecanum drive vroom
         // two stick drive - benefits of only controlling one thing at a time
         y = -OpModeSGlobals.gamepad1.left_stick_y;
@@ -56,6 +58,14 @@ public class DriveTrain extends RobotSystem {
         frp = (y - x + rx) / dn;
         blp = (y - x - rx) / dn;
         brp = (y + x + rx) / dn;
+
+        // the coef :)
+        if (OpModeSGlobals.slowMode){
+            flp *= OpModeSGlobals.slowModeCoef;
+            frp *= OpModeSGlobals.slowModeCoef;
+            blp *= OpModeSGlobals.slowModeCoef;
+            brp *= OpModeSGlobals.slowModeCoef;
+        }
 
         fl.setPower(flp);
         fr.setPower(frp);
