@@ -60,10 +60,9 @@ public class Vision extends OpenCvPipeline {
 
     // Running variable storing the parking position
     private volatile ParkingPosition position = ParkingPosition.NONE;
-    boolean funny = true;
     @Override
     public Mat processFrame(Mat input) {
-        if(funny){
+        if(position == ParkingPosition.NONE){
             // Noise reduction
             Imgproc.blur(input, blurredMat, new Size(5, 5));
             blurredMat = blurredMat.submat(new Rect(sleeve_pointA, sleeve_pointB));
@@ -96,7 +95,6 @@ public class Vision extends OpenCvPipeline {
                         YELLOW,
                         2
                 );
-                //funny = false;
             } else if (maxPercent == cyaPercent) {
                 position = ParkingPosition.CENTER;
                 Imgproc.rectangle(
@@ -106,7 +104,6 @@ public class Vision extends OpenCvPipeline {
                         CYAN,
                         2
                 );
-                //funny = false;
             } else if (maxPercent == magPercent) {
                 position = ParkingPosition.RIGHT;
                 Imgproc.rectangle(
@@ -116,7 +113,6 @@ public class Vision extends OpenCvPipeline {
                         MAGENTA,
                         2
                 );
-                //funny = false;
             }
 
             // Memory cleanup
