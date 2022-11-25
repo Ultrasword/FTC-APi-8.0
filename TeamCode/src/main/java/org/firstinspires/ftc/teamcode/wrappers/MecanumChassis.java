@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.opmodes;
+package org.firstinspires.ftc.teamcode.wrappers;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
@@ -6,14 +6,16 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
+
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 public class MecanumChassis {
-    public DcMotor fr, fl, br, bl, left_arm, right_arm;
-    public CRServo intake;
+    public DcMotor fr, fl, br, bl, leftArm, rightArm;
+    public Servo intake;
     public BNO055IMU imu;
     HardwareMap map;
     public MecanumChassis(HardwareMap hwm) {
@@ -24,22 +26,22 @@ public class MecanumChassis {
         params.loggingEnabled = true;
         params.loggingTag = "IMU";
         params.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
-        imu = map.get(BNO055IMU.class, "imu");
-        imu.initialize(params);
+//        imu = map.get(BNO055IMU.class, "imu");
+//        imu.initialize(params);
 
-        fl = map.get(DcMotor.class, "fl");
-        bl = map.get(DcMotor.class, "bl");
-        fr = map.get(DcMotor.class, "fr");
-        br = map.get(DcMotor.class, "br");
-        left_arm = map.get(DcMotor.class, "arl");
-        right_arm = map.get(DcMotor.class, "arr");
-        intake = map.get(CRServo.class, "intake");
+//        fl = map.get(DcMotor.class, "fl");
+//        bl = map.get(DcMotor.class, "bl");
+//        fr = map.get(DcMotor.class, "fr");
+//        br = map.get(DcMotor.class, "br");
+//        leftArm = map.get(DcMotor.class, "arl");
+//        rightArm = map.get(DcMotor.class, "arr");
+        intake = map.get(Servo.class, "test");
 
 
 //        fr.setDirection(DcMotorSimple.Direction.REVERSE);
 //        br.setDirection(DcMotorSimple.Direction.REVERSE);
-        right_arm.setDirection(DcMotorSimple.Direction.REVERSE);
-
+//        rightArm.setDirection(DcMotorSimple.Direction.REVERSE);
+//
 //        fl.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 //        fr.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 //        bl.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
