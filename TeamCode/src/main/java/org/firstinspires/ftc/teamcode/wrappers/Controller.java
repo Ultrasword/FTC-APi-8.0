@@ -9,12 +9,10 @@ public class Controller {
     private final double WHEEL_ANGLE = 658.0/892.0;
     private final double ROBOT_LENGTH = 0.114;
     private final double ROBOT_WIDTH = 0.119;
-    private final double ACCELERATE = 1.8;
-    private final double DECELERATE = 1.2;
+    private final double ACCELERATE = 0.5;
     private final double ANGLE_ACCELERATE = 20;
-    private final double ANGLE_DECELERATE = 15;
 
-    private final double BRAKE_DISTANCE = 1.4;
+    private final double BRAKE_DISTANCE = 0.7;
     private final double BRAKE_DISTANCE_RATIO = (MAX_VELOCITY-MIN_VELOCITY)/BRAKE_DISTANCE;
     private final double BRAKE_ANGLE = 90;
     private final double BRAKE_ANGLE_RATIO = (ANGLE_MAX_VELOCITY-ANGLE_MIN_VELOCITY)/BRAKE_ANGLE;

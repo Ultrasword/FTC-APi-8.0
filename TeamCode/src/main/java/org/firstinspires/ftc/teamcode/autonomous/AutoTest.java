@@ -19,17 +19,33 @@ public class AutoTest extends LinearOpMode {
         robot = new MecanumChassis(hardwareMap);
         pos = new Position(robot);
         control = new Controller(robot, pos);
+        robot.intake.setPosition(0.55);
         waitForStart();
+        robot.intake.setPosition(0.75);
+        sleep(500);
+        goToTiming(0, 1, 0, 1.3, 120, 0.04, 2, true);
         setArmPosition(300, 0.3);
-        goToTiming(0,1.3,90, 1, 80, 0.04, 2, true);
-        goToTiming(0, 0, -45, 1, 70, 0.04, 2, true);
-
+        goToTiming(0,1,90, 1.3, 120, 0.04, 2, true);
+        robot.intake.setPosition(0.55);
+        sleep(300);
+        goToTiming(0,1,0,1.3,120,0.04,2,true);
+        setArmPosition(10,0.2);
+        goToTiming(0,0,0,1.3,120,0.04,2,true);
     }
     private void goToTiming(double x, double y, double angle, double speed, double angleSpeed, double distanceDeadzone, double angleDeadzone, boolean velocityControl) {
         control.goTo(x, y, angle, speed, angleSpeed, distanceDeadzone, angleDeadzone, velocityControl);
         while (!control.finished) sleep(10);
     }
     private void setArmPosition(int pos, double speed) {
+        robot.leftArm.setTargetPosition(pos);
+        robot.rightArm.setTargetPosition(pos);
+        robot.leftArm.setPower(speed);
+        robot.rightArm.setPower(speed);
+        robot.leftArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.rightArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
+    private void setArmPositionTiming(int pos, double speed, int delay) {
+        sleep(delay);
         robot.leftArm.setTargetPosition(pos);
         robot.rightArm.setTargetPosition(pos);
         robot.leftArm.setPower(speed);

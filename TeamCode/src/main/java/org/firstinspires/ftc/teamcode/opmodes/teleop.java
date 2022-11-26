@@ -30,12 +30,17 @@ public class teleop extends LinearOpMode {
             robot.br.setPower((ly-lx+0.7*rx)*dn);
             robot.bl.setPower((ly+lx-0.7*rx)*dn);
 
-            if (Math.abs(ry)>0.1) {
-                robot.rightArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                robot.leftArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                robot.rightArm.setPower(ry*0.6);
-                robot.leftArm.setPower(ry*0.6);
-            }
+//            if (Math.abs(ry)>0.1) {
+//                robot.rightArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//                robot.leftArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//                robot.rightArm.setPower(-ry*0.1);
+//                robot.leftArm.setPower(-ry*0.1);
+//            } else {
+//                robot.rightArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//                robot.leftArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//                robot.rightArm.setPower(0);
+//                robot.leftArm.setPower(0);
+//            }
 
             if (gamepad2.dpad_up) setArmPosition(520, 0.3);
             else if (gamepad2.b) setArmPosition(365, 0.3);
