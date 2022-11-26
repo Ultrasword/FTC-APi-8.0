@@ -32,7 +32,7 @@ public class FinalTeleOp extends OpModeWrapper {
                 new MotorWrapper(OpModeSGlobals.opmode.hardwareMap.get(DcMotor.class, "arr"),
                         OpModeSGlobals.ARMDISTANCE_THING,
                         MotorWrapper.TICKS_TORQNADO, new MotorRatio()),
-                MotorWrapper.TICKS_TORQNADO/4, 0, 0.1);
+                500, 0, 0.1);
         // intake
         Intake intake = new Intake(OpModeSGlobals.hwMap.get(CRServoImplEx.class, "inS"));
 

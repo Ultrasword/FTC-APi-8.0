@@ -29,7 +29,7 @@ public class DriveTrain extends RobotSystem {
         this.fr.setDirection(DcMotorSimple.Direction.REVERSE);
         this.br.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        imuWrapper = new IMUWrapper("imu");
+//        imuWrapper = new IMUWrapper("imu");
         // setup imu stuffs?
     }
 
@@ -47,7 +47,7 @@ public class DriveTrain extends RobotSystem {
         dn = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
 
         // get imu orientations
-        double yaw = imuWrapper.getYaw();
+//        double yaw = imuWrapper.getYaw();
         // if yaw < 0; we want spin right
         // if yaw > 0; we want spin left
         // this depends on if we need to orient
