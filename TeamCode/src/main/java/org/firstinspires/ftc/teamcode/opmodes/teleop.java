@@ -20,6 +20,7 @@ public class teleop extends LinearOpMode {
         setArmPosition(20, 0.3);
         while (opModeIsActive()) {
             telemetry.addData("Servo Position ", robot.intake.getPosition());
+            telemetry.addData("Arm Target", robot.leftArm.getTargetPosition());
             telemetry.addData("Arm Position ", robot.leftArm.getCurrentPosition());
             telemetry.addData("Position Data", String.format("%.2f %.2f %.2f",pos.x,pos.y,pos.angle));
             telemetry.update();
@@ -46,12 +47,22 @@ public class teleop extends LinearOpMode {
             else if (gamepad2.b) setArmPosition(365, 0.3);
             else if (gamepad2.y) setArmPosition(260, 0.3);
             else if (gamepad2.x) setArmPosition(70, 0.3);
-            else if (gamepad2.dpad_down) setArmPosition(20, 0.2);
+            else if (gamepad2.dpad_down) setArmPosition(5, 0.2);
+            // right trigger and bumper for manual arm move -- idk if this works tho
+            else if (gamepad2.left_stick_y > 0) setArmPosition(clamp(0, 520, robot.leftArm.getCurrentPosition() + 20), 0.3);
+            else if(gamepad2.left_stick_y < 0) setArmPosition(clamp(0, 520, robot.leftArm.getCurrentPosition() - 20), 0.4);
+
             if (gamepad2.left_bumper) robot.intake.setPosition(0.55);
             else robot.intake.setPosition(0.75);
 
 
         }
+    }
+    public double clamp(double min, double max, double val){
+        if(val<min) return min; else if(val > max) return max; return val;
+    }
+    public int clamp(int min, int max, int val){
+        if(val<min) return min; else if(val > max) return max; return val;
     }
     private void setArmPosition(int pos, double speed) {
         robot.leftArm.setTargetPosition(pos);
