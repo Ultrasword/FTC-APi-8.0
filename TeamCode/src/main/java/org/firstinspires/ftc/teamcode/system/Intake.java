@@ -9,7 +9,7 @@ public class Intake extends RobotSystem {
 
     private Servo servo;
 
-    public Intake(CRServoImplEx servoImplEx){
+    public Intake(Servo servo){
         // uses continuous rotation servos :) -- only one to manage the intake for now
         this.servo = servo;
     }

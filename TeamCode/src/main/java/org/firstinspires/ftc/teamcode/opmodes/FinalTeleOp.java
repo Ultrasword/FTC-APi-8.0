@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServoImplEx;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.system.Clock;
 import org.firstinspires.ftc.teamcode.system.DriveTrain;
@@ -19,6 +20,19 @@ public class FinalTeleOp extends OpModeWrapper {
 
     @Override
     public void initOpMode() {
+        /*
+            Control Hub:
+                DriveTrain | fl, fr, bl, br : DcMotor
+
+            Expansion Hub:
+                2MotorLift | arr, arl : DcMotor
+                Intake     | test : Servo
+
+            Global Variables:
+                slowmode: bool
+
+
+         */
         // drivetrain
         DriveTrain driveTrain = new DriveTrain(new MotorWrapper(OpModeSGlobals.opmode.hardwareMap.get(DcMotor.class, "fl"), OpModeSGlobals.DRIVETRAIN_WHEEL_DIAMETER_INCHES,
                 MotorWrapper.TICKS_HD_HEX_MOTOR_20_1, new MotorRatio()), new MotorWrapper(OpModeSGlobals.opmode.hardwareMap.get(DcMotor.class, "fr"), OpModeSGlobals.DRIVETRAIN_WHEEL_DIAMETER_INCHES,
@@ -34,7 +48,7 @@ public class FinalTeleOp extends OpModeWrapper {
                         MotorWrapper.TICKS_TORQNADO, new MotorRatio()),
                 500, 0, 0.1);
         // intake
-        Intake intake = new Intake(OpModeSGlobals.hwMap.get(CRServoImplEx.class, "inS"));
+        Intake intake = new Intake(OpModeSGlobals.hwMap.get(Servo.class, "intake"));
 
         // adding systems
         addSystem("drivetrain", driveTrain);

@@ -48,6 +48,8 @@ public class AutoTest extends LinearOpMode {
             telemetry.update();
         }
 
+
+        // move now
         waitForStart();
 
         while(opModeIsActive()){

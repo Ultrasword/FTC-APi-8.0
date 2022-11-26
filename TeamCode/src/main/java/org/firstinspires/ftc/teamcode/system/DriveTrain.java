@@ -36,6 +36,9 @@ public class DriveTrain extends RobotSystem {
     @Override
     public void update() {
         // slow or fast mode stuff
+        if(OpModeSGlobals.gamepad1.right_trigger>0.1)
+            OpModeSGlobals.slowMode = true;
+        else OpModeSGlobals.slowMode = false;
 
         // mecanum drive vroom
         // two stick drive - benefits of only controlling one thing at a time
