@@ -23,7 +23,7 @@ public class teleop extends LinearOpMode {
             telemetry.addData("Arm Position ", robot.leftArm.getCurrentPosition());
             telemetry.addData("Position Data", String.format("%.2f %.2f %.2f",pos.x,pos.y,pos.angle));
             telemetry.update();
-            double lx = Math.abs(gamepad1.left_stick_x)*gamepad1.left_stick_x, ly = Math.abs(gamepad1.left_stick_y)*gamepad1.left_stick_y, rx = Math.abs(gamepad1.right_stick_x)*gamepad1.right_stick_x, ry = Math.abs(gamepad2.right_stick_y)*gamepad2.right_stick_y;
+            double lx = gamepad1.left_stick_x, ly = gamepad1.left_stick_y, rx = gamepad1.right_stick_x, ry = gamepad2.right_stick_y;
             double dn = 0.8/Math.max(Math.abs(lx)+0.7*Math.abs(rx)+Math.abs(ly),1);
             robot.fr.setPower((ly+lx+0.7*rx)*dn);
             robot.fl.setPower((ly-lx-0.7*rx)*dn);
@@ -44,8 +44,8 @@ public class teleop extends LinearOpMode {
 
             if (gamepad2.dpad_up) setArmPosition(520, 0.3);
             else if (gamepad2.b) setArmPosition(365, 0.3);
-            else if (gamepad2.y) setArmPosition(240, 0.3);
-            else if (gamepad2.x) setArmPosition(50, 0.3);
+            else if (gamepad2.y) setArmPosition(260, 0.3);
+            else if (gamepad2.x) setArmPosition(70, 0.3);
             else if (gamepad2.dpad_down) setArmPosition(20, 0.2);
             if (gamepad2.left_bumper) robot.intake.setPosition(0.55);
             else robot.intake.setPosition(0.75);
