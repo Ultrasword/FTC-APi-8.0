@@ -1,26 +1,35 @@
 package org.firstinspires.ftc.teamcode.wrappers;
 
 public class Controller {
-    private static final double MAX_VELOCITY = 2.6;
-    private static final double WHEEL_ANGLE = Math.tan(35);
-    private static final double ROBOT_LENGTH = 0.5/2;
-    private static final double ROBOT_WIDTH = 0.5/2;
-    private static final double ACCELERATE = 0.4;
-    private static final double DECELERATE = 0.4;
-    private static final double ANGLE_ACCELERATE = 0.4;
-    private static final double ANGLE_DECELERATE = 0.4;
-    private static final double UPPER_BOUND = Math.sqrt(2*ACCELERATE*DECELERATE/(ACCELERATE+DECELERATE));
-    private static final double ANGLE_UPPER_BOUND = Math.sqrt(2*ANGLE_ACCELERATE*ANGLE_DECELERATE/(ANGLE_ACCELERATE+ANGLE_DECELERATE));
+    private final double DEGREES_TO_RADIANS = Math.PI/180f;
+    private final double MAX_VELOCITY = 2.6;
+    private final double MIN_VELOCITY = 0.05;
+    private final double ANGLE_MAX_VELOCITY = 180;
+    private final double ANGLE_MIN_VELOCITY = 2;
+    private final double WHEEL_ANGLE = 658.0/892.0;
+    private final double ROBOT_LENGTH = 0.114;
+    private final double ROBOT_WIDTH = 0.119;
+    private final double ACCELERATE = 1.8;
+    private final double DECELERATE = 1.2;
+    private final double ANGLE_ACCELERATE = 20;
+    private final double ANGLE_DECELERATE = 15;
+
+    private final double BRAKE_DISTANCE = 1.4;
+    private final double BRAKE_DISTANCE_RATIO = (MAX_VELOCITY-MIN_VELOCITY)/BRAKE_DISTANCE;
+    private final double BRAKE_ANGLE = 90;
+    private final double BRAKE_ANGLE_RATIO = (ANGLE_MAX_VELOCITY-ANGLE_MIN_VELOCITY)/BRAKE_ANGLE;
 
     private MecanumChassis robot;
     private Position pos;
     private Controller.ControllerThread controllerThread;
-    private double distance, totalAngle, x, y, angle, speed, angleSpeed, distanceDeadzone, angleDeadzone;
-    private boolean finished = true, velocityControl;
+    private double x, y, angle, speed, angleSpeed, distanceDeadzone, angleDeadzone;
+    public volatile boolean finished = true;
+    private boolean velocityControl;
 
     public Controller(MecanumChassis robot, Position position) {
         this.robot = robot;
         this.pos = position;
+        controllerThread = new ControllerThread();
     }
     public void goTo(double x, double y, double angle, double speed, double angleSpeed, double distanceDeadzone, double angleDeadzone, boolean velocityControl) {
         this.x = x;
@@ -31,7 +40,7 @@ public class Controller {
         this.angleDeadzone = angleDeadzone;
         this.speed = speed;
         this.velocityControl = velocityControl;
-        controllerThread = new ControllerThread();
+        this.finished = false;
         controllerThread.start();
     }
     private double heading(double theta) {
@@ -53,14 +62,10 @@ public class Controller {
         robot.bl.setPower(clipPower(bl));
     }
     private class ControllerThread extends Thread {
-        public ControllerThread() {
-            finished = false;
-        }
+        public ControllerThread() {}
         @Override
         public void run() {
-            double distanceError, previousDistanceError=distance=Math.sqrt((x-pos.x)*(x-pos.x)+(y-pos.y)*(y-pos.y)), angleError, previousAngleError=totalAngle=heading(angle-pos.angle), theta, power, anglePower, vx, vy;
-            speed = Math.min(speed, UPPER_BOUND*Math.sqrt(distance));
-            angleSpeed = Math.min(angleSpeed, ANGLE_UPPER_BOUND*Math.sqrt(Math.abs(totalAngle)));
+            double distanceError, angleError, theta, vx, vy, power, anglePower, prevAnglePower=0, prevPower=0;
             try {
                 while (!isInterrupted() && (!finished)) {
                     distanceError = Math.sqrt((x-pos.x)*(x-pos.x)+(y-pos.y)*(y-pos.y));
@@ -70,25 +75,36 @@ public class Controller {
                         setPower(0,0,0,0);
                     } else {
                         if (velocityControl) {
-                            if (2*ACCELERATE*distanceError<speed*speed) power = Math.sqrt(2*ACCELERATE*distanceError);
-                            else if ((distance-distanceError)*2*ACCELERATE<speed*speed) power = speed;
-                            else power = Math.sqrt(2*(distance-distanceError)*DECELERATE);
-                        } else power = speed;
-                        if (2*ANGLE_ACCELERATE*Math.abs(angleError)<angleSpeed*angleSpeed) anglePower = Math.sqrt(2*ANGLE_ACCELERATE*Math.abs(angleError));
-                        else if (Math.abs(totalAngle-angleError)*2*ANGLE_ACCELERATE<angleSpeed*angleSpeed) anglePower = angleSpeed;
-                        else anglePower = Math.signum(angleError)*Math.sqrt(2*Math.abs(totalAngle-angleError)*ANGLE_DECELERATE);
+                            if (distanceError<(speed-MIN_VELOCITY)/BRAKE_DISTANCE_RATIO)
+                                power = Math.abs(distanceError)*BRAKE_DISTANCE_RATIO+MIN_VELOCITY;
+                            else
+                                power = prevPower+ACCELERATE;
+                            if (power>speed) power = speed;
+                            if (power<MIN_VELOCITY) power = MIN_VELOCITY;
+                            if (Math.abs(angleError)<(angleSpeed-ANGLE_MIN_VELOCITY)/BRAKE_ANGLE_RATIO)
+                                anglePower = Math.signum(angleError)*(Math.abs(angleError)*BRAKE_ANGLE_RATIO+ANGLE_MIN_VELOCITY);
+                            else
+                                anglePower = Math.signum(angleError)*(Math.abs(prevAnglePower)+ANGLE_ACCELERATE);
+                            if (Math.abs(anglePower) > Math.abs(angleSpeed)) anglePower = Math.signum(anglePower) * Math.abs(angleSpeed);
+                            if (Math.abs(anglePower) < ANGLE_MIN_VELOCITY)  anglePower = Math.signum(anglePower) * ANGLE_MIN_VELOCITY;
+                        } else {
+                            power = speed;
+                            anglePower = angleSpeed;
+                        }
+                        prevAnglePower = anglePower;
+                        prevPower = power;
+                        anglePower *= DEGREES_TO_RADIANS*(ROBOT_WIDTH*WHEEL_ANGLE+ROBOT_LENGTH)/WHEEL_ANGLE;
                         theta = Math.atan2(y-pos.y,x-pos.x);
-                        vx = power*Math.sin(theta-pos.angle);
-                        vy = power*Math.cos(theta-pos.angle);
+                        vx = -power*Math.cos(theta-pos.angle*DEGREES_TO_RADIANS);
+                        vy = -power*Math.sin(theta-pos.angle*DEGREES_TO_RADIANS);
                         setPower(
-                            vy-vx/WHEEL_ANGLE-(ROBOT_WIDTH*WHEEL_ANGLE+ROBOT_LENGTH)/WHEEL_ANGLE*anglePower,
-                            vy+vx/WHEEL_ANGLE+(ROBOT_WIDTH*WHEEL_ANGLE+ROBOT_LENGTH)/WHEEL_ANGLE*anglePower,
-                            vy+vx/WHEEL_ANGLE-(ROBOT_WIDTH*WHEEL_ANGLE+ROBOT_LENGTH)/WHEEL_ANGLE*anglePower,
-                            vy-vx/WHEEL_ANGLE+(ROBOT_WIDTH*WHEEL_ANGLE+ROBOT_LENGTH)/WHEEL_ANGLE*anglePower
+                            vy-vx/WHEEL_ANGLE+anglePower,
+                            vy+vx/WHEEL_ANGLE-anglePower,
+                            vy+vx/WHEEL_ANGLE+anglePower,
+                            vy-vx/WHEEL_ANGLE-anglePower
                         );
+                        Thread.sleep(10);
                     }
-                    previousDistanceError=distanceError;
-                    previousAngleError=angleError;
                 }
             } catch (Exception e) {}
         }
