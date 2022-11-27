@@ -12,6 +12,8 @@ public class teleop extends LinearOpMode {
     MecanumChassis robot;
     Position pos;
 
+    double coefficient = 0.65;
+
     @Override
     public void runOpMode() throws InterruptedException {
         robot = new MecanumChassis(hardwareMap);
@@ -26,10 +28,10 @@ public class teleop extends LinearOpMode {
             telemetry.update();
             double lx = gamepad1.left_stick_x, ly = gamepad1.left_stick_y, rx = gamepad1.right_stick_x, ry = gamepad2.right_stick_y;
             double dn = 0.8/Math.max(Math.abs(lx)+0.7*Math.abs(rx)+Math.abs(ly),1);
-            robot.fr.setPower((ly+lx+0.7*rx)*dn);
-            robot.fl.setPower((ly-lx-0.7*rx)*dn);
-            robot.br.setPower((ly-lx+0.7*rx)*dn);
-            robot.bl.setPower((ly+lx-0.7*rx)*dn);
+            robot.fr.setPower((ly+lx+0.7*rx)*dn * coefficient);
+            robot.fl.setPower((ly-lx-0.7*rx)*dn * coefficient);
+            robot.br.setPower((ly-lx+0.7*rx)*dn * coefficient);
+            robot.bl.setPower((ly+lx-0.7*rx)*dn * coefficient);
 
 //            if (Math.abs(ry)>0.1) {
 //                robot.rightArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -48,12 +50,14 @@ public class teleop extends LinearOpMode {
             else if (gamepad2.y) setArmPosition(260, 0.3);
             else if (gamepad2.x) setArmPosition(70, 0.3);
             else if (gamepad2.dpad_down) setArmPosition(5, 0.2);
-            // right trigger and bumper for manual arm move -- idk if this works tho
-            else if (gamepad2.left_stick_y > 0) setArmPosition(clamp(0, 520, robot.leftArm.getCurrentPosition() + 20), 0.3);
-            else if(gamepad2.left_stick_y < 0) setArmPosition(clamp(0, 520, robot.leftArm.getCurrentPosition() - 20), 0.4);
+            // either stick works for this
+            else if (gamepad2.right_stick_y > 0 || gamepad2.left_stick_y > 0) setArmPosition(clamp(5, 520, robot.leftArm.getCurrentPosition() - 35), 0.4);
+            else if(gamepad2.right_stick_y < 0 || gamepad2.left_stick_y < 0) setArmPosition(clamp(5, 520, robot.leftArm.getCurrentPosition() + 35), 0.4);
 
+            // open
             if (gamepad2.left_bumper) robot.intake.setPosition(0.55);
-            else robot.intake.setPosition(0.75);
+            // close
+            else robot.intake.setPosition(0.78);
 
 
         }
