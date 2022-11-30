@@ -24,11 +24,11 @@ public class OpenCVVision extends OpenCvPipeline {
     }
 
     // TOPLEFT anchor point for the bounding box
-    private static Point SLEEVE_TOPLEFT_ANCHOR_POINT = new Point(145, 168);
+    private static Point SLEEVE_TOPLEFT_ANCHOR_POINT = new Point(145, 95);
 
     // Width and height for the bounding box
     public static int REGION_WIDTH = 30;
-    public static int REGION_HEIGHT = 50;
+    public static int REGION_HEIGHT = 30;
 
     // Lower and upper boundaries for colors
     private static final Scalar
@@ -60,69 +60,73 @@ public class OpenCVVision extends OpenCvPipeline {
     // Running variable storing the parking position
     private volatile ParkingPosition position = ParkingPosition.NONE;
 
+    public boolean active = true;
+
     @Override
     public Mat processFrame(Mat input) {
-        // Noise reduction
-        Imgproc.blur(input, blurredMat, new Size(5, 5));
-        blurredMat = blurredMat.submat(new Rect(sleeve_pointA, sleeve_pointB));
+        if (active) {
+            // Noise reduction
+            Imgproc.blur(input, blurredMat, new Size(5, 5));
+            blurredMat = blurredMat.submat(new Rect(sleeve_pointA, sleeve_pointB));
 
-        // Apply Morphology
-        Mat kernel = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(3, 3));
-        Imgproc.morphologyEx(blurredMat, blurredMat, Imgproc.MORPH_CLOSE, kernel);
+            // Apply Morphology
+            Mat kernel = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(3, 3));
+            Imgproc.morphologyEx(blurredMat, blurredMat, Imgproc.MORPH_CLOSE, kernel);
 
-        // Gets channels from given source mat
-        Core.inRange(blurredMat, lower_yellow_bounds, upper_yellow_bounds, yelMat);
-        Core.inRange(blurredMat, lower_cyan_bounds, upper_cyan_bounds, cyaMat);
-        Core.inRange(blurredMat, lower_magenta_bounds, upper_magenta_bounds, magMat);
+            // Gets channels from given source mat
+            Core.inRange(blurredMat, lower_yellow_bounds, upper_yellow_bounds, yelMat);
+            Core.inRange(blurredMat, lower_cyan_bounds, upper_cyan_bounds, cyaMat);
+            Core.inRange(blurredMat, lower_magenta_bounds, upper_magenta_bounds, magMat);
 
-        // Gets color specific values
-        yelPercent = Core.countNonZero(yelMat);
-        cyaPercent = Core.countNonZero(cyaMat);
-        magPercent = Core.countNonZero(magMat);
+            // Gets color specific values
+            yelPercent = Core.countNonZero(yelMat);
+            cyaPercent = Core.countNonZero(cyaMat);
+            magPercent = Core.countNonZero(magMat);
 
-        // Calculates the highest amount of pixels being covered on each side
-        double maxPercent = Math.max(yelPercent, Math.max(cyaPercent, magPercent));
+            // Calculates the highest amount of pixels being covered on each side
+            double maxPercent = Math.max(yelPercent, Math.max(cyaPercent, magPercent));
 
-        // Checks all percentages, will highlight bounding box in camera preview
-        // based on what color is being detected
-        if (maxPercent == yelPercent) {
-            position = ParkingPosition.LEFT;
-            Imgproc.rectangle(
-                    input,
-                    sleeve_pointA,
-                    sleeve_pointB,
-                    YELLOW,
-                    2
-            );
-        } else if (maxPercent == cyaPercent) {
-            position = ParkingPosition.CENTER;
-            Imgproc.rectangle(
-                    input,
-                    sleeve_pointA,
-                    sleeve_pointB,
-                    CYAN,
-                    2
-            );
-        } else if (maxPercent == magPercent) {
-            position = ParkingPosition.RIGHT;
-            Imgproc.rectangle(
-                    input,
-                    sleeve_pointA,
-                    sleeve_pointB,
-                    MAGENTA,
-                    2
-            );
+            // Checks all percentages, will highlight bounding box in camera preview
+            // based on what color is being detected
+            if (maxPercent == yelPercent) {
+                position = ParkingPosition.LEFT;
+                Imgproc.rectangle(
+                        input,
+                        sleeve_pointA,
+                        sleeve_pointB,
+                        YELLOW,
+                        2
+                );
+            } else if (maxPercent == cyaPercent) {
+                position = ParkingPosition.CENTER;
+                Imgproc.rectangle(
+                        input,
+                        sleeve_pointA,
+                        sleeve_pointB,
+                        CYAN,
+                        2
+                );
+            } else if (maxPercent == magPercent) {
+                position = ParkingPosition.RIGHT;
+                Imgproc.rectangle(
+                        input,
+                        sleeve_pointA,
+                        sleeve_pointB,
+                        MAGENTA,
+                        2
+                );
+            }
+
+            // Memory cleanup
+            blurredMat.release();
+            yelMat.release();
+            cyaMat.release();
+            magMat.release();
         }
 
-        // Memory cleanup
-        blurredMat.release();
-        yelMat.release();
-        cyaMat.release();
-        magMat.release();
-
         return input;
-    }
 
+    }
     // Returns an enum being the current position where the robot will park
     public ParkingPosition getPosition() {
         return position;

@@ -45,5 +45,10 @@ public class VisionTest extends LinearOpMode {
             telemetry.update();
         }
         waitForStart();
+
+        sleeveDetection.active = false;
+        // start hardcoded opmodes
+
+
     }
 }
