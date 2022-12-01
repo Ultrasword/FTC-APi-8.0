@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.wrappers.LoggingSystem;
 import org.firstinspires.ftc.teamcode.wrappers.OpenCVVision;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
@@ -20,6 +21,7 @@ public class VisionTest extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
+        LoggingSystem.initLogging();
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
 //        camera = OpenCvCameraFactory.getInstance().createInternalCamera2(OpenCvInternalCamera2.CameraDirection.BACK, cameraMonitorViewId);
         WebcamName webcamName = hardwareMap.get(WebcamName.class, "Camera");
@@ -49,6 +51,9 @@ public class VisionTest extends LinearOpMode {
         sleeveDetection.active = false;
         // start hardcoded opmodes
 
+
+        // end logging
+        LoggingSystem.closeLog();
 
     }
 }
