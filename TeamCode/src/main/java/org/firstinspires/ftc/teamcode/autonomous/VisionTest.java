@@ -21,7 +21,6 @@ public class VisionTest extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        LoggingSystem.initLogging();
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
 //        camera = OpenCvCameraFactory.getInstance().createInternalCamera2(OpenCvInternalCamera2.CameraDirection.BACK, cameraMonitorViewId);
         WebcamName webcamName = hardwareMap.get(WebcamName.class, "Camera");
@@ -53,7 +52,6 @@ public class VisionTest extends LinearOpMode {
 
 
         // end logging
-        LoggingSystem.closeLog();
 
     }
 }
