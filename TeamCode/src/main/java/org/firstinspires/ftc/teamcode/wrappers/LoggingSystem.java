@@ -43,9 +43,8 @@ public class LoggingSystem {
                     }
                     sleep(100);
                 }
-            }catch (InterruptedException e){
-                logger.closeLog();
-            }
+            }catch (InterruptedException e){}
+            logger.closeLog();
         }
     }
 
