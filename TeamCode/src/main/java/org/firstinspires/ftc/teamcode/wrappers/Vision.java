@@ -17,17 +17,17 @@ public class Vision extends OpenCvPipeline {
             upper_yellow = new Scalar(30,255,255),
             lower_cyan = new Scalar(95,100,100),
             upper_cyan = new Scalar(105,255,255),
-            lower_magenta = new Scalar(170,100,100),
-            upper_magenta = new Scalar(180,255,255);
-    private Mat yellow = new Mat(), cyan = new Mat(), magenta = new Mat(), blurred = new Mat(), mask = new Mat(), hierarchy = new Mat();
+            lower_magenta = new Scalar(160,100,100),
+            upper_magenta = new Scalar(170,255,255);
+    private Mat hsv = new Mat(), yellow = new Mat(), cyan = new Mat(), magenta = new Mat(), mask = new Mat(), hierarchy = new Mat();
     private List<MatOfPoint> contours = new java.util.ArrayList<>();
     public int route = 0;
     @Override
     public Mat processFrame(Mat input) {
-        Imgproc.cvtColor(input, input, Imgproc.COLOR_RGB2HSV);
-        Core.inRange(input, lower_yellow, upper_yellow, yellow);
-        Core.inRange(input, lower_cyan, upper_cyan, cyan);
-        Core.inRange(input, lower_magenta, upper_magenta, magenta);
+        Imgproc.cvtColor(input, hsv, Imgproc.COLOR_RGB2HSV);
+        Core.inRange(hsv, lower_yellow, upper_yellow, yellow);
+        Core.inRange(hsv, lower_cyan, upper_cyan, cyan);
+        Core.inRange(hsv, lower_magenta, upper_magenta, magenta);
         Core.bitwise_or(yellow, cyan, mask);
         Core.bitwise_or(mask, magenta, mask);
         Imgproc.findContours(mask, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
@@ -42,21 +42,22 @@ public class Vision extends OpenCvPipeline {
                     maxAreaIdx = idx;
                 }
             }
-            if (maxArea<800) return input;
+            if (maxArea<50) return input;
             Rect rect = Imgproc.boundingRect(contours.get(maxAreaIdx));
             Point center = new Point(rect.x + rect.width / 2, rect.y + rect.height / 2);
-            double[] color = input.get((int) center.y, (int) center.x);
+            double[] color = hsv.get((int) center.y, (int) center.x);
             if (color[0] >= 20 && color[0] <= 30) {
                 route = 0;
-                Imgproc.rectangle(input, rect.tl(), rect.br(), new Scalar(0, 255, 255), 2);
+                Imgproc.rectangle(input, rect.tl(), rect.br(), new Scalar(255, 255, 0), 2);
             } else if (color[0] >= 95 && color[0] <= 105) {
                 route = 1;
-                Imgproc.rectangle(input, rect.tl(), rect.br(), new Scalar(255, 0, 255), 2);
-            } else if (color[0] >= 170 && color[0] <= 180) {
+                Imgproc.rectangle(input, rect.tl(), rect.br(), new Scalar(0, 255, 255), 2);
+            } else if (color[0] >= 160 && color[0] <= 170) {
                 route = 2;
-                Imgproc.rectangle(input, rect.tl(), rect.br(), new Scalar(255, 255, 0), 2);
+                Imgproc.rectangle(input, rect.tl(), rect.br(), new Scalar(255, 0, 255), 2);
             }
         }
+        contours.clear();
         return input;
     }
 }
