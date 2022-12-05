@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.wrappers;
 
 public class Controller {
     private final double DEGREES_TO_RADIANS = Math.PI/180f;
-    private final double MAX_VELOCITY = 2.6;
+    private final double MAX_VELOCITY = 3.6;
     private final double MIN_VELOCITY = 0.05;
     private final double ANGLE_MAX_VELOCITY = 180;
     private final double ANGLE_MIN_VELOCITY = 2;
