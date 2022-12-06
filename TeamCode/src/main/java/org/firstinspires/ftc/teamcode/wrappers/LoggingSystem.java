@@ -13,54 +13,24 @@ import java.util.Stack;
 
 public class LoggingSystem {
 
-    public class LoggingThread extends Thread {
-        private LoggingSystem logger;
-        private Stack<String> queue;
-
-        private boolean hasCheck = false;
-
-        public LoggingThread(){
-            logger = new LoggingSystem();
-        }
-
-        public void pushTelemetry(String key, String value){
-            hasCheck = true;
-            queue.push(String.format("%s: %s", key, value));
-        }
-
-        @Override
-        public void run()
-        {
-            try{
-                while(!isInterrupted()){
-                    if(hasCheck){
-                        String line;
-                        while((line = queue.remove(0)) != null){
-                            logger.logData(line);
-                            line = null;
-                        }
-                        hasCheck = false;
-                    }
-                    sleep(100);
-                }
-            }catch (InterruptedException e){}
-            logger.closeLog();
-        }
-    }
-
     private FileWriter fileWriter;
-    private LoggingThread loggingThread;
+    private File file;
+    public DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd_hh");
+
+    public boolean success = false;
 
     public LoggingSystem(){
         Date date = Calendar.getInstance().getTime();
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
         try {
-            fileWriter = new FileWriter(String.format("%s.txt", dateFormat.format(date)));
+            "%s/FIRST/data/mylog.txt", Environment.getExternalStorageDirectory().getAbsolutePath()
+            String name = String.format("%s.txt", dateFormat.format(date));
+            file = new File(name);
+            if(file.exists()) file.createNewFile();
+            fileWriter = new FileWriter(file);
+            success = true;
         } catch (IOException e) {
             e.printStackTrace();
         }
-        loggingThread = new LoggingThread();
-        loggingThread.start();
     }
 
     public void logData(String data) {

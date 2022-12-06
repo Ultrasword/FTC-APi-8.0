@@ -4,8 +4,12 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.firstinspires.ftc.teamcode.wrappers.Clock;
+import org.firstinspires.ftc.teamcode.wrappers.LoggingSystem;
 import org.firstinspires.ftc.teamcode.wrappers.MecanumChassis;
 import org.firstinspires.ftc.teamcode.wrappers.Position;
+
+import java.util.Date;
 
 @TeleOp(name="teleop")
 public class teleop extends LinearOpMode {
@@ -18,14 +22,33 @@ public class teleop extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         robot = new MecanumChassis(hardwareMap);
         pos = new Position(robot);
+        LoggingSystem logger = new LoggingSystem();
+        telemetry.addData("Logger", logger.success);
+        telemetry.addData("Filename", logger.dateFormat.format(new Date()));
+        telemetry.update();
         waitForStart();
         setArmPosition(20, 0.3);
+
+        // hard code
+        Clock clock = new Clock();
+        clock.start();
+        double angularVel = 0.0, prevAngle = 0.0, currentAngle = 0.0;
+
         while (opModeIsActive()) {
+            clock.update();
             telemetry.addData("Servo Position ", robot.intake.getPosition());
             telemetry.addData("Arm Target", robot.leftArm.getTargetPosition());
             telemetry.addData("Arm Position ", robot.leftArm.getCurrentPosition());
             telemetry.addData("Position Data", String.format("%.2f %.2f %.2f",pos.x,pos.y,pos.angle));
             telemetry.update();
+
+            // log position
+            logger.logData(String.format("X: %.3f, Y: %.3f, ", pos.x, pos.y));
+            prevAngle = currentAngle;
+            currentAngle = pos.angle;
+            angularVel = (currentAngle - prevAngle) / clock.deltaTime;
+            logger.logData(String.format("AngulVel: %.3f\n", angularVel));
+
             double lx = gamepad1.left_stick_x, ly = gamepad1.left_stick_y, rx = gamepad1.right_stick_x, ry = gamepad2.right_stick_y;
             double dn = 0.8/Math.max(Math.abs(lx)+0.7*Math.abs(rx)+Math.abs(ly),1);
             robot.fr.setPower((ly+lx+0.7*rx)*dn * coefficient);
@@ -58,9 +81,10 @@ public class teleop extends LinearOpMode {
             if (gamepad2.left_bumper) robot.intake.setPosition(0.55);
             // close
             else robot.intake.setPosition(0.78);
-
-
         }
+        logger.closeLog();
+
+
     }
     public double clamp(double min, double max, double val){
         if(val<min) return min; else if(val > max) return max; return val;
