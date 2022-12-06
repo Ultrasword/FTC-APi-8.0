@@ -43,20 +43,16 @@ public class DisplayVision extends OpenCvPipeline {
                 }
             }
             if (maxArea<50) return input;
-            double avgHue = 0;
-            for (Point point : contours.get(maxAreaIdx).toArray()) {
-                double[] hsv = input.get((int)point.y, (int)point.x);
-                avgHue += hsv[0];
-            }
-            avgHue /= contours.get(maxAreaIdx).toArray().length;
             Rect rect = Imgproc.boundingRect(contours.get(maxAreaIdx));
-            if (avgHue >= 20 && avgHue <= 30) {
+            Point center = new Point(rect.x + rect.width / 2, rect.y + rect.height / 2);
+            double[] color = hsv.get((int) center.y, (int) center.x);
+            if (color[0] >= 20 && color[0] <= 30) {
                 Imgproc.rectangle(input, rect.tl(), rect.br(), new Scalar(255, 255, 0), 2);
                 route = 0;
-            } else if (avgHue >= 95 && avgHue <= 105) {
+            } else if (color[0] >= 95 && color[0] <= 105) {
                 Imgproc.rectangle(input, rect.tl(), rect.br(), new Scalar(0, 255, 255), 2);
                 route = 1;
-            } else if (avgHue >= 160 && avgHue <= 170) {
+            } else if (color[0] >= 160 && color[0] <= 170) {
                 Imgproc.rectangle(input, rect.tl(), rect.br(), new Scalar(255, 0, 255), 2);
                 route = 2;
             }

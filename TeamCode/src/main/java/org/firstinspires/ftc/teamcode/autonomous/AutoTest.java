@@ -16,42 +16,57 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 
 @Autonomous(name="auton")
 public class AutoTest extends LinearOpMode {
-    MecanumChassis robot;
-    Position pos;
-    Controller control;
-    Vision sleeveDetection;
-    WebcamName webcamName;
-    OpenCvCamera camera;
+    private MecanumChassis robot;
+    private Position pos;
+    private Controller control;
+    private Vision sleeveDetection;
+    private WebcamName webcamName;
+    private OpenCvCamera camera;
+    private String route;
 
     @Override
     public void runOpMode() throws InterruptedException {
+        robot = new MecanumChassis(hardwareMap);
+        pos = new Position(robot);
+        control = new Controller(robot, pos);
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         webcamName = hardwareMap.get(WebcamName.class, "Camera");
         camera = OpenCvCameraFactory.getInstance().createWebcam(webcamName, cameraMonitorViewId);
         sleeveDetection = new Vision();
         camera.setPipeline(sleeveDetection);
-        robot = new MecanumChassis(hardwareMap);
-        pos = new Position(robot);
-        control = new Controller(robot, pos);
+        camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
+            @Override
+            public void onOpened() {
+                camera.startStreaming(320,240, OpenCvCameraRotation.SIDEWAYS_RIGHT);
+            }
+            @Override
+            public void onError(int errorCode) {}
+        });
         while (!isStarted()) {
             telemetry.addData("route: ", sleeveDetection.route);
             telemetry.update();
         }
+        //  moved before
+        route = sleeveDetection.route;
         waitForStart();
-        switch (sleeveDetection.route) {
-            case 0:
+
+
+
+        switch (route) {
+            case "LEFT":
                 goToTiming(0,0,90,0.4, 50,0.04,2,true);
                 break;
-            case 1:
+            case "CENTER":
                 goToTiming(0,0,-90,0.4, 50,0.04,2,true);
                 break;
 
-            case 2:
+            case "RIGHT":
                 goToTiming(0,1,0,0.4, 50,0.04,2,true);
                 break;
-
             default:
-                goToTiming(0,-1,0,0.4, 50,0.04,2,true);
+                telemetry.addData("OH SHIT!","WE FUCKED UP!");
+                telemetry.update();
+                sleep(2000);
                 break;
         }
     }

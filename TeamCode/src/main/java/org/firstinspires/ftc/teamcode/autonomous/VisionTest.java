@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.wrappers.DisplayVision;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
@@ -11,7 +12,7 @@ import org.firstinspires.ftc.teamcode.wrappers.Vision;
 @Autonomous(name="Vision funny")
 public class VisionTest extends LinearOpMode {
 
-    private Vision sleeveDetection;
+    private DisplayVision sleeveDetection;
     private WebcamName webcamName;
     private OpenCvCamera camera;
 
@@ -22,7 +23,7 @@ public class VisionTest extends LinearOpMode {
         webcamName = hardwareMap.get(WebcamName.class, "Camera");
         camera = OpenCvCameraFactory.getInstance().createWebcam(webcamName, cameraMonitorViewId);
 
-        sleeveDetection = new Vision();
+        sleeveDetection = new DisplayVision();
         camera.setPipeline(sleeveDetection);
         camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override

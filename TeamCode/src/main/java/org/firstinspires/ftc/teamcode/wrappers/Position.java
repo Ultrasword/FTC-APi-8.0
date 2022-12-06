@@ -40,7 +40,7 @@ public class Position {
                     dy = (a+b)*0.25;
                     x+=dx*Math.cos(angle*DEGREES_TO_RADIANS)+dy*Math.sin(angle*DEGREES_TO_RADIANS);
                     y+=dx*Math.sin(angle*DEGREES_TO_RADIANS)-dy*Math.cos(angle*DEGREES_TO_RADIANS);
-//                    Thread.sleep(10);
+                    Thread.sleep(10);
                 }
             } catch (Exception e) {}
         }
