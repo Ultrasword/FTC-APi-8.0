@@ -11,7 +11,7 @@ import org.openftc.easyopencv.OpenCvPipeline;
 
 import java.util.List;
 
-public class Vision extends OpenCvPipeline {
+public class DisplayVision extends OpenCvPipeline {
     private static final Scalar
             lower_yellow = new Scalar(20,140,140),
             upper_yellow = new Scalar(30,255,255),
@@ -24,10 +24,10 @@ public class Vision extends OpenCvPipeline {
     public int route = 0;
     @Override
     public Mat processFrame(Mat input) {
-        Imgproc.cvtColor(input, input, Imgproc.COLOR_RGB2HSV);
-        Core.inRange(input, lower_yellow, upper_yellow, yellow);
-        Core.inRange(input, lower_cyan, upper_cyan, cyan);
-        Core.inRange(input, lower_magenta, upper_magenta, magenta);
+        Imgproc.cvtColor(input, hsv, Imgproc.COLOR_RGB2HSV);
+        Core.inRange(hsv, lower_yellow, upper_yellow, yellow);
+        Core.inRange(hsv, lower_cyan, upper_cyan, cyan);
+        Core.inRange(hsv, lower_magenta, upper_magenta, magenta);
         Core.bitwise_or(yellow, cyan, mask);
         Core.bitwise_or(mask, magenta, mask);
         Imgproc.findContours(mask, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
@@ -49,10 +49,17 @@ public class Vision extends OpenCvPipeline {
                 avgHue += hsv[0];
             }
             avgHue /= contours.get(maxAreaIdx).toArray().length;
-            if (avgHue > 20 && avgHue < 30) route = 0;
-            else if (avgHue > 95 && avgHue < 105) route = 1;
-            else if (avgHue > 160 && avgHue < 170) route = 2;
-            else route = 3;
+            Rect rect = Imgproc.boundingRect(contours.get(maxAreaIdx));
+            if (avgHue >= 20 && avgHue <= 30) {
+                Imgproc.rectangle(input, rect.tl(), rect.br(), new Scalar(255, 255, 0), 2);
+                route = 0;
+            } else if (avgHue >= 95 && avgHue <= 105) {
+                Imgproc.rectangle(input, rect.tl(), rect.br(), new Scalar(0, 255, 255), 2);
+                route = 1;
+            } else if (avgHue >= 160 && avgHue <= 170) {
+                Imgproc.rectangle(input, rect.tl(), rect.br(), new Scalar(255, 0, 255), 2);
+                route = 2;
+            }
         }
         contours.clear();
         return input;
