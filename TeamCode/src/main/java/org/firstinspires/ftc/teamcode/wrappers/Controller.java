@@ -92,9 +92,9 @@ public class Controller {
                         prevAnglePower = anglePower;
                         prevPower = power;
                         anglePower *= DEGREES_TO_RADIANS*(ROBOT_WIDTH*WHEEL_ANGLE+ROBOT_LENGTH)/WHEEL_ANGLE;
-                        theta = Math.atan2(y-pos.y,x-pos.x);
-                        vx = -power*Math.cos(theta-pos.angle*DEGREES_TO_RADIANS);
-                        vy = -power*Math.sin(theta-pos.angle*DEGREES_TO_RADIANS);
+                        theta = Math.atan2(x-pos.x,y-pos.y);
+                        vx = -power*Math.sin(theta-pos.angle*DEGREES_TO_RADIANS);
+                        vy = -power*Math.cos(theta-pos.angle*DEGREES_TO_RADIANS);
                         setPower(
                             vy-vx/WHEEL_ANGLE+anglePower,
                             vy+vx/WHEEL_ANGLE-anglePower,

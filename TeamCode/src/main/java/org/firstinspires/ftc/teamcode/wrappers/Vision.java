@@ -38,7 +38,7 @@ public class Vision extends OpenCvPipeline {
                 Mat contour = contours.get(idx);
                 double contourArea = Imgproc.contourArea(contour);
                 Rect rect = Imgproc.boundingRect(contour);
-                if (contourArea > maxArea && rect.height<2.5*rect.width) {
+                if (contourArea > maxArea && rect.height<2.5*rect.width && rect.height>rect.width) {
                     maxArea = contourArea;
                     maxAreaIdx = idx;
                 }

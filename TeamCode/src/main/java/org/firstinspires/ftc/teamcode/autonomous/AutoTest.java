@@ -46,12 +46,17 @@ public class AutoTest extends LinearOpMode {
             telemetry.addData("route: ", sleeveDetection.route);
             telemetry.update();
         }
-        //  moved before
         route = sleeveDetection.route;
         waitForStart();
-
-
-
+        closeIntake();
+        setArmPositionTiming(520,0.2,1000);
+        goToTiming(0,0.9,45,1.2,50,0.04,2,true);
+        goToTiming(0.06,0.93,45,0.8,50,0.02,2,true);
+        setArmPositionWait(350,0.2);
+        openIntake();
+        goToTiming(0,0.9,45,0.8,50,0.04,2,true);
+        setArmPosition(10,0.2);
+        goToTiming(-0.4,0.86,-90,0.8,150,0.02,2,true);
         switch (route) {
             case "LEFT":
                 goToTiming(0,0,90,0.4, 50,0.04,2,true);
@@ -70,6 +75,12 @@ public class AutoTest extends LinearOpMode {
                 break;
         }
     }
+    private void closeIntake() {
+        robot.intake.setPosition(0.75);
+    }
+    private void openIntake() {
+        robot.intake.setPosition(0.55);
+    }
     private void goToTiming(double x, double y, double angle, double speed, double angleSpeed, double distanceDeadzone, double angleDeadzone, boolean velocityControl) {
         control.goTo(x, y, angle, speed, angleSpeed, distanceDeadzone, angleDeadzone, velocityControl);
         while (!control.finished) {
@@ -87,6 +98,15 @@ public class AutoTest extends LinearOpMode {
         robot.rightArm.setPower(speed);
         robot.leftArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.rightArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
+    private void setArmPositionWait(int pos, double speed) {
+        robot.leftArm.setTargetPosition(pos);
+        robot.rightArm.setTargetPosition(pos);
+        robot.leftArm.setPower(speed);
+        robot.rightArm.setPower(speed);
+        robot.leftArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.rightArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        while (robot.leftArm.isBusy()) sleep(10);
     }
     private void setArmPositionTiming(int pos, double speed, int delay) {
         sleep(delay);
