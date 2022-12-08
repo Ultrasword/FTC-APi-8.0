@@ -50,23 +50,23 @@ public class AutoTest extends LinearOpMode {
         waitForStart();
         closeIntake();
         setArmPositionTiming(520,0.2,1000);
-        goToTiming(0,0.9,45,1.2,50,0.04,2,true);
-        goToTiming(0.06,0.93,45,0.8,50,0.02,2,true);
+        goTo(0,0.9,45,1.2,50,0.04,2,true);
+        goTo(0.06,0.93,45,0.8,50,0.02,2,true);
         setArmPositionWait(350,0.2);
         openIntake();
-        goToTiming(0,0.9,45,0.8,50,0.04,2,true);
+        goTo(0,0.9,45,0.8,50,0.04,2,true);
         setArmPosition(10,0.2);
-        goToTiming(-0.4,0.86,-90,0.8,150,0.02,2,true);
+        goTo(-0.4,0.86,-90,0.8,150,0.02,2,true);
         switch (route) {
             case "LEFT":
-                goToTiming(0,0,90,0.4, 50,0.04,2,true);
+                goTo(0,0,90,0.4, 50,0.04,2,true);
                 break;
             case "CENTER":
-                goToTiming(0,0,-90,0.4, 50,0.04,2,true);
+                goTo(0,0,-90,0.4, 50,0.04,2,true);
                 break;
 
             case "RIGHT":
-                goToTiming(0,1,0,0.4, 50,0.04,2,true);
+                goTo(0,1,0,0.4, 50,0.04,2,true);
                 break;
             default:
                 telemetry.addData("OH SHIT!","WE FUCKED UP!");
@@ -81,7 +81,7 @@ public class AutoTest extends LinearOpMode {
     private void openIntake() {
         robot.intake.setPosition(0.55);
     }
-    private void goToTiming(double x, double y, double angle, double speed, double angleSpeed, double distanceDeadzone, double angleDeadzone, boolean velocityControl) {
+    private void goTo(double x, double y, double angle, double speed, double angleSpeed, double distanceDeadzone, double angleDeadzone, boolean velocityControl) {
         control.goTo(x, y, angle, speed, angleSpeed, distanceDeadzone, angleDeadzone, velocityControl);
         while (!control.finished) {
             telemetry.addData("Angle: ", pos.angle);
