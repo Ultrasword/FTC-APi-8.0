@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.wrappers;
 
+import android.os.Environment;
 import android.util.Pair;
 
 import java.io.File;
@@ -22,8 +23,7 @@ public class LoggingSystem {
     public LoggingSystem(){
         Date date = Calendar.getInstance().getTime();
         try {
-            "%s/FIRST/data/mylog.txt", Environment.getExternalStorageDirectory().getAbsolutePath()
-            String name = String.format("%s.txt", dateFormat.format(date));
+            String name = String.format("%s/FIRST/data/%s.txt\", Environment.getExternalStorageDirectory().getAbsolutePath()", dateFormat.format(date));
             file = new File(name);
             if(file.exists()) file.createNewFile();
             fileWriter = new FileWriter(file);
