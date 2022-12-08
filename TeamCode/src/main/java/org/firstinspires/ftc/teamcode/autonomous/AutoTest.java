@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.autonomous;
 
+import android.util.Pair;
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -49,14 +51,31 @@ public class AutoTest extends LinearOpMode {
         route = sleeveDetection.route;
         waitForStart();
         closeIntake();
-        setArmPositionTiming(520,0.2,1000);
-        goTo(0,0.9,45,1.2,50,0.04,2,true);
-        goTo(0.06,0.93,45,0.8,50,0.02,2,true);
-        setArmPositionWait(350,0.2);
+
+        double armSpeed = 0.2;
+        MovementWrapper moveWrapper = new MovementWrapper(0.0,0.9,45);
+
+        setArmPositionTiming(520,armSpeed,1000);
+        goToTiming(0,0.9,45,1.2,50,0.04,2,true);
+        goToTiming(0.06,0.93,45,0.8,50,0.02,2,true);
+        setArmPositionWait(350,armSpeed);
         openIntake();
-        goTo(0,0.9,45,0.8,50,0.04,2,true);
-        setArmPosition(10,0.2);
-        goTo(-0.4,0.86,-90,0.8,150,0.02,2,true);
+        goToTiming(0,0.9,45,0.8,50,0.04,2,true);
+        setArmPosition(10,armSpeed);
+        goToTiming(-0.4,0.86,-90,0.8,150,0.02,2,true);
+
+        closeIntake();
+        setArmPositionWait(40, armSpeed);
+        goToTiming(0, 0.9, 45, 1.2, 50, 0.04, 2, true);
+        goToTiming(0.06,0.93,45,0.8,50,0.02,2,true);
+        setArmPositionWait(350,armSpeed);
+        openIntake();
+        goToTiming(0,0.9,45,0.8,50,0.04,2,true);
+        setArmPosition(10,armSpeed);
+        goToTiming(-0.4,0.86,-90,0.8,150,0.02,2,true);
+
+
+
         switch (route) {
             case "LEFT":
                 goTo(0,0,90,0.4, 50,0.04,2,true);
@@ -116,5 +135,18 @@ public class AutoTest extends LinearOpMode {
         robot.rightArm.setPower(speed);
         robot.leftArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.rightArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
+}
+
+
+class MovementWrapper {
+    public double x;
+    public double y;
+    public double angle;
+
+    public MovementWrapper(double x, double y, double angle) {
+        this.x = x;
+        this.y = y;
+        this.angle = angle;
     }
 }
