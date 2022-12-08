@@ -16,7 +16,7 @@ import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 
-@Autonomous(name="auton")
+@Autonomous(name="autonL")
 public class AutoTest extends LinearOpMode {
     private MecanumChassis robot;
     private Position pos;
@@ -53,49 +53,53 @@ public class AutoTest extends LinearOpMode {
         closeIntake();
 
         double armSpeed = 0.2;
-        double movementSpeed = 1.2;
+        double movementSpeed = 1.7;
         MovementWrapper HJsetup = new MovementWrapper(0.0,0.9,45);
 
         int armTop = 520;
         int armDrop = 350;
         int armBottom = 10;
 
+        double plusx = 0.07;
+        double plusy = 0.09;
         //Move to HJ
         setArmPositionTiming(armTop, armSpeed,1000);
         goTo(HJsetup.x, HJsetup.y, HJsetup.angle, movementSpeed,50,0.04,2,true);
 
         //Drop cone on HJ
-        goTo(0.06,0.93,45,0.8,50,0.02,2,true);
+        goTo(0.0 + plusx,0.90 + plusy,45,0.8,50,0.02,2,true);
         setArmPositionWait(armDrop, armSpeed);
         openIntake();
 
         //Move to side cones
         goTo(HJsetup.x, HJsetup.y, HJsetup.angle, 0.8,50,0.04,2,true);
-        setArmPosition(armBottom, armSpeed);
-        goTo(-0.4,0.86,-90,0.8,150,0.02,2,true);
+        goTo(-0.4,0.86,-90,movementSpeed,150,0.02,2,true);
 
+
+        setArmPositionWait(60, armSpeed);
 
         // TODO This is start of HJ cycle
         closeIntake();
-        setArmPositionWait(60, armSpeed);
+        setArmPositionWait(100, armSpeed);
 
         //Move to HJ
         setArmPosition(armTop, armSpeed);
         goTo(0, 0.9, 45, movementSpeed, 50, 0.04, 2, true);
 
         //Drop cone on HJ
-        goTo(0.06,0.93,45,0.8,50,0.02,2,true);
+        goTo(0.0 + plusx,0.9 + plusy,45,0.8,50,0.02,2,true);
         setArmPositionWait(350,armSpeed);
         openIntake();
 
         //Move to side cones
         goTo(0,0.9,45,0.8,50,0.04,2,true);
-        setArmPosition(armBottom, armSpeed);
-        goTo(-0.4,0.86,-90,0.8,150,0.02,2,true);
+        goTo(-0.4,0.86,-90,movementSpeed,150,0.02,2,true);
+
+        setArmPositionWait(60, armSpeed);
         // TODO This is end of HJ cycle
 
         closeIntake();
-        setArmPositionWait(60, armSpeed);
+        setArmPositionWait(100, armSpeed);
 
         switch (route) {
             case "LEFT":
@@ -111,7 +115,7 @@ public class AutoTest extends LinearOpMode {
                 goTo(0,0.9,45,1.2, 50,0.04,2,true);
                 goTo(0,0.6,45,1.2, 50,0.04,2,true);
                 goTo(0+0.06,0.6+0.03,45,0.4, 50,0.04,2,true);
-                setArmPositionWait(350, armSpeed);
+                setArmPositionWait(120, armSpeed);
                 openIntake();
                 goTo(0,0.6,0,0.4, 50,0.04,2,true);
                 setArmPositionWait(0, armSpeed);
@@ -122,7 +126,7 @@ public class AutoTest extends LinearOpMode {
                 goTo(0.3,0.9,45, movementSpeed, 50,0.04,2,true);
                 goTo(0.3,0.6,45, movementSpeed, 50,0.04,2,true);
                 goTo(0.3+0.06,0.6+0.03,45,0.4, 50,0.04,2,true);
-                setArmPosition(350, armSpeed);
+                setArmPosition(60, armSpeed);
                 openIntake();
                 goTo(0.3,0.6,0,0.4, 50,0.04,2,true);
                 setArmPositionWait(0, armSpeed);
