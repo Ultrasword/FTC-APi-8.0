@@ -11,8 +11,8 @@ import org.firstinspires.ftc.teamcode.wrappers.Position;
 
 import java.util.Date;
 
-@TeleOp(name="teleop")
-public class teleop extends LinearOpMode {
+@TeleOp(name="raymond telemetry saver")
+public class teleoptelemetrystore extends LinearOpMode {
     MecanumChassis robot;
     Position pos;
 
@@ -22,6 +22,10 @@ public class teleop extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         robot = new MecanumChassis(hardwareMap);
         pos = new Position(robot);
+        LoggingSystem logger = new LoggingSystem();
+        telemetry.addData("Logger", logger.success);
+        telemetry.addData("Filename", logger.dateFormat.format(new Date()));
+        telemetry.update();
         waitForStart();
         setArmPosition(20, 0.3);
 
@@ -37,6 +41,13 @@ public class teleop extends LinearOpMode {
             telemetry.addData("Arm Position ", robot.leftArm.getCurrentPosition());
             telemetry.addData("Position Data", String.format("%.2f %.2f %.2f",pos.x,pos.y,pos.angle));
             telemetry.update();
+
+            // log position
+            logger.logData(String.format("X: %.3f, Y: %.3f, ", pos.x, pos.y));
+            prevAngle = currentAngle;
+            currentAngle = pos.angle;
+            angularVel = (currentAngle - prevAngle) / clock.deltaTime;
+            logger.logData(String.format("AngulVel: %.3f\n", angularVel));
 
             double lx = gamepad1.left_stick_x, ly = gamepad1.left_stick_y, rx = gamepad1.right_stick_x, ry = gamepad2.right_stick_y;
             double dn = 0.8/Math.max(Math.abs(lx)+0.7*Math.abs(rx)+Math.abs(ly),1);
@@ -62,15 +73,16 @@ public class teleop extends LinearOpMode {
             else if (gamepad2.y) setArmPosition(260, 0.3);
             else if (gamepad2.x) setArmPosition(70, 0.3);
             else if (gamepad2.dpad_down) setArmPosition(5, 0.2);
-            // either stick works for this
+                // either stick works for this
             else if (gamepad2.right_stick_y > 0 || gamepad2.left_stick_y > 0) setArmPosition(clamp(5, 520, robot.leftArm.getCurrentPosition() - 35), 0.4);
             else if(gamepad2.right_stick_y < 0 || gamepad2.left_stick_y < 0) setArmPosition(clamp(5, 520, robot.leftArm.getCurrentPosition() + 35), 0.4);
 
             // open
             if (gamepad2.left_bumper) robot.intake.setPosition(0.55);
-            // close
+                // close
             else robot.intake.setPosition(0.78);
         }
+        logger.closeLog();
 
 
     }
