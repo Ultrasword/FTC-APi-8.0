@@ -53,39 +53,79 @@ public class AutoTest extends LinearOpMode {
         closeIntake();
 
         double armSpeed = 0.2;
-        MovementWrapper moveWrapper = new MovementWrapper(0.0,0.9,45);
+        double movementSpeed = 1.2;
+        MovementWrapper HJsetup = new MovementWrapper(0.0,0.9,45);
 
-        setArmPositionTiming(520,armSpeed,1000);
-        goToTiming(0,0.9,45,1.2,50,0.04,2,true);
-        goToTiming(0.06,0.93,45,0.8,50,0.02,2,true);
+        int armTop = 520;
+        int armDrop = 350;
+        int armBottom = 10;
+
+        //Move to HJ
+        setArmPositionTiming(armTop, armSpeed,1000);
+        goTo(HJsetup.x, HJsetup.y, HJsetup.angle, movementSpeed,50,0.04,2,true);
+
+        //Drop cone on HJ
+        goTo(0.06,0.93,45,0.8,50,0.02,2,true);
+        setArmPositionWait(armDrop, armSpeed);
+        openIntake();
+
+        //Move to side cones
+        goTo(HJsetup.x, HJsetup.y, HJsetup.angle, 0.8,50,0.04,2,true);
+        setArmPosition(armBottom, armSpeed);
+        goTo(-0.4,0.86,-90,0.8,150,0.02,2,true);
+
+
+        // TODO This is start of HJ cycle
+        closeIntake();
+        setArmPositionWait(60, armSpeed);
+
+        //Move to HJ
+        setArmPosition(armTop, armSpeed);
+        goTo(0, 0.9, 45, movementSpeed, 50, 0.04, 2, true);
+
+        //Drop cone on HJ
+        goTo(0.06,0.93,45,0.8,50,0.02,2,true);
         setArmPositionWait(350,armSpeed);
         openIntake();
-        goToTiming(0,0.9,45,0.8,50,0.04,2,true);
-        setArmPosition(10,armSpeed);
-        goToTiming(-0.4,0.86,-90,0.8,150,0.02,2,true);
+
+        //Move to side cones
+        goTo(0,0.9,45,0.8,50,0.04,2,true);
+        setArmPosition(armBottom, armSpeed);
+        goTo(-0.4,0.86,-90,0.8,150,0.02,2,true);
+        // TODO This is end of HJ cycle
 
         closeIntake();
-        setArmPositionWait(40, armSpeed);
-        goToTiming(0, 0.9, 45, 1.2, 50, 0.04, 2, true);
-        goToTiming(0.06,0.93,45,0.8,50,0.02,2,true);
-        setArmPositionWait(350,armSpeed);
-        openIntake();
-        goToTiming(0,0.9,45,0.8,50,0.04,2,true);
-        setArmPosition(10,armSpeed);
-        goToTiming(-0.4,0.86,-90,0.8,150,0.02,2,true);
-
-
+        setArmPositionWait(60, armSpeed);
 
         switch (route) {
             case "LEFT":
-                goTo(0,0,90,0.4, 50,0.04,2,true);
+                setArmPosition(520, armSpeed);
+                goTo(-0.3,0.6,45, movementSpeed, 50,0.04,2,true);
+                goTo(-0.3+0.06,0.6+0.03,45,0.4, 50,0.04,2,true);
+                setArmPositionWait(350, armSpeed);
+                goTo(-0.3,0.6,0,0.4, 50,0.04,2,true);
+                setArmPositionWait(0, armSpeed);
                 break;
             case "CENTER":
-                goTo(0,0,-90,0.4, 50,0.04,2,true);
+                setArmPosition(520, armSpeed);
+                goTo(0,0.9,45,1.2, 50,0.04,2,true);
+                goTo(0,0.6,45,1.2, 50,0.04,2,true);
+                goTo(0+0.06,0.6+0.03,45,0.4, 50,0.04,2,true);
+                setArmPositionWait(350, armSpeed);
+                openIntake();
+                goTo(0,0.6,0,0.4, 50,0.04,2,true);
+                setArmPositionWait(0, armSpeed);
                 break;
 
             case "RIGHT":
-                goTo(0,1,0,0.4, 50,0.04,2,true);
+                setArmPosition(520, armSpeed);
+                goTo(0.3,0.9,45, movementSpeed, 50,0.04,2,true);
+                goTo(0.3,0.6,45, movementSpeed, 50,0.04,2,true);
+                goTo(0.3+0.06,0.6+0.03,45,0.4, 50,0.04,2,true);
+                setArmPosition(350, armSpeed);
+                openIntake();
+                goTo(0.3,0.6,0,0.4, 50,0.04,2,true);
+                setArmPositionWait(0, armSpeed);
                 break;
             default:
                 telemetry.addData("OH SHIT!","WE FUCKED UP!");
