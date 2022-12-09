@@ -73,10 +73,12 @@ public class DetectPole extends OpenCvPipeline {
                 error = max_x - polePosition;
                 widthError = maxWidth - targetWidth;
             } else {
+                noPole++;
                 error = 0;
                 widthError = 0;
             }
         } else {
+            noPole++;
             error = 0;
             widthError = 0;
         }
