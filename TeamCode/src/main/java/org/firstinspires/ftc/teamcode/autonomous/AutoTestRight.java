@@ -55,7 +55,7 @@ public class AutoTestRight extends LinearOpMode {
         route = sleeveDetection.route;
         waitForStart();
 
-        // ----------- auto portion ------------ //
+        // ----------- auto/cycle portion ------------ //
         // step 1: cycle cone pickup and place from left side
         // twice
         resetCycle();
@@ -64,46 +64,45 @@ public class AutoTestRight extends LinearOpMode {
         pickupLeftConePivot();
         resetCycle();
         // go pickup --> this cone goes on the parking junction
-        goTo(-MatSize, MatSize*2, -90, 0.6, 0.2, 0.01, 0.02, true);
+        goTo(-MatSize, MatSize*2, -90, 0.6, 50, 0.01, 1, true);
         closeIntake();
         setArmPosition(armMedHeight, 0.3);
-        // rotation towards junction
-        goTo(0, MatSize*2, 46, movementSpeed, 0.3, 0.01, 0.02, true);
-        setArmPosition(armTop, armSpeed);
-        // arm position --
-
-
+        sleep(1000);
 
         // ----------- parking ------------ //
         switch (route) {
             case "LEFT":
-                setArmPosition(520, armSpeed);
-                goTo(-0.3,0.6,45, movementSpeed, 50,0.04,2,true);
-                goTo(-0.3+0.06,0.6+0.03,45,0.4, 50,0.04,2,true);
-                setArmPosition(350, armSpeed);
-                goTo(-0.3,0.6,0,0.4, 50,0.04,2,true);
-                setArmPosition(0, armSpeed);
+                goTo(-MatSize*0.7, MatSize*2, 135, movementSpeed, 50, 0.04, 1, true);
+                setArmPosition(armMedHeight, armSpeed);
+                goTo(-MatSize*0.7, MatSize*1.8, 135, movementSpeed, 50, 0.04, 1, true);
+                setArmPositionTiming(armBottom+30, armSpeed, 300);
+                openIntake();
+                goTo(-MatSize, MatSize*2, 180, movementSpeed, 50, 0.04, 1, true);
+
+                // park into left
+                goTo(-MatSize, MatSize*1.5, 180, movementSpeed, 50, 0.04, 1, true);
                 break;
             case "CENTER":
-                setArmPosition(520, armSpeed);
-                goTo(0,0.9,45,1.2, 50,0.04,2,true);
-                goTo(0,0.6,45,1.2, 50,0.04,2,true);
-                goTo(0+0.06,0.6+0.03,45,0.4, 50,0.04,2,true);
-                setArmPosition(350, armSpeed);
+                goTo(0, MatSize*2, 135, movementSpeed, 50, 0.04, 1, true);
+                setArmPosition(armMedHeight, armSpeed);
+                goTo(MatSize*0.2, MatSize*1.8, 135, movementSpeed, 50, 0.04, 1, true);
+                setArmPosition(armBottom, armSpeed);
                 openIntake();
-                goTo(0,0.6,0,0.4, 50,0.04,2,true);
-                setArmPosition(0, armSpeed);
-                break;
+                goTo(0, MatSize*2, 180, movementSpeed, 50, 0.04, 1, true);
 
+                // park into center
+                goTo(0, MatSize*1.5, 180, movementSpeed, 50, 0.04, 1, true);
+                break;
             case "RIGHT":
-                setArmPosition(520, armSpeed);
-                goTo(0.3,0.9,45, movementSpeed, 50,0.04,2,true);
-                goTo(0.3,0.6,45, movementSpeed, 50,0.04,2,true);
-                goTo(0.3+0.06,0.6+0.03,45,0.4, 50,0.04,2,true);
-                setArmPosition(350, armSpeed);
+                goTo(MatSize, MatSize*2, 135, movementSpeed, 50, 0.04, 1, true);
+                setArmPosition(armTop, armSpeed);
+                goTo(MatSize*0.8, MatSize*1.8, 135, movementSpeed, 50, 0.04, 1, true);
+                setArmPosition(armMedHeight, armSpeed);
                 openIntake();
-                goTo(0.3,0.6,0,0.4, 50,0.04,2,true);
-                setArmPosition(0, armSpeed);
+                goTo(MatSize, MatSize*2, 180, movementSpeed, 50, 0.04, 1, true);
+
+                // park into center
+                goTo(MatSize, MatSize*1.5, 180, movementSpeed, 50, 0.04, 1, true);
                 break;
             default:
                 telemetry.addData("OH SHIT!","WE FUCKED UP!");
@@ -111,6 +110,7 @@ public class AutoTestRight extends LinearOpMode {
                 sleep(2000);
                 break;
         }
+        setArmPosition(0, armSpeed);
     }
 
     private void pickupLeftConePivot(){
@@ -118,14 +118,14 @@ public class AutoTestRight extends LinearOpMode {
         openIntake();
         setArmPosition(coneHeightDif * coneCount, armSpeed);
         coneCount--;
-        goTo(-MatSize*0.8, MatSize*2, -90, 0.6, 0.2, 0.01, 0.2, true);
-        goTo(-MatSize, MatSize*2, -90, 0.6, 0.2, 0.01, 0.02, true);
+        goTo(-MatSize*0.8, MatSize*2, -90, 0.6, 50, 0.01, 1, true);
+        goTo(-MatSize, MatSize*2, -90, 0.6, 50, 0.01, 1, true);
         closeIntake();
         setArmPosition(armMedHeight, 0.3);
         // rotation towards junction
-        goTo(0, MatSize*2, 46, movementSpeed, 0.3, 0.01, 0.02, true);
+        goTo(0, MatSize*2, 46, movementSpeed, 50, 0.01, 1, true);
         setArmPosition(armTop, armSpeed);
-        goTo(MatSize*0.2, MatSize*2.2, 46, movementSpeed, 0.3, 0.01, 0.02, true);
+        goTo(MatSize*0.2, MatSize*2.2, 46, movementSpeed, 50, 0.01, 1, true);
         sleep(200);
         // drop and release
         setArmPosition(armDrop, armSpeed);
