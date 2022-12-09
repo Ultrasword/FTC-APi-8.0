@@ -30,6 +30,7 @@ public class Vision extends OpenCvPipeline {
         Core.inRange(input, lower_magenta, upper_magenta, magenta);
         Core.bitwise_or(yellow, cyan, mask);
         Core.bitwise_or(mask, magenta, mask);
+        contours.clear();
         Imgproc.findContours(mask, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
         if (contours.size() > 0) {
             double maxArea = 0;
@@ -38,7 +39,7 @@ public class Vision extends OpenCvPipeline {
                 Mat contour = contours.get(idx);
                 double contourArea = Imgproc.contourArea(contour);
                 Rect rect = Imgproc.boundingRect(contour);
-                if (contourArea > maxArea && rect.height<2.5*rect.width) {
+                if (contourArea > maxArea && rect.height<2.5*rect.width && rect.height>rect.width) {
                     maxArea = contourArea;
                     maxAreaIdx = idx;
                 }
@@ -55,7 +56,6 @@ public class Vision extends OpenCvPipeline {
             else if (color[0] >= 160 && color[0] <= 170) route = "RIGHT";
             else route = "OH SHIT!";
         }
-        contours.clear();
         return input;
     }
 }

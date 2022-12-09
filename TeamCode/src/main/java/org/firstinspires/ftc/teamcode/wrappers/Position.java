@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.wrappers;
 
 public class Position {
     private static final double STRAFE_RATIO = 658f/892f;
-    private static final double TICKS_TO_METERS = 0.38/658f;
+    private static final double TICKS_TO_METERS = 1.3*0.38/658f;
     private static final double DEGREES_TO_RADIANS = Math.PI/180f;
     private MecanumChassis robot;
     private Position.PositionThread positionThread;
@@ -14,6 +14,10 @@ public class Position {
         this.robot = robot;
         positionThread = new PositionThread();
         positionThread.start();
+    }
+    public void updatePos(double x, double y) {
+        this.x = x;
+        this.y = y;
     }
     private class PositionThread extends Thread {
         public PositionThread() {
@@ -38,8 +42,8 @@ public class Position {
                     bl = robot.bl.getCurrentPosition();
                     dx = (a-b)*0.25*STRAFE_RATIO;
                     dy = (a+b)*0.25;
-                    x+=dx*Math.cos(angle*DEGREES_TO_RADIANS)+dy*Math.sin(angle*DEGREES_TO_RADIANS);
-                    y+=dx*Math.sin(angle*DEGREES_TO_RADIANS)-dy*Math.cos(angle*DEGREES_TO_RADIANS);
+                    x+=dx*Math.cos(angle*DEGREES_TO_RADIANS)-dy*Math.sin(angle*DEGREES_TO_RADIANS);
+                    y+=-dx*Math.sin(angle*DEGREES_TO_RADIANS)-dy*Math.cos(angle*DEGREES_TO_RADIANS);
                     Thread.sleep(10);
                 }
             } catch (Exception e) {}
