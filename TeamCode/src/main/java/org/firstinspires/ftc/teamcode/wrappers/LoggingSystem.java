@@ -23,9 +23,7 @@ public class LoggingSystem {
     public LoggingSystem(){
         Date date = Calendar.getInstance().getTime();
         try {
-
-            String name = String.format("%s/FIRST/data/%s.txt",
-                    Environment.getExternalStorageDirectory().getAbsolutePath(), dateFormat.format(date));
+            String name = String.format("%s/FIRST/data/%s.txt\", Environment.getExternalStorageDirectory().getAbsolutePath()", dateFormat.format(date));
             file = new File(name);
             if(file.exists()) file.createNewFile();
             fileWriter = new FileWriter(file);
