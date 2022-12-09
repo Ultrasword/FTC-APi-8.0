@@ -38,26 +38,35 @@ public class AutoJustParking extends LinearOpMode {
         robot = new MecanumChassis(hardwareMap);
         pos = new Position(robot);
         control = new Controller(robot, pos);
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        webcamName = hardwareMap.get(WebcamName.class, "Camera");
-        camera = OpenCvCameraFactory.getInstance().createWebcam(webcamName, cameraMonitorViewId);
-        sleeveDetection = new Vision();
-        camera.setPipeline(sleeveDetection);
-        camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
-            @Override
-            public void onOpened() {
-                camera.startStreaming(320,240, OpenCvCameraRotation.SIDEWAYS_RIGHT);
-            }
-            @Override
-            public void onError(int errorCode) {}
-        });
-        while (!isStarted()) {
-            telemetry.addData("route: ", sleeveDetection.route);
-            telemetry.update();
-        }
-        route = sleeveDetection.route;
-        waitForStart();
 
+        // ----------------- vision setup ---------------- //
+//        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+//        webcamName = hardwareMap.get(WebcamName.class, "Camera");
+//        camera = OpenCvCameraFactory.getInstance().createWebcam(webcamName, cameraMonitorViewId);
+//        sleeveDetection = new Vision();
+//        camera.setPipeline(sleeveDetection);
+//        camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
+//            @Override
+//            public void onOpened() {
+//                camera.startStreaming(320,240, OpenCvCameraRotation.SIDEWAYS_RIGHT);
+//            }
+//            @Override
+//            public void onError(int errorCode) {}
+//        });
+//        while (!isStarted()) {
+//            telemetry.addData("route: ", sleeveDetection.route);
+//            telemetry.update();
+//        }
+//        route = sleeveDetection.route;
+        // ------------------ vision detection end ------------------ //
+        waitForStart();
+        // manually select parking position
+        while (!isStarted()){
+            if(gamepad1.a) route = "LEFT";
+            else if(gamepad1.x) route = "CENTER";
+            else if(gamepad1.y) route = "RIGHT";
+        }
+        // choose specific
         // ----------- parking ------------ //
         // INITLA POSITION = (0, 0)
         // always go to pivot position (0, MatSize*2);
@@ -84,10 +93,7 @@ public class AutoJustParking extends LinearOpMode {
                 break;
         }
         setArmPosition(0, armSpeed);
-
-
     }
-
     private void pickupLeftConePivot(){
         // moves to pivot position, move to left cone pickup location, move to junction and raise and drop
         openIntake();

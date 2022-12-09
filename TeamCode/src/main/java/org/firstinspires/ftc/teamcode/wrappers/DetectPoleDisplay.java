@@ -1,16 +1,11 @@
 package org.firstinspires.ftc.teamcode.wrappers;
 
-
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
-import org.opencv.core.MatOfPoint;
 import org.opencv.core.Point;
-import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvPipeline;
-
-import java.util.List;
 
 public class DetectPoleDisplay extends OpenCvPipeline {
     private static final Scalar lower_yellow = new Scalar(10,130,130), upper_yellow = new Scalar(30,255,255);
