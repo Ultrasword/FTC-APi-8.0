@@ -4,13 +4,15 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.firstinspires.ftc.teamcode.wrappers.Controller;
 import org.firstinspires.ftc.teamcode.wrappers.MecanumChassis;
 import org.firstinspires.ftc.teamcode.wrappers.Position;
 
 @TeleOp(name="teleop")
 public class teleop extends LinearOpMode {
-    MecanumChassis robot;
-    Position pos;
+    private MecanumChassis robot;
+    private Position pos;
+    private Controller control;
     private double clamp(double min, double max, double val) {
         if (val<min) return min;
         else if (val>max) return max;
@@ -22,6 +24,7 @@ public class teleop extends LinearOpMode {
         int currentArmPosition=0;
         robot = new MecanumChassis(hardwareMap);
         pos = new Position(robot);
+        control = new Controller(robot, pos);
         waitForStart();
         setArmPosition(20, 0.3);
         while (opModeIsActive()) {
@@ -31,10 +34,11 @@ public class teleop extends LinearOpMode {
             telemetry.update();
             double lx = gamepad1.left_stick_x, ly = gamepad1.left_stick_y, rx = gamepad1.right_stick_x, ry = gamepad2.right_stick_y;
             double dn = 0.8/Math.max(Math.abs(lx)+0.7*Math.abs(rx)+Math.abs(ly),1);
-            robot.fr.setPower((ly+lx+0.7*rx)*dn);
-            robot.fl.setPower((ly-lx-0.7*rx)*dn);
-            robot.br.setPower((ly-lx+0.7*rx)*dn);
-            robot.bl.setPower((ly+lx-0.7*rx)*dn);
+            control.goTo(pos.x+0.3*lx,pos.y+0.3*ly,pos.angle+rx*5,1.5*Math.sqrt(lx*lx+ly*ly),ry*180,0.02,2,false);
+//            robot.fr.setPower((ly+lx+0.7*rx)*dn);
+//            robot.fl.setPower((ly-lx-0.7*rx)*dn);
+//            robot.br.setPower((ly-lx+0.7*rx)*dn);
+//            robot.bl.setPower((ly+lx-0.7*rx)*dn);
             if (gamepad2.dpad_up) {
                 currentArmPosition = 520;
                 setArmPosition(currentArmPosition, 0.3);
@@ -56,7 +60,6 @@ public class teleop extends LinearOpMode {
             }
             if (gamepad2.left_bumper) robot.intake.setPosition(0.55);
             else robot.intake.setPosition(0.75);
-
         }
     }
     private void setArmPosition(int pos, double speed) {

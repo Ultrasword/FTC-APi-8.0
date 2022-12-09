@@ -17,7 +17,7 @@ public class DetectPole extends OpenCvPipeline {
     private Mat hierarchy = new Mat();
     private List<MatOfPoint> contours = new java.util.ArrayList<>();
     private final double polePosition = 200;
-    public double error=0;
+    public double error=0, width=0;
     @Override
     public Mat processFrame(Mat input) {
         Imgproc.cvtColor(input, input, Imgproc.COLOR_RGB2HSV);
@@ -38,6 +38,7 @@ public class DetectPole extends OpenCvPipeline {
             if (maxIndex != -1) {
                 Rect maxRect = Imgproc.boundingRect(contours.get(maxIndex));
                 error = maxRect.x + maxRect.width / 2 - polePosition;
+                width = maxRect.width;
             }
         }
         return input;

@@ -43,6 +43,10 @@ public class Controller {
         this.finished = false;
         controllerThread.start();
     }
+    public void stop() {
+        controllerThread.interrupt();
+        finished = true;
+    }
     private double heading(double theta) {
         if (Math.abs(theta)%360>180) return Math.signum(theta)*(Math.abs(theta)%360-360);
         else return Math.signum(theta)*(Math.abs(theta)%360);

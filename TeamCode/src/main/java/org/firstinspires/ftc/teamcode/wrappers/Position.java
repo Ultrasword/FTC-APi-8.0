@@ -15,6 +15,10 @@ public class Position {
         positionThread = new PositionThread();
         positionThread.start();
     }
+    public void updatePos(double x, double y) {
+        this.x = x;
+        this.y = y;
+    }
     private class PositionThread extends Thread {
         public PositionThread() {
             fr = robot.fr.getCurrentPosition();

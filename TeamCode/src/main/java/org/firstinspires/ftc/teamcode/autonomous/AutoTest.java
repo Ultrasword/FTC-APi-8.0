@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.wrappers.Controller;
+import org.firstinspires.ftc.teamcode.wrappers.DetectPoleDisplay;
 import org.firstinspires.ftc.teamcode.wrappers.MecanumChassis;
 import org.firstinspires.ftc.teamcode.wrappers.Position;
 import org.firstinspires.ftc.teamcode.wrappers.Vision;
@@ -20,6 +21,7 @@ public class AutoTest extends LinearOpMode {
     private Position pos;
     private Controller control;
     private Vision sleeveDetection;
+    private DetectPoleDisplay poleDetection;
     private WebcamName webcamName;
     private OpenCvCamera camera;
     private String route;
@@ -33,6 +35,7 @@ public class AutoTest extends LinearOpMode {
         webcamName = hardwareMap.get(WebcamName.class, "Camera");
         camera = OpenCvCameraFactory.getInstance().createWebcam(webcamName, cameraMonitorViewId);
         sleeveDetection = new Vision();
+        poleDetection = new DetectPoleDisplay();
         camera.setPipeline(sleeveDetection);
         camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
@@ -48,6 +51,7 @@ public class AutoTest extends LinearOpMode {
         }
         route = sleeveDetection.route;
         waitForStart();
+        camera.setPipeline(poleDetection);
         closeIntake();
         setArmPositionTiming(520,0.2,1000);
         goTo(0,0.9,45,1.2,50,0.04,2,true);
@@ -55,7 +59,7 @@ public class AutoTest extends LinearOpMode {
         setArmPositionWait(350,0.2);
         openIntake();
         goTo(0,0.9,45,0.8,50,0.04,2,true);
-        setArmPosition(10,0.2);
+        setArmPositionTiming(10,0.2,0);
         goTo(-0.4,0.86,-90,0.8,150,0.02,2,true);
         switch (route) {
             case "LEFT":
@@ -84,20 +88,13 @@ public class AutoTest extends LinearOpMode {
     private void goTo(double x, double y, double angle, double speed, double angleSpeed, double distanceDeadzone, double angleDeadzone, boolean velocityControl) {
         control.goTo(x, y, angle, speed, angleSpeed, distanceDeadzone, angleDeadzone, velocityControl);
         while (!control.finished) {
+            if (isStopRequested()) control.stop();
             telemetry.addData("Angle: ", pos.angle);
             telemetry.addData("X: ", pos.x);
             telemetry.addData("Y: ", pos.y);
             telemetry.update();
             sleep(10);
         }
-    }
-    private void setArmPosition(int pos, double speed) {
-        robot.leftArm.setTargetPosition(pos);
-        robot.rightArm.setTargetPosition(pos);
-        robot.leftArm.setPower(speed);
-        robot.rightArm.setPower(speed);
-        robot.leftArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.rightArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
     private void setArmPositionWait(int pos, double speed) {
         robot.leftArm.setTargetPosition(pos);
@@ -106,7 +103,7 @@ public class AutoTest extends LinearOpMode {
         robot.rightArm.setPower(speed);
         robot.leftArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.rightArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        while (robot.leftArm.isBusy()) sleep(10);
+        while (!isStopRequested() && robot.leftArm.isBusy()) sleep(10);
     }
     private void setArmPositionTiming(int pos, double speed, int delay) {
         sleep(delay);
@@ -116,5 +113,17 @@ public class AutoTest extends LinearOpMode {
         robot.rightArm.setPower(speed);
         robot.leftArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.rightArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
+    private void goToPole() {
+        while (!isStopRequested() && Math.abs(poleDetection.widthError) > 2 && Math.abs(poleDetection.error) > 3) {
+            robot.fl.setPower(-poleDetection.error * 0.01+poleDetection.widthError * 0.01);
+            robot.fr.setPower(poleDetection.error * 0.01+poleDetection.widthError * 0.01);
+            robot.bl.setPower(-poleDetection.error * 0.01+poleDetection.widthError * 0.01);
+            robot.br.setPower(poleDetection.error * 0.01+poleDetection.widthError * 0.01);
+            telemetry.addData("error: ", poleDetection.error);
+            telemetry.addData("widthError: ", poleDetection.widthError);
+            telemetry.update();
+            sleep(10);
+        }
     }
 }
