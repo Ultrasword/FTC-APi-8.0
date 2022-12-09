@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.wrappers.Controller;
+import org.firstinspires.ftc.teamcode.wrappers.DetectPole;
 import org.firstinspires.ftc.teamcode.wrappers.DetectPoleDisplay;
 import org.firstinspires.ftc.teamcode.wrappers.MecanumChassis;
 import org.firstinspires.ftc.teamcode.wrappers.Position;
@@ -21,7 +22,7 @@ public class AutoTest extends LinearOpMode {
     private Position pos;
     private Controller control;
     private Vision sleeveDetection;
-    private DetectPoleDisplay poleDetection;
+    private DetectPole poleDetection;
     private WebcamName webcamName;
     private OpenCvCamera camera;
     private String route;
@@ -35,7 +36,7 @@ public class AutoTest extends LinearOpMode {
         webcamName = hardwareMap.get(WebcamName.class, "Camera");
         camera = OpenCvCameraFactory.getInstance().createWebcam(webcamName, cameraMonitorViewId);
         sleeveDetection = new Vision();
-        poleDetection = new DetectPoleDisplay();
+        poleDetection = new DetectPole();
         camera.setPipeline(sleeveDetection);
         camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
@@ -115,7 +116,7 @@ public class AutoTest extends LinearOpMode {
         robot.rightArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
     private void goToPole() {
-        while (!isStopRequested() && Math.abs(poleDetection.widthError) > 2 && Math.abs(poleDetection.error) > 3) {
+        while (!isStopRequested() && Math.abs(poleDetection.widthError) > 2 && Math.abs(poleDetection.error) > 3 && poleDetection.noPole<3) {
             robot.fl.setPower(-poleDetection.error * 0.01+poleDetection.widthError * 0.01);
             robot.fr.setPower(poleDetection.error * 0.01+poleDetection.widthError * 0.01);
             robot.bl.setPower(-poleDetection.error * 0.01+poleDetection.widthError * 0.01);

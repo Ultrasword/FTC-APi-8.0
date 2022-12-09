@@ -13,9 +13,9 @@ import org.openftc.easyopencv.OpenCvPipeline;
 import java.util.List;
 
 public class DetectPoleDisplay extends OpenCvPipeline {
-    private static final Scalar lower_yellow = new Scalar(10,130,130), upper_yellow = new Scalar(30,255,255);
+    private static final Scalar lower_yellow = new Scalar(10,130,130), upper_yellow = new Scalar(28,255,255);
     private Mat mask = new Mat(), edges = new Mat(), lines = new Mat();
-    private final double polePosition = 0, targetWidth = 0;
+    private final double polePosition = 73, targetWidth = 31.5;
     private double maxWidth=0, m=0;
     private int max_x=0, max_y=0;
     public double error=0, widthError=0;
@@ -49,12 +49,19 @@ public class DetectPoleDisplay extends OpenCvPipeline {
         Imgproc.cvtColor(input, mask, Imgproc.COLOR_RGB2HSV);
         Core.inRange(mask, lower_yellow, upper_yellow, mask);
         Imgproc.Canny(mask, edges, 1000, 1200, 3);
-        Imgproc.HoughLinesP(edges, lines, 1, Math.PI/180, 100, 30, 10);
-        if (lines.cols() > 0) {
-            quicksort(lines, 0, lines.cols()-1);
+        Imgproc.HoughLinesP(edges, lines, 1, Math.PI/180, 50, 30, 10);
+        // loop through lines
+        maxWidth = 0;
+        m = 0;
+        max_x = 0;
+        max_y = 0;
+
+
+        if (lines.rows() > 0) {
+            quicksort(lines, 0, lines.rows()-1);
             int maxIndex = -1;
-            for (int i = 0; i < lines.cols()-1; i++) {
-                double[] line1 = lines.get(0, i), line2 = lines.get(0, i+1);
+            for (int i = 0; i < lines.rows()-1; i++) {
+                double[] line1 = lines.get(i, 0), line2 = lines.get(i+1, 0);
                 double x1 = line1[0], y1 = line1[1], x2 = line1[2], y2 = line1[3], x3 = line2[0], y3 = line2[1], x4 = line2[2], y4 = line2[3];
                 if (mask.get((int)((y1+y2+y3+y4)/4), (int)((x1+x2+x3+x4)/4))[0] > 0) {
                     double dx = x2-x1, dy = y2-y1;
@@ -79,6 +86,6 @@ public class DetectPoleDisplay extends OpenCvPipeline {
                 widthError = 0;
             }
         }
-        return edges;
+        return input;
     }
 }
