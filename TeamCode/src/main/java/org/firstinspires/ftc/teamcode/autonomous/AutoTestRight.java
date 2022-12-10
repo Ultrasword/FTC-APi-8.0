@@ -29,9 +29,9 @@ public class AutoTestRight extends LinearOpMode {
 
     private double MPerFoot = 0.3048, MatSize = MPerFoot*2;
 
-    private int coneHeightDif = 15, coneCount = 10;
-    private double armSpeed = 0.4, movementSpeed = 0.8, angleSpeed = 50;
-    private int armTop = 520, armDrop = 350, armBottom = 10, armMedHeight = 100;
+    private int coneHeightDif = 10, coneCount = 5;
+    private double armSpeed = 0.25, movementSpeed = 0.8, angleSpeed = 50;
+    private int armTop = 520, armDrop = 350, armBottom = 10, armMedHeight = 300;
     private double angleDeadZone = 2, moveDeadZone = 0.04;
 
     @Override
@@ -75,12 +75,14 @@ public class AutoTestRight extends LinearOpMode {
         // 2 mats forward, and turn left 45deg
         closeIntake();
         setArmPosition(armMedHeight, armSpeed, 1000);
-        sleep(500);
         // kick out signal
         goToDefault(0, MatSize*2.5, 0);
         toPivotLocation(-45);
         setArmPosition(armTop, armSpeed, 0);
+        // REPLACE with darren junction align
         goToDefault(-MatSize*0.2, MatSize*2.2, -45);
+        sleep(200);
+        // ---
         setArmPositionWaitFinish(armMedHeight, armSpeed);
         openIntake();
         toPivotLocation(90);
@@ -90,6 +92,7 @@ public class AutoTestRight extends LinearOpMode {
             pickupSideConeThenToPivot(-45, armTop);
             // REPLACE with darren junction align
             goToDefault(-MatSize * 0.2, MatSize * 2.2, -45);
+            sleep(200);
             // ----
             setArmPositionWaitFinish(armMedHeight, armSpeed);
             openIntake();
@@ -100,22 +103,20 @@ public class AutoTestRight extends LinearOpMode {
         // step 3: pick up final cone
         pickupSideConeThenToPivot(90, armMedHeight);
         // move back to designated junction depending on distance - find move back distance
-        double dcoef = route.equals("LEFT") ? -2 : (route.equals("CENTER") ? -1 : 0.7);
+        double dcoef = (route.equals("LEFT") || route.equals("OH SHIT!")) ? -2 : (route.equals("CENTER") ? -1 : 0.7);
         goToDefault(MatSize * dcoef, MatSize*2, 90);
 
         // step 4: place cone
         // go to cone position
-        dcoef = route.equals("LEFT") ? -2 : (route.equals("CENTER") ? -1 : 0);
+        dcoef = (route.equals("LEFT") || route.equals("OH SHIT!")) ? -2 : (route.equals("CENTER") ? -1 : 0);
         setArmPosition(armMedHeight, armSpeed, 0);
         setArmPositionWaitFinish(armTop, armSpeed);
         goToDefault(MatSize * (dcoef-0.2), MatSize*2, -135);
         // placing cone
         setArmPositionWaitFinish(armMedHeight, armSpeed);
         openIntake();
-        goToDefault(MatSize*(dcoef+1), MatSize*2, -180);
-
-
         setArmPosition(0, armSpeed, 0);
+        goToDefault(MatSize*(dcoef+1), MatSize*2, -180);
     }
 
     // ----------- stick stuff -------------- //
@@ -124,7 +125,7 @@ public class AutoTestRight extends LinearOpMode {
     }
     private void pickupSideConeThenToPivot(double finalAngle, int finalArmHeight){
         // moves to pivot position, move to left cone pickup location, move to junction and raise and drop
-        setArmPosition(coneHeightDif * coneCount, armSpeed, 0);
+        setArmPosition(coneHeightDif * coneCount+10, armSpeed, 0);
         coneCount--;
         // now move to side -- not completely side
         goToDefault(MatSize*0.6, MatSize*2, 90);
