@@ -30,8 +30,9 @@ public class AutoJustParking extends LinearOpMode {
     private double MPerFoot = 0.3048, MatSize = MPerFoot*2;
 
     private int coneHeightDif = 10, coneCount = 5;
-    private double armSpeed = 0.4, movementSpeed = 0.8;
+    private double armSpeed = 0.4, movementSpeed = 0.8, angleSpeed = 50;
     private int armTop = 520, armDrop = 350, armBottom = 10, armMedHeight = 100;
+    private double angleDeadZone = 2, moveDeadZone = 0.04;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -61,8 +62,8 @@ public class AutoJustParking extends LinearOpMode {
         // ------------------ vision detection end ------------------ //
         waitForStart();
 //        goTo(0, 1, 0, movementSpeed, 50, 0.02, 1, true);
-        goTo(0.5, 0, 0, movementSpeed, 50, 0.04, 1, true);
-        sleep(20000);
+//        goTo(0.5, 0, 0, movementSpeed, 50, 0.04, 1, true);
+//        sleep(20000);
 
 
         // choose specific
@@ -93,32 +94,16 @@ public class AutoJustParking extends LinearOpMode {
         }
         setArmPosition(0, armSpeed);
     }
-    private void pickupLeftConePivot(){
-        // moves to pivot position, move to left cone pickup location, move to junction and raise and drop
-        openIntake();
-        setArmPosition(coneHeightDif * coneCount, armSpeed);
-        coneCount--;
-        goTo(-MatSize*0.8, MatSize*2, -90, 0.6, 50, 0.01, 1, true);
-        goTo(-MatSize, MatSize*2, -90, 0.6, 50, 0.01, 1, true);
-        closeIntake();
-        setArmPosition(armMedHeight, 0.3);
-        // rotation towards junction
-        goTo(0, MatSize*2, 46, movementSpeed, 50, 0.01, 1, true);
-        setArmPosition(armTop, armSpeed);
-        goTo(MatSize*0.2, MatSize*2.2, 46, movementSpeed, 50, 0.01, 1, true);
-        sleep(200);
-        // drop and release
-        setArmPosition(armDrop, armSpeed);
-        openIntake();
-        resetCycle();
-        setArmPosition(0, armSpeed);
-        // final position will be at pivot -- arm down -- -90deg
-    }
 
     private void resetCycle(){
         goTo(0, MatSize*2, -90, 0.6, 0.2, 0.01, 0.02, true);
     }
-
+    private void resetCycle(double angle){
+        goToDefault(0, MatSize*2, angle);
+    }
+    private void goToDefault(double x, double y, double angle){
+        goTo(x, y, angle, movementSpeed, angleSpeed, moveDeadZone, angleDeadZone, true);
+    }
     private void closeIntake() {
         robot.intake.setPosition(0.75);
     }

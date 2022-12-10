@@ -20,6 +20,10 @@ public class teleop extends LinearOpMode {
 
     double coefficient = 0.65;
 
+    // aiden buttons
+    boolean bumperToggle = false, triggerToggle = false;
+    private int armTop = 520, armDrop = 350, armBottom = 10, armMedHeight = 100;
+
     @Override
     public void runOpMode() throws InterruptedException {
         robot = new MecanumChassis(hardwareMap);
@@ -49,19 +53,32 @@ public class teleop extends LinearOpMode {
             robot.br.setPower((ly-lx+0.7*rx)*dn * coefficient);
             robot.bl.setPower((ly+lx-0.7*rx)*dn * coefficient);
 
+            // open
+            if (gamepad2.left_bumper) openIntake();
+                // close
+            else closeIntake();
+            // --- arm position
             if (gamepad2.dpad_up) setArmPosition(520, 0.3);
             else if (gamepad2.b) setArmPosition(365, 0.3);
             else if (gamepad2.y) setArmPosition(260, 0.3);
             else if (gamepad2.x) setArmPosition(70, 0.3);
             else if (gamepad2.dpad_down) setArmPosition(5, 0.2);
             // either stick works for this
-            else if (gamepad2.right_stick_y > 0 || gamepad2.left_stick_y > 0) setArmPosition(clamp(5, 520, robot.leftArm.getCurrentPosition() - 35), 0.4);
-            else if(gamepad2.right_stick_y < 0 || gamepad2.left_stick_y < 0) setArmPosition(clamp(5, 520, robot.leftArm.getCurrentPosition() + 35), 0.4);
-
-            // open
-            if (gamepad2.left_bumper) robot.intake.setPosition(0.55);
-            // close
-            else robot.intake.setPosition(0.78);
+            else if (gamepad2.right_stick_y > 0 || gamepad2.left_stick_y > 0)
+                setArmPosition(clamp(5, 520, robot.leftArm.getCurrentPosition() -
+                        (int)(50 * (gamepad2.left_bumper && robot.leftArm.getCurrentPosition() < armMedHeight ? 0.5 : 1.0))), 0.4);
+            else if(gamepad2.right_stick_y < 0 || gamepad2.left_stick_y < 0)
+                setArmPosition(clamp(5, 520, robot.leftArm.getCurrentPosition() +
+                        (int)(50 * (gamepad2.left_bumper && robot.leftArm.getCurrentPosition() < armMedHeight ? 0.5 : 1.0))), 0.4);
+            // buttons for aiden
+            if(gamepad2.right_bumper && !bumperToggle){
+                bumperToggle = true;
+                setArmPosition(clamp(5, 520, robot.leftArm.getCurrentPosition() + 5), 0.4);
+            }else bumperToggle = false;
+            if(gamepad2.right_trigger > 0 && !bumperToggle){
+                triggerToggle = true;
+                setArmPosition(clamp(5, 520, robot.leftArm.getCurrentPosition() + 20), 0.4);
+            }else triggerToggle = false;
         }
 
 
@@ -79,5 +96,11 @@ public class teleop extends LinearOpMode {
         robot.rightArm.setPower(speed);
         robot.leftArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.rightArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
+    private void closeIntake() {
+        robot.intake.setPosition(0.80);
+    }
+    private void openIntake() {
+        robot.intake.setPosition(0.55);
     }
 }

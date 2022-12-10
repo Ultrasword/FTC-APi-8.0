@@ -62,23 +62,23 @@ public class AutoTest extends LinearOpMode {
         goTo(0,0.9,45,0.8,50,0.04,2,true);
         setArmPositionTiming(10,0.2,0);
         goTo(-0.4,0.86,-90,0.8,150,0.02,2,true);
-//        switch (route) {
-//            case "LEFT":
-//                goTo(0,0,90,0.4, 50,0.04,2,true);
-//                break;
-//            case "CENTER":
-//                goTo(0,0,-90,0.4, 50,0.04,2,true);
-//                break;
-//
-//            case "RIGHT":
-//                goTo(0,1,0,0.4, 50,0.04,2,true);
-//                break;
-//            default:
-//                telemetry.addData("OH SHIT!","WE FUCKED UP!");
-//                telemetry.update();
-//                sleep(2000);
-//                break;
-//        }
+        switch (route) {
+            case "LEFT":
+                goTo(0,0,90,0.4, 50,0.04,2,true);
+                break;
+            case "CENTER":
+                goTo(0,0,-90,0.4, 50,0.04,2,true);
+                break;
+
+            case "RIGHT":
+                goTo(0,1,0,0.4, 50,0.04,2,true);
+                break;
+            default:
+                telemetry.addData("OH SHIT!","WE FUCKED UP!");
+                telemetry.update();
+                sleep(2000);
+                break;
+        }
     }
     private void closeIntake() {
         robot.intake.setPosition(0.75);
