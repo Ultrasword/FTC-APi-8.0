@@ -13,8 +13,8 @@ import org.openftc.easyopencv.OpenCvPipeline;
 import java.util.List;
 
 public class DetectPole extends OpenCvPipeline {
-    private static final Scalar lower_yellow = new Scalar(10,130,130), upper_yellow = new Scalar(28,255,255);
-    private Mat mask = new Mat(), edges = new Mat(), lines = new Mat();
+    private static final Scalar lower_yellow = new Scalar(7,50,50), upper_yellow = new Scalar(28,255,255);
+    private Mat mask = new Mat(), res = new Mat(), edges = new Mat(), lines = new Mat();
     private final double polePosition = 83, targetWidth = 34.5;
     private double maxWidth=0, max_x=0;
     public double error=0, widthError=0;
@@ -27,15 +27,15 @@ public class DetectPole extends OpenCvPipeline {
         }
     }
     private int partition(Mat lines, int low, int high) {
-        double pivot = lines.get(high, 0)[0] + lines.get(high, 0)[2];
+        double pivot = Math.min(lines.get(high, 0)[0], lines.get(high, 0)[2]);
         int i = low-1, j = high+1;
         while (true) {
             do {
                 i++;
-            } while (lines.get(i, 0)[0] + lines.get(i, 0)[2] < pivot);
+            } while (Math.min(lines.get(i, 0)[0], lines.get(i, 0)[2]) < pivot);
             do {
                 j--;
-            } while (lines.get(j, 0)[0] + lines.get(j, 0)[2] > pivot);
+            } while (Math.min(lines.get(j, 0)[0], lines.get(j, 0)[2]) > pivot);
             if (i >= j) {
                 return j;
             }
@@ -46,10 +46,12 @@ public class DetectPole extends OpenCvPipeline {
     }
     @Override
     public Mat processFrame(Mat input) {
-        Imgproc.cvtColor(input, mask, Imgproc.COLOR_RGB2HSV);
-        Core.inRange(mask, lower_yellow, upper_yellow, mask);
-        Imgproc.Canny(mask, edges, 1000, 1200, 3);
-        Imgproc.HoughLinesP(edges, lines, 1, Math.PI/180, 50, 40, 10);
+        res.setTo(new Scalar(0));
+        Imgproc.cvtColor(input, input, Imgproc.COLOR_RGB2HSV);
+        Core.inRange(input, lower_yellow, upper_yellow, mask);
+        Core.bitwise_and(input, input, res, mask);
+        Imgproc.Canny(res, edges, 10, 40, 3);
+        Imgproc.HoughLinesP(edges, lines, 1, Math.PI/180, 40, 20, 100);
         maxWidth = 0;
         max_x = 0;
         if (lines.rows() > 0) {

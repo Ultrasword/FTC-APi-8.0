@@ -16,7 +16,7 @@ import org.firstinspires.ftc.teamcode.wrappers.Vision;
 public class VisionTest extends LinearOpMode {
     private Vision sleeveDetection;
     private MecanumChassis robot;
-    private DetectPole poleDetection;
+    private DetectPoleDisplay poleDetection;
     private WebcamName webcamName;
     private OpenCvCamera camera;
 
@@ -27,7 +27,7 @@ public class VisionTest extends LinearOpMode {
         webcamName = hardwareMap.get(WebcamName.class, "Camera");
         camera = OpenCvCameraFactory.getInstance().createWebcam(webcamName, cameraMonitorViewId);
         sleeveDetection = new Vision();
-        poleDetection = new DetectPole();
+        poleDetection = new DetectPoleDisplay();
         camera.setPipeline(poleDetection);
         camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
@@ -48,14 +48,14 @@ public class VisionTest extends LinearOpMode {
         goToPole();
     }
     private void goToPole() {
-        while (!isStopRequested() && (!(Math.abs(poleDetection.widthError) < 4 && Math.abs(poleDetection.error) < 5 && poleDetection.noPole==0))) {
+        while (!isStopRequested() && (!(Math.abs(poleDetection.widthError) < 4 && Math.abs(poleDetection.error) < 5))) {
             robot.fl.setPower(-poleDetection.error * 0.002+poleDetection.widthError * 0.01);
             robot.fr.setPower(poleDetection.error * 0.002+poleDetection.widthError * 0.01);
             robot.bl.setPower(-poleDetection.error * 0.002+poleDetection.widthError * 0.01);
             robot.br.setPower(poleDetection.error * 0.002+poleDetection.widthError * 0.01);
             telemetry.addData("error: ", poleDetection.error);
             telemetry.addData("widthError: ", poleDetection.widthError);
-            telemetry.addData("noPole: ", poleDetection.noPole);
+//            telemetry.addData("noPole: ", poleDetection.noPole);
             telemetry.update();
             sleep(10);
         }

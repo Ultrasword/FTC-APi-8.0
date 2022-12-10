@@ -2,12 +2,10 @@ package org.firstinspires.ftc.teamcode.autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.wrappers.Controller;
-import org.firstinspires.ftc.teamcode.wrappers.DetectPole;
 import org.firstinspires.ftc.teamcode.wrappers.DetectPoleDisplay;
 import org.firstinspires.ftc.teamcode.wrappers.MecanumChassis;
 import org.firstinspires.ftc.teamcode.wrappers.Position;
@@ -16,13 +14,13 @@ import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 
-@Autonomous(name="auton")
-public class AutoTest extends LinearOpMode {
+@Autonomous(name="Auton Left")
+public class AutonLeft extends LinearOpMode {
     private MecanumChassis robot;
     private Position pos;
     private Controller control;
     private Vision sleeveDetection;
-    private DetectPole poleDetection;
+    private DetectPoleDisplay poleDetection;
     private WebcamName webcamName;
     private OpenCvCamera camera;
     private String route;
@@ -36,7 +34,7 @@ public class AutoTest extends LinearOpMode {
         webcamName = hardwareMap.get(WebcamName.class, "Camera");
         camera = OpenCvCameraFactory.getInstance().createWebcam(webcamName, cameraMonitorViewId);
         sleeveDetection = new Vision();
-        poleDetection = new DetectPole();
+        poleDetection = new DetectPoleDisplay();
         camera.setPipeline(sleeveDetection);
         camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
@@ -54,31 +52,58 @@ public class AutoTest extends LinearOpMode {
         waitForStart();
         camera.setPipeline(poleDetection);
         closeIntake();
+
         setArmPositionTiming(520,0.2,1000);
-        goTo(0,1,45,1.2,50,0.04,2,true);
-        goToPole();
+        goTo(-0.05,1.4,45,1.2,50,0.04,2,true);
+        goTo(0.15,1.45,45,1.2,50,0.04,2,true);
+
         setArmPositionWait(350,0.2);
         openIntake();
-        goTo(0,0.9,45,0.8,50,0.04,2,true);
-        setArmPositionTiming(10,0.2,0);
-        goTo(-0.4,0.86,-90,0.8,150,0.02,2,true);
-//        switch (route) {
-//            case "LEFT":
-//                goTo(0,0,90,0.4, 50,0.04,2,true);
-//                break;
-//            case "CENTER":
-//                goTo(0,0,-90,0.4, 50,0.04,2,true);
-//                break;
-//
-//            case "RIGHT":
-//                goTo(0,1,0,0.4, 50,0.04,2,true);
-//                break;
-//            default:
-//                telemetry.addData("OH SHIT!","WE FUCKED UP!");
-//                telemetry.update();
-//                sleep(2000);
-//                break;
-//        }
+        setArmPositionWait(520,0.2);
+        goTo(-0.05,1.4,-20,0.6,180,0.08,15,false);
+        setArmPositionTiming(100,0.2,0);
+        goTo(-0.58,1.4,-90,0.6,180,0.04,2,true);
+        closeIntake();
+        sleep(300);
+        setArmPositionWait(125, 0.2);
+        setArmPositionTiming(520, 0.2, 0);
+        goTo(0.11,1.48,45,1.2,180,0.04,2,true);
+
+        setArmPositionWait(350, 0.2);
+        openIntake();
+        setArmPositionWait(520,0.2);
+        goTo(-0.05,1.4,-20,0.6,180,0.08,15,false);
+        setArmPositionTiming(90,0.2,0);
+        goTo(-0.6,1.4,-90,0.6,240, 0.04,2,true);
+        closeIntake();
+        sleep(300);
+        setArmPositionWait(185, 0.2);
+        switch (route) {
+            case "LEFT":
+                setArmPositionTiming(520, 0.2, 0);
+                goTo(0.6,1.4,0,1.2,200,0.04,15,true);
+                setArmPositionTiming(0, 0.2, 0);
+                goTo(0.6,0.9,0,1.2,150,0.04,2,true);
+                break;
+            case "CENTER":
+                goTo(0,1.35,0,1.2,200,0.04,15,true);
+                setArmPositionTiming(0, 0.2, 0);
+                goTo(0,0.9,0,1.2,150,0.04,2,true);
+                break;
+            case "RIGHT":
+                goTo(-0.3,0.85,0,0.4, 200,0.04,2,true);
+                setArmPositionTiming(0, 0.2, 0);
+                goTo(-0.5,0.95,0,0.4, 200,0.04,2,true);
+
+                break;
+            default:
+                telemetry.addData("OH SHIT!","WE FUCKED UP!");
+                telemetry.update();
+                goTo(-0.6,1.4,0,1.2,200,0.04,15,true);
+                setArmPositionTiming(0, 0.2, 0);
+                goTo(-0.6,0.9,0,1.2,150,0.04,2,true);
+                break;
+        }
     }
     private void closeIntake() {
         robot.intake.setPosition(0.75);
@@ -116,14 +141,13 @@ public class AutoTest extends LinearOpMode {
         robot.rightArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
     private void goToPole() {
-        while (!isStopRequested() && (!(Math.abs(poleDetection.widthError) < 4 && Math.abs(poleDetection.error) < 5 && poleDetection.noPole==0))) {
+        while (!isStopRequested() && (!(Math.abs(poleDetection.widthError) < 4 && Math.abs(poleDetection.error) < 5))) {
             robot.fl.setPower(-poleDetection.error * 0.002+poleDetection.widthError * 0.01);
             robot.fr.setPower(poleDetection.error * 0.002+poleDetection.widthError * 0.01);
             robot.bl.setPower(-poleDetection.error * 0.002+poleDetection.widthError * 0.01);
             robot.br.setPower(poleDetection.error * 0.002+poleDetection.widthError * 0.01);
             telemetry.addData("error: ", poleDetection.error);
             telemetry.addData("widthError: ", poleDetection.widthError);
-            telemetry.addData("noPole: ", poleDetection.noPole);
             telemetry.update();
             sleep(10);
         }
