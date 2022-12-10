@@ -52,7 +52,7 @@ public class AutonRight extends LinearOpMode {
         waitForStart();
         camera.setPipeline(poleDetection);
         closeIntake();
-        setArmPositionTiming(520,0.2,1000);
+        setArmPositionTiming(500,0.2,1000);
 //        goTo(0,1.5,0,1.2,50,0.04,2,true);
         goTo(0.05,1.4,-45,1.2,50,0.04,2,true);
         goTo(-0.15,1.45,-45,1.2,50,0.04,2,true);
@@ -62,7 +62,7 @@ public class AutonRight extends LinearOpMode {
         setArmPositionWait(520,0.2);
         goTo(0.05,1.4,20,0.6,180,0.08,15,false);
         setArmPositionTiming(100,0.2,0);
-        goTo(0.58,1.4,90,0.6,180,0.04,2,true);
+        goTo(0.55,1.4,90,0.6,180,0.04,2,true);
         closeIntake();
         sleep(300);
         setArmPositionWait(125, 0.2);
@@ -74,7 +74,7 @@ public class AutonRight extends LinearOpMode {
         setArmPositionWait(520,0.2);
         goTo(0.05,1.4,20,0.6,180,0.08,15,false);
         setArmPositionTiming(90,0.2,0);
-        goTo(0.6,1.4,90,0.6,240, 0.04,2,true);
+        goTo(0.58,1.4,90,0.6,240, 0.04,2,true);
         closeIntake();
         sleep(300);
         setArmPositionWait(185, 0.2);
@@ -91,6 +91,8 @@ public class AutonRight extends LinearOpMode {
                 goTo(0,0.9,0,1.2,150,0.04,2,true);
                 break;
             case "RIGHT":
+                setArmPositionTiming(350, 0.2, 0);
+                goTo(0.3, 1.4, 90, 0.6, 240, 0.04, 2, true);
                 goTo(0.3,0.85,0,0.4, 200,0.04,2,true);
                 setArmPositionTiming(0, 0.2, 0);
                 goTo(0.5,0.95,0,0.4, 200,0.04,2,true);

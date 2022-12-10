@@ -54,15 +54,15 @@ public class AutonLeft extends LinearOpMode {
         closeIntake();
 
         setArmPositionTiming(520,0.2,1000);
-        goTo(-0.05,1.4,45,1.2,50,0.04,2,true);
-        goTo(0.15,1.45,45,1.2,50,0.04,2,true);
+        goTo(-0.05,1.2,45,1.2,50,0.04,2,true);
+        goTo(0.15,1.25,45,1.2,50,0.04,2,true);
 
         setArmPositionWait(350,0.2);
         openIntake();
         setArmPositionWait(520,0.2);
-        goTo(-0.05,1.4,-20,0.6,180,0.08,15,false);
+        goTo(-0.05,1.4,-20,0.6,-180,0.08,15,false);
         setArmPositionTiming(100,0.2,0);
-        goTo(-0.58,1.4,-90,0.6,180,0.04,2,true);
+        goTo(-0.58,1.4,-90,0.6,-180,0.04,2,true);
         closeIntake();
         sleep(300);
         setArmPositionWait(125, 0.2);
