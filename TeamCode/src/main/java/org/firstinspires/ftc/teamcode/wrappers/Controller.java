@@ -10,7 +10,7 @@ public class Controller {
     private final double ANGLE_MIN_VELOCITY = 2;
     private final double ANGLE_ACCELERATE = 25;
 
-    private final double WHEEL_ANGLE = 0.78f;
+    private final double WHEEL_ANGLE = 678.0/892.0;
     private final double ROBOT_LENGTH = 0.114;
     private final double ROBOT_WIDTH = 0.119;
 
