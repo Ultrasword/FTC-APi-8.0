@@ -58,8 +58,10 @@ public class AutoTestLeft extends LinearOpMode {
         // ----------- auto/cycle portion ------------ //
         // step 1: cycle cone pickup and place from left side
         // twice
+        closeIntake();
         resetCycle();
         pickupLeftConePivot();
+        openIntake();
         resetCycle();
         pickupLeftConePivot();
         resetCycle();
@@ -114,7 +116,6 @@ public class AutoTestLeft extends LinearOpMode {
 
     private void pickupLeftConePivot(){
         // moves to pivot position, move to left cone pickup location, move to junction and raise and drop
-        openIntake();
         setArmPosition(coneHeightDif * coneCount, armSpeed);
         coneCount--;
         goTo(MatSize*0.8, MatSize*2, -90, 0.6, 50, 0.01, 1, true);

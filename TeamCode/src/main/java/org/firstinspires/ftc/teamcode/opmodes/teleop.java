@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.wrappers.Clock;
+import org.firstinspires.ftc.teamcode.wrappers.Controller;
 import org.firstinspires.ftc.teamcode.wrappers.LoggingSystem;
 import org.firstinspires.ftc.teamcode.wrappers.MecanumChassis;
 import org.firstinspires.ftc.teamcode.wrappers.Position;
@@ -15,6 +16,7 @@ import java.util.Date;
 public class teleop extends LinearOpMode {
     MecanumChassis robot;
     Position pos;
+    Controller control;
 
     double coefficient = 0.65;
 
@@ -22,6 +24,7 @@ public class teleop extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         robot = new MecanumChassis(hardwareMap);
         pos = new Position(robot);
+        control = new Controller(robot, pos);
         waitForStart();
         setArmPosition(20, 0.3);
 
@@ -40,22 +43,11 @@ public class teleop extends LinearOpMode {
 
             double lx = gamepad1.left_stick_x, ly = gamepad1.left_stick_y, rx = gamepad1.right_stick_x, ry = gamepad2.right_stick_y;
             double dn = 0.8/Math.max(Math.abs(lx)+0.7*Math.abs(rx)+Math.abs(ly),1);
+//            control.goTo(pos.x-0.6*lx, pos.y-0.6*ly, pos.angle+rx*30, 3*Math.sqrt(lx*lx+ly*ly), ry*180, 0.02, 1, true);
             robot.fr.setPower((ly+lx+0.7*rx)*dn * coefficient);
             robot.fl.setPower((ly-lx-0.7*rx)*dn * coefficient);
             robot.br.setPower((ly-lx+0.7*rx)*dn * coefficient);
             robot.bl.setPower((ly+lx-0.7*rx)*dn * coefficient);
-
-//            if (Math.abs(ry)>0.1) {
-//                robot.rightArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//                robot.leftArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//                robot.rightArm.setPower(-ry*0.1);
-//                robot.leftArm.setPower(-ry*0.1);
-//            } else {
-//                robot.rightArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//                robot.leftArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//                robot.rightArm.setPower(0);
-//                robot.leftArm.setPower(0);
-//            }
 
             if (gamepad2.dpad_up) setArmPosition(520, 0.3);
             else if (gamepad2.b) setArmPosition(365, 0.3);

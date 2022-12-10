@@ -24,7 +24,7 @@ public class AutoTestRight extends LinearOpMode {
     private OpenCvCamera camera;
     private String route;
 
-    private double MPerFoot = 0.3048, MatSize = MPerFoot*2;
+    private double MPerFoot = 0.3048, MatSize = MPerFoot*1.5;
 
     private int coneHeightDif = 10, coneCount = 5;
     private double armSpeed = 0.4, movementSpeed = 0.8;
@@ -54,6 +54,12 @@ public class AutoTestRight extends LinearOpMode {
         }
         route = sleeveDetection.route;
         waitForStart();
+
+        // random testing
+//        goTo(0, 1, 0, movementSpeed, 50, 0.04, 1, true);
+//        sleep(10000);
+//        goTo(0.5, 0, 0, movementSpeed, 50, 0.04, 1, true);
+//        sleep(10000);
 
         // ----------- auto/cycle portion ------------ //
         // step 1: cycle cone pickup and place from left side

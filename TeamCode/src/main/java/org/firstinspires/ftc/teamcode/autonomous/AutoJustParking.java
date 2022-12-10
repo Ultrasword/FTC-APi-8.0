@@ -40,51 +40,50 @@ public class AutoJustParking extends LinearOpMode {
         control = new Controller(robot, pos);
 
         // ----------------- vision setup ---------------- //
-//        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-//        webcamName = hardwareMap.get(WebcamName.class, "Camera");
-//        camera = OpenCvCameraFactory.getInstance().createWebcam(webcamName, cameraMonitorViewId);
-//        sleeveDetection = new Vision();
-//        camera.setPipeline(sleeveDetection);
-//        camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
-//            @Override
-//            public void onOpened() {
-//                camera.startStreaming(320,240, OpenCvCameraRotation.SIDEWAYS_RIGHT);
-//            }
-//            @Override
-//            public void onError(int errorCode) {}
-//        });
-//        while (!isStarted()) {
-//            telemetry.addData("route: ", sleeveDetection.route);
-//            telemetry.update();
-//        }
-//        route = sleeveDetection.route;
+        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        webcamName = hardwareMap.get(WebcamName.class, "Camera");
+        camera = OpenCvCameraFactory.getInstance().createWebcam(webcamName, cameraMonitorViewId);
+        sleeveDetection = new Vision();
+        camera.setPipeline(sleeveDetection);
+        camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
+            @Override
+            public void onOpened() {
+                camera.startStreaming(320,240, OpenCvCameraRotation.SIDEWAYS_RIGHT);
+            }
+            @Override
+            public void onError(int errorCode) {}
+        });
+        while (!isStarted()) {
+            telemetry.addData("route: ", sleeveDetection.route);
+            telemetry.update();
+        }
+        route = sleeveDetection.route;
         // ------------------ vision detection end ------------------ //
         waitForStart();
-        // manually select parking position
-        while (!isStarted()){
-            if(gamepad1.a) route = "LEFT";
-            else if(gamepad1.x) route = "CENTER";
-            else if(gamepad1.y) route = "RIGHT";
-        }
+//        goTo(0, 1, 0, movementSpeed, 50, 0.02, 1, true);
+        goTo(0.5, 0, 0, movementSpeed, 50, 0.04, 1, true);
+        sleep(20000);
+
+
         // choose specific
         // ----------- parking ------------ //
         // INITLA POSITION = (0, 0)
         // always go to pivot position (0, MatSize*2);
         switch (route) {
             case "LEFT":
-                goTo(0, MatSize*2, 180, movementSpeed, 50, 0.04, 1, true);
+                goTo(0, MatSize*2, 0, movementSpeed, 50, 0.04, 1, true);
                 // move to left
-                goTo(-MatSize, MatSize*2, 180, movementSpeed, 50, 0.04, 1, true);
-                goTo(-MatSize, MatSize*1.5, 180, movementSpeed, 50, 0.04, 1, true);
+                goTo(-MatSize, MatSize*2, 0, movementSpeed, 50, 0.04, 1, true);
+                goTo(-MatSize, MatSize*1.5, 0, movementSpeed, 50, 0.04, 1, true);
                 break;
             case "CENTER":
-                goTo(0, MatSize*1.5, 180, movementSpeed, 50, 0.04, 1, true);
+                goTo(0, MatSize*1.5, 0, movementSpeed, 50, 0.04, 1, true);
                 break;
             case "RIGHT":
-                goTo(0, MatSize*2, 180, movementSpeed, 50, 0.04, 1, true);
+                goTo(0, MatSize*2, 0, movementSpeed, 50, 0.04, 1, true);
                 // move to left
-                goTo(MatSize, MatSize*2, 180, movementSpeed, 50, 0.04, 1, true);
-                goTo(MatSize, MatSize*1.5, 180, movementSpeed, 50, 0.04, 1, true);
+                goTo(MatSize, MatSize*2, 0, movementSpeed, 50, 0.04, 1, true);
+                goTo(MatSize, MatSize*1.5, 0, movementSpeed, 50, 0.04, 1, true);
                 break;
             default:
                 telemetry.addData("OH SHIT!","WE FUCKED UP!");
