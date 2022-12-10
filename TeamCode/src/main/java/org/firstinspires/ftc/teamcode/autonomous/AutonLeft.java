@@ -100,7 +100,6 @@ public class AutonLeft extends LinearOpMode {
                 goTo(0.3,0.85,0,0.4, 200,0.04,2,true);
                 setArmPositionTiming(0, 0.2, 0);
                 goTo(0.5,0.95,0,0.4, 200,0.04,2,true);
-
                 break;
             default:
                 telemetry.addData("OH SHIT!","WE FUCKED UP!");

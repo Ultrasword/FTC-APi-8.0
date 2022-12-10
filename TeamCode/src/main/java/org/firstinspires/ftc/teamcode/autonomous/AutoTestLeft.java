@@ -80,7 +80,7 @@ public class AutoTestLeft extends LinearOpMode {
         // move to pivot
         toPivotLocation(45);
         setArmPosition(armTop, armSpeed, 0);
-        goToDefault(MatSize*0.2, MatSize*2.2, 45);//
+        goToDefault(-MatSize*0.2, MatSize*2.2, 45);//
         sleep(1000);
         setArmPositionWaitFinish(armMedHeight, armSpeed);
         openIntake();
