@@ -55,30 +55,30 @@ public class AutoTest extends LinearOpMode {
         camera.setPipeline(poleDetection);
         closeIntake();
         setArmPositionTiming(520,0.2,1000);
-        goTo(0,0.9,45,1.2,50,0.04,2,true);
-        goTo(0.06,0.93,45,0.8,50,0.02,2,true);
+        goTo(0,1,45,1.2,50,0.04,2,true);
+        goToPole();
         setArmPositionWait(350,0.2);
         openIntake();
         goTo(0,0.9,45,0.8,50,0.04,2,true);
         setArmPositionTiming(10,0.2,0);
         goTo(-0.4,0.86,-90,0.8,150,0.02,2,true);
-        switch (route) {
-            case "LEFT":
-                goTo(0,0,90,0.4, 50,0.04,2,true);
-                break;
-            case "CENTER":
-                goTo(0,0,-90,0.4, 50,0.04,2,true);
-                break;
-
-            case "RIGHT":
-                goTo(0,1,0,0.4, 50,0.04,2,true);
-                break;
-            default:
-                telemetry.addData("OH SHIT!","WE FUCKED UP!");
-                telemetry.update();
-                sleep(2000);
-                break;
-        }
+//        switch (route) {
+//            case "LEFT":
+//                goTo(0,0,90,0.4, 50,0.04,2,true);
+//                break;
+//            case "CENTER":
+//                goTo(0,0,-90,0.4, 50,0.04,2,true);
+//                break;
+//
+//            case "RIGHT":
+//                goTo(0,1,0,0.4, 50,0.04,2,true);
+//                break;
+//            default:
+//                telemetry.addData("OH SHIT!","WE FUCKED UP!");
+//                telemetry.update();
+//                sleep(2000);
+//                break;
+//        }
     }
     private void closeIntake() {
         robot.intake.setPosition(0.75);
@@ -116,13 +116,14 @@ public class AutoTest extends LinearOpMode {
         robot.rightArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
     private void goToPole() {
-        while (!isStopRequested() && Math.abs(poleDetection.widthError) > 2 && Math.abs(poleDetection.error) > 3 && poleDetection.noPole<3) {
-            robot.fl.setPower(-poleDetection.error * 0.01+poleDetection.widthError * 0.01);
-            robot.fr.setPower(poleDetection.error * 0.01+poleDetection.widthError * 0.01);
-            robot.bl.setPower(-poleDetection.error * 0.01+poleDetection.widthError * 0.01);
-            robot.br.setPower(poleDetection.error * 0.01+poleDetection.widthError * 0.01);
+        while (!isStopRequested() && (!(Math.abs(poleDetection.widthError) < 4 && Math.abs(poleDetection.error) < 5 && poleDetection.noPole==0))) {
+            robot.fl.setPower(-poleDetection.error * 0.002+poleDetection.widthError * 0.01);
+            robot.fr.setPower(poleDetection.error * 0.002+poleDetection.widthError * 0.01);
+            robot.bl.setPower(-poleDetection.error * 0.002+poleDetection.widthError * 0.01);
+            robot.br.setPower(poleDetection.error * 0.002+poleDetection.widthError * 0.01);
             telemetry.addData("error: ", poleDetection.error);
             telemetry.addData("widthError: ", poleDetection.widthError);
+            telemetry.addData("noPole: ", poleDetection.noPole);
             telemetry.update();
             sleep(10);
         }

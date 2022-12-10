@@ -48,7 +48,7 @@ public class VisionTest extends LinearOpMode {
         goToPole();
     }
     private void goToPole() {
-        while (!isStopRequested() && (!(Math.abs(poleDetection.widthError) < 2 && Math.abs(poleDetection.error) < 3 && poleDetection.noPole<4))) {
+        while (!isStopRequested() && (!(Math.abs(poleDetection.widthError) < 4 && Math.abs(poleDetection.error) < 5 && poleDetection.noPole==0))) {
             robot.fl.setPower(-poleDetection.error * 0.002+poleDetection.widthError * 0.01);
             robot.fr.setPower(poleDetection.error * 0.002+poleDetection.widthError * 0.01);
             robot.bl.setPower(-poleDetection.error * 0.002+poleDetection.widthError * 0.01);

@@ -15,7 +15,7 @@ import java.util.List;
 public class DetectPole extends OpenCvPipeline {
     private static final Scalar lower_yellow = new Scalar(10,130,130), upper_yellow = new Scalar(28,255,255);
     private Mat mask = new Mat(), edges = new Mat(), lines = new Mat();
-    private final double polePosition = 73, targetWidth = 34.5;
+    private final double polePosition = 83, targetWidth = 34.5;
     private double maxWidth=0, max_x=0;
     public double error=0, widthError=0;
     public int noPole=0;
@@ -49,7 +49,7 @@ public class DetectPole extends OpenCvPipeline {
         Imgproc.cvtColor(input, mask, Imgproc.COLOR_RGB2HSV);
         Core.inRange(mask, lower_yellow, upper_yellow, mask);
         Imgproc.Canny(mask, edges, 1000, 1200, 3);
-        Imgproc.HoughLinesP(edges, lines, 1, Math.PI/180, 50, 30, 10);
+        Imgproc.HoughLinesP(edges, lines, 1, Math.PI/180, 50, 40, 10);
         maxWidth = 0;
         max_x = 0;
         if (lines.rows() > 0) {
