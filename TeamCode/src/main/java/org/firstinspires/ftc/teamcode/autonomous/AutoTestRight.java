@@ -29,8 +29,8 @@ public class AutoTestRight extends LinearOpMode {
 
     private double MPerFoot = 0.3048, MatSize = MPerFoot*2;
 
-    private int coneHeightDif = 20, coneCount = 10;
-    private double armSpeed = 0.4, movementSpeed = 0.6, angleSpeed = 50;
+    private int coneHeightDif = 15, coneCount = 10;
+    private double armSpeed = 0.4, movementSpeed = 0.8, angleSpeed = 50;
     private int armTop = 520, armDrop = 350, armBottom = 10, armMedHeight = 100;
     private double angleDeadZone = 2, moveDeadZone = 0.04;
 
@@ -74,10 +74,13 @@ public class AutoTestRight extends LinearOpMode {
         // step 1: pick up preload cone --> place on high junction
         // 2 mats forward, and turn left 45deg
         closeIntake();
-        setArmPosition(armMedHeight, armSpeed, 200);
+        setArmPosition(armMedHeight, armSpeed, 1000);
+        sleep(500);
+        // kick out signal
+        goToDefault(0, MatSize*2.5, 0);
         toPivotLocation(-45);
         setArmPosition(armTop, armSpeed, 0);
-        goToDefault(-MatSize*0.2, MatSize*2.2, -45);//
+        goToDefault(-MatSize*0.2, MatSize*2.2, -45);
         setArmPositionWaitFinish(armMedHeight, armSpeed);
         openIntake();
         toPivotLocation(90);
