@@ -24,6 +24,7 @@ public class teleop extends LinearOpMode {
         robot = new MecanumChassis(hardwareMap);
         pos = new Position(robot);
         waitForStart();
+        // daniel is gay
         setArmPosition(20, 0.3);
         while (opModeIsActive()) {
             telemetry.addData("Servo Position ", robot.intake.getPosition());
