@@ -54,59 +54,57 @@ public class AutonLeft extends LinearOpMode {
         closeIntake();
 
         setArmPositionTiming(520,0.2,1000);
-        goTo(-0.05,1.4,45,1.2,50,0.04,2,true);
-        goTo(0.15,1.45,45,1.2,50,0.04,2,true);
+        goTo(-0.05,1.19,45,1.2,50,0.04,2,true);
+        goTo(0.17,1.27,45,1.2,50,0.04,2,true);
 
         setArmPositionWait(350,0.2);
         openIntake();
         setArmPositionWait(520,0.2);
-        goTo(-0.05,1.4,-20,0.6,180,0.08,15,false);
-        setArmPositionTiming(100,0.2,0);
-        goTo(-0.58,1.4,-90,0.6,180,0.04,2,true);
+        goTo(-0.05,1.14,-20,0.6,180,0.08,15,false);
+        setArmPositionTiming(95,0.2,0);
+        goTo(-0.54,1.14,-90,0.6,180,0.04,2,true);
         closeIntake();
         sleep(300);
         setArmPositionWait(125, 0.2);
         setArmPositionTiming(520, 0.2, 0);
-        goTo(0.11,1.48,45,1.2,180,0.04,2,true);
-
+        goTo(0.11,1.31,45,1.2,180,0.04,2,true);
         setArmPositionWait(350, 0.2);
         openIntake();
         setArmPositionWait(520,0.2);
-        goTo(-0.05,1.4,-20,0.6,180,0.08,15,false);
-        setArmPositionTiming(90,0.2,0);
-        goTo(-0.6,1.4,-90,0.6,240, 0.04,2,true);
-        closeIntake();
-        sleep(300);
-        setArmPositionWait(185, 0.2);
+//        goTo(-0.05,1.17,-20,0.6,180,0.08,15,false);
+//        setArmPositionTiming(85,0.2,0);
+//        goTo(-0.55,1.17,-90,0.6,180, 0.04,2,true);
+//        closeIntake();
+//        sleep(300);
+//        setArmPositionWait(185, 0.2);
         switch (route) {
             case "LEFT":
-                setArmPositionTiming(520, 0.2, 0);
-                goTo(0.6,1.4,0,1.2,200,0.04,15,true);
+                goTo(-0.55,1.17,0,1.2, 200,0.04,2,true);
                 setArmPositionTiming(0, 0.2, 0);
-                goTo(0.6,0.9,0,1.2,150,0.04,2,true);
+                goTo(-0.55,0.85,0,1.2, 200,0.04,2,true);
                 break;
             case "CENTER":
-                goTo(0,1.35,0,1.2,200,0.04,15,true);
+                goTo(0,1.35,0,1.8,200,0.04,15,true);
                 setArmPositionTiming(0, 0.2, 0);
                 goTo(0,0.9,0,1.2,150,0.04,2,true);
                 break;
             case "RIGHT":
-                goTo(-0.3,0.85,0,0.4, 200,0.04,2,true);
+                setArmPositionTiming(520, 0.2, 0);
+                goTo(0.6,1.4,0,1.8,200,0.04,15,true);
                 setArmPositionTiming(0, 0.2, 0);
-                goTo(-0.5,0.95,0,0.4, 200,0.04,2,true);
-
+                goTo(0.6,0.9,0,1.2,150,0.04,2,true);
                 break;
             default:
                 telemetry.addData("OH SHIT!","WE FUCKED UP!");
                 telemetry.update();
-                goTo(-0.6,1.4,0,1.2,200,0.04,15,true);
+                goTo(-0.55,1.17,0,1.2, 200,0.04,2,true);
                 setArmPositionTiming(0, 0.2, 0);
-                goTo(-0.6,0.9,0,1.2,150,0.04,2,true);
+                goTo(-0.55,0.85,0,1.2, 200,0.04,2,true);
                 break;
         }
     }
     private void closeIntake() {
-        robot.intake.setPosition(0.75);
+        robot.intake.setPosition(0.8);
     }
     private void openIntake() {
         robot.intake.setPosition(0.55);

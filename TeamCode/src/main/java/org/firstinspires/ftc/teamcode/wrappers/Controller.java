@@ -16,7 +16,7 @@ public class Controller {
 
     private final double BRAKE_DISTANCE = 0.7;
     private final double BRAKE_DISTANCE_RATIO = (MAX_VELOCITY-MIN_VELOCITY)/BRAKE_DISTANCE;
-    private final double BRAKE_ANGLE = 90;
+    private final double BRAKE_ANGLE = 70;
     private final double BRAKE_ANGLE_RATIO = (ANGLE_MAX_VELOCITY-ANGLE_MIN_VELOCITY)/BRAKE_ANGLE;
 
     private MecanumChassis robot;
@@ -82,7 +82,7 @@ public class Controller {
                             if (Math.abs(anglePower) < ANGLE_MIN_VELOCITY)  anglePower = Math.signum(anglePower) * ANGLE_MIN_VELOCITY;
                         } else {
                             power = speed;
-                            anglePower = angleSpeed;
+                            anglePower = Math.signum(angleError)*angleSpeed;
                         }
                         prevAnglePower = anglePower;
                         prevPower = power;

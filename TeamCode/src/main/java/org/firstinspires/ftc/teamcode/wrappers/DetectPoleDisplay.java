@@ -19,6 +19,7 @@ public class DetectPoleDisplay extends OpenCvPipeline {
     private double maxWidth=0, m=0;
     private int max_x=0, max_y=0;
     public double error=0, widthError=0;
+    public int noPole = 0;
     private void quicksort(Mat lines, int low, int high) {
         if (low < high) {
             int pi = partition(lines, low, high);
@@ -91,9 +92,14 @@ public class DetectPoleDisplay extends OpenCvPipeline {
                 Imgproc.line(input, new Point(max_x+maxWidth*Math.cos(angle)*0.5,max_y+maxWidth*Math.sin(angle)*0.5), new Point(max_x-maxWidth*Math.cos(angle)*0.5,max_y-maxWidth*Math.sin(angle)*0.5), new Scalar(0, 255, 0), 2);
                 Imgproc.circle(input, new Point(max_x, max_y), 3, new Scalar(0, 0, 255), 2);
             } else {
+                noPole++;
                 error = 0;
                 widthError = 0;
             }
+        } else {
+            noPole++;
+            error = 0;
+            widthError = 0;
         }
         return input;
     }
