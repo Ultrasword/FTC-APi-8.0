@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -11,13 +12,12 @@ import org.firstinspires.ftc.teamcode.wrappers.DetectPoleDisplay;
 import org.firstinspires.ftc.teamcode.wrappers.MecanumChassis;
 import org.firstinspires.ftc.teamcode.wrappers.Position;
 import org.firstinspires.ftc.teamcode.wrappers.Vision;
-import org.opencv.core.Mat;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 
-@Autonomous(name="autoleft")
-public class AutoTestLeft extends LinearOpMode {
+@Autonomous(name="auton")
+public class AutoTest extends LinearOpMode {
     private MecanumChassis robot;
     private Position pos;
     private Controller control;
@@ -26,14 +26,6 @@ public class AutoTestLeft extends LinearOpMode {
     private WebcamName webcamName;
     private OpenCvCamera camera;
     private String route;
-
-    private double MPerFoot = 0.3048, MatSize = MPerFoot*2;
-
-    private int coneHeightDif = 20, coneCount = 10;
-    private double armSpeed = 0.2, movementSpeed = 0.8, angleSpeed = 50;
-    private int armTop = 520, armDrop = 350, armBottom = 10, armMedHeight = 100;
-    private double angleDeadZone = 2, moveDeadZone = 0.04;
-
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -60,77 +52,26 @@ public class AutoTestLeft extends LinearOpMode {
         }
         route = sleeveDetection.route;
         waitForStart();
-
-        /*
-        Initial Strategy:
-            - we are moving to pivot position, then spinning
-
-        ConeDetection Strategy:
-            - move to center and spin towards edge --> the move towards cone using cone detection
-
-        !!!WE ARE USING INITIAL STRATEGY!!!
-
-         */
-        // ----------- auto/cycle portion ------------ //
-        // step 1: pick up preload cone --> place on high junction
-        // 2 mats forward, and turn left 45deg
+        camera.setPipeline(poleDetection);
         closeIntake();
-        sleep(500);
-        setArmPositionWaitFinish(armMedHeight, armSpeed);
-        // move to pivot
-        toPivotLocation(45);
-        setArmPosition(armTop, armSpeed, 0);
-        goToDefault(-MatSize*0.2, MatSize*2.2, 45);//
-        sleep(1000);
-        setArmPositionWaitFinish(armMedHeight, armSpeed);
+        setArmPositionTiming(520,0.2,1000);
+        goTo(0,1,45,1.2,50,0.04,2,true);
+        goToPole();
+        setArmPositionWait(350,0.2);
         openIntake();
-        toPivotLocation(-90);
-
-        // step 2: cycle cone pickup and placing
-        for(int i = 0; i < 2; i++){
-            pickupSideConeThenToPivot(45, armTop);
-            // REPLACE with darren junction align
-            goToDefault(MatSize * 0.2, MatSize * 2.2, 45);
-            // ----
-            setArmPositionWaitFinish(armMedHeight, armSpeed);
-            openIntake();
-            // moving down :)
-            toPivotLocation(-90);
-        } // end
-        // ------------- final segment --------------- //
-        // step 3: parking
+        goTo(0,0.9,45,0.8,50,0.04,2,true);
+        setArmPositionTiming(10,0.2,0);
+        goTo(-0.4,0.86,-90,0.8,150,0.02,2,true);
         switch (route) {
-            case "RIGHT":
-                goTo(MatSize*0.7, MatSize*2, 135, movementSpeed, 50, 0.04, 1, true);
-                setArmPosition(armMedHeight, armSpeed, 0);
-                goTo(MatSize*0.7, MatSize*1.8, 135, movementSpeed, 50, 0.04, 1, true);
-                setArmPosition(armBottom+30, armSpeed, 300);
-                openIntake();
-                goTo(MatSize, MatSize*2, 180, movementSpeed, 50, 0.04, 1, true);
-
-                // park into left
-                goTo(MatSize, MatSize*1.5, 180, movementSpeed, 50, 0.04, 1, true);
+            case "LEFT":
+                goTo(0,0,90,0.4, 50,0.04,2,true);
                 break;
             case "CENTER":
-                goTo(0, MatSize*2, 135, movementSpeed, 50, 0.04, 1, true);
-                setArmPosition(armMedHeight, armSpeed, 0);
-                goTo(MatSize*0.2, MatSize*1.8, 135, movementSpeed, 50, 0.04, 1, true);
-                setArmPosition(armBottom, armSpeed, 0);
-                openIntake();
-                goTo(0, MatSize*2, 180, movementSpeed, 50, 0.04, 1, true);
-
-                // park into center
-                goTo(0, MatSize*1.5, 180, movementSpeed, 50, 0.04, 1, true);
+                goTo(0,0,-90,0.4, 50,0.04,2,true);
                 break;
-            case "LEFT":
-                goTo(-MatSize, MatSize*2, 135, movementSpeed, 50, 0.04, 1, true);
-                setArmPosition(armTop, armSpeed, 0);
-                goTo(-MatSize*0.8, MatSize*1.8, 135, movementSpeed, 50, 0.04, 1, true);
-                setArmPosition(armMedHeight, armSpeed, 0);
-                openIntake();
-                goTo(-MatSize, MatSize*2, 180, movementSpeed, 50, 0.04, 1, true);
-                // park into center
-                goTo(-MatSize, MatSize*1.5, 180, movementSpeed, 50, 0.04, 1, true);
+
+            case "RIGHT":
+                goTo(0,1,0,0.4, 50,0.04,2,true);
                 break;
             default:
                 telemetry.addData("OH SHIT!","WE FUCKED UP!");
@@ -138,39 +79,9 @@ public class AutoTestLeft extends LinearOpMode {
                 sleep(2000);
                 break;
         }
-        setArmPosition(0, armSpeed, 0);
-    }
-
-    // ----------- stick stuff -------------- //
-    private void toPivotLocation(double angle){
-        goToDefault(0, MatSize*2, angle);
-    }
-    private void pickupSideConeThenToPivot(double finalAngle, int finalArmHeight){
-        // moves to pivot position, move to left cone pickup location, move to junction and raise and drop
-        setArmPosition(coneHeightDif * coneCount, armSpeed, 0);
-        coneCount--;
-        // now move to side -- not completely side
-        goToDefault(MatSize*0.6, MatSize*2, 90);
-        // pickup cone -- and move to side
-        goToDefault(MatSize*0.8, MatSize*2, 90);
-        closeIntake();
-        // move arm up while moving back
-        setArmPosition(armMedHeight, 0.3, 500);
-        goToDefault(MatSize*0.5, MatSize*2, 90);
-        toPivotLocation(finalAngle);
-        setArmPosition(finalArmHeight, 0.3, 0);
-    }
-
-    // ---------- end ----------- //
-
-    private void resetCycle(double angle){
-        goToDefault(0, MatSize*2, angle);
-    }
-    private void goToDefault(double x, double y, double angle){
-        goTo(x, y, angle, movementSpeed, angleSpeed, moveDeadZone, angleDeadZone, true);
     }
     private void closeIntake() {
-        robot.intake.setPosition(0.80);
+        robot.intake.setPosition(0.75);
     }
     private void openIntake() {
         robot.intake.setPosition(0.55);
@@ -186,7 +97,7 @@ public class AutoTestLeft extends LinearOpMode {
             sleep(10);
         }
     }
-    private void setArmPositionWaitFinish(int pos, double speed) {
+    private void setArmPositionWait(int pos, double speed) {
         robot.leftArm.setTargetPosition(pos);
         robot.rightArm.setTargetPosition(pos);
         robot.leftArm.setPower(speed);
@@ -195,7 +106,7 @@ public class AutoTestLeft extends LinearOpMode {
         robot.rightArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         while (!isStopRequested() && robot.leftArm.isBusy()) sleep(10);
     }
-    private void setArmPosition(int pos, double speed, int delay) {
+    private void setArmPositionTiming(int pos, double speed, int delay) {
         sleep(delay);
         robot.leftArm.setTargetPosition(pos);
         robot.rightArm.setTargetPosition(pos);

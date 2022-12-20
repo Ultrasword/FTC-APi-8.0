@@ -2,56 +2,62 @@ package org.firstinspires.ftc.teamcode.autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.teamcode.wrappers.LoggingSystem;
-import org.firstinspires.ftc.teamcode.wrappers.OpenCVVision;
+import org.firstinspires.ftc.teamcode.wrappers.DetectPole;
+import org.firstinspires.ftc.teamcode.wrappers.DetectPoleDisplay;
+import org.firstinspires.ftc.teamcode.wrappers.DisplayVision;
+import org.firstinspires.ftc.teamcode.wrappers.MecanumChassis;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
-import org.openftc.easyopencv.OpenCvInternalCamera2;
+import org.firstinspires.ftc.teamcode.wrappers.Vision;
 
-@Autonomous(name="Vision funny")
+@Autonomous(name="VisionTest")
 public class VisionTest extends LinearOpMode {
-
-    OpenCVVision sleeveDetection;
-    OpenCvCamera camera;
-    String webcamName = "Webcam 1";
+    private Vision sleeveDetection;
+    private MecanumChassis robot;
+    private DetectPole poleDetection;
+    private WebcamName webcamName;
+    private OpenCvCamera camera;
 
     @Override
     public void runOpMode() throws InterruptedException {
+        robot = new MecanumChassis(hardwareMap);
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-//        camera = OpenCvCameraFactory.getInstance().createInternalCamera2(OpenCvInternalCamera2.CameraDirection.BACK, cameraMonitorViewId);
-        WebcamName webcamName = hardwareMap.get(WebcamName.class, "Camera");
-        OpenCvCamera camera = OpenCvCameraFactory.getInstance().createWebcam(webcamName, cameraMonitorViewId);
-
-        sleeveDetection = new OpenCVVision();
-        camera.setPipeline(sleeveDetection);
-
-        camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
-        {
+        webcamName = hardwareMap.get(WebcamName.class, "Camera");
+        camera = OpenCvCameraFactory.getInstance().createWebcam(webcamName, cameraMonitorViewId);
+        sleeveDetection = new Vision();
+        poleDetection = new DetectPole();
+        camera.setPipeline(poleDetection);
+        camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
-            public void onOpened()
-            {
-                camera.startStreaming(320,240, OpenCvCameraRotation.UPRIGHT);
+            public void onOpened() {
+                camera.startStreaming(320,240, OpenCvCameraRotation.SIDEWAYS_RIGHT);
             }
-
             @Override
             public void onError(int errorCode) {}
         });
 
         while (!isStarted()) {
-            telemetry.addData("POSITION: ", sleeveDetection.getPosition());
+            telemetry.addData("error: ", poleDetection.error);
+            telemetry.addData("width error: ", poleDetection.widthError);
             telemetry.update();
         }
         waitForStart();
-
-        sleeveDetection.active = false;
-        // start hardcoded opmodes
-
-
-        // end logging
-
+        camera.setPipeline(poleDetection);
+        goToPole();
+    }
+    private void goToPole() {
+        while (!isStopRequested() && (!(Math.abs(poleDetection.widthError) < 4 && Math.abs(poleDetection.error) < 5 && poleDetection.noPole==0))) {
+            robot.fl.setPower(-poleDetection.error * 0.002+poleDetection.widthError * 0.01);
+            robot.fr.setPower(poleDetection.error * 0.002+poleDetection.widthError * 0.01);
+            robot.bl.setPower(-poleDetection.error * 0.002+poleDetection.widthError * 0.01);
+            robot.br.setPower(poleDetection.error * 0.002+poleDetection.widthError * 0.01);
+            telemetry.addData("error: ", poleDetection.error);
+            telemetry.addData("widthError: ", poleDetection.widthError);
+            telemetry.addData("noPole: ", poleDetection.noPole);
+            telemetry.update();
+            sleep(10);
+        }
     }
 }
