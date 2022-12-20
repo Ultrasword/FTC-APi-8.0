@@ -19,6 +19,7 @@ public class Controller {
 
     private MecanumChassis robot;
     private Position pos;
+    public LoggingSystem logger;
     private Controller.ControllerThread controllerThread;
     private double x, y, angle, speed, angleSpeed, distanceDeadzone, angleDeadzone;
     public volatile boolean finished = true;
@@ -64,6 +65,7 @@ public class Controller {
         @Override
         public void run() {
             double distanceError, angleError, theta, vx, vy, power, anglePower, prevAnglePower=0, prevPower=0;
+            String fr_d, fl_d, br_d, bl_d;
             try {
                 while (!isInterrupted() && (!finished)) {
                     distanceError = Math.sqrt((x-pos.x)*(x-pos.x)+(y-pos.y)*(y-pos.y));
@@ -101,10 +103,22 @@ public class Controller {
                             vy+vx/WHEEL_ANGLE+anglePower,
                             vy-vx/WHEEL_ANGLE-anglePower
                         );
+                        fr_d = "fr: " + pos.fr_d;
+                        fl_d = "fl: " + pos.fl_d;
+                        br_d = "br: " + pos.br_d;
+                        bl_d = "bl: " + pos.bl_d;
+
+                        logger.logData(fr_d);
+                        logger.logData(fl_d);
+                        logger.logData(br_d);
+                        logger.logData(bl_d);
+
                         Thread.sleep(10);
                     }
                 }
-            } catch (Exception e) {}
+            } catch (Exception e) {
+                logger.closeLog();
+            }
         }
     }
 }

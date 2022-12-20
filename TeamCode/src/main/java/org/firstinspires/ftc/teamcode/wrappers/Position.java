@@ -8,6 +8,7 @@ public class Position {
     private Position.PositionThread positionThread;
 
     private double fr, fl, bl, br;
+    public double fr_d, fl_d, bl_d, br_d;
     public volatile double angle, x, y;
 
     public Position(MecanumChassis robot) {
@@ -40,6 +41,11 @@ public class Position {
                     dy = (a+b)*0.25;
                     x+=dx*Math.cos(angle*DEGREES_TO_RADIANS)+dy*Math.sin(angle*DEGREES_TO_RADIANS);
                     y+=dx*Math.sin(angle*DEGREES_TO_RADIANS)-dy*Math.cos(angle*DEGREES_TO_RADIANS);
+
+                    fr_d = robot.fr.getCurrentPosition()*TICKS_TO_METERS;
+                    fl_d = robot.fl.getCurrentPosition()*TICKS_TO_METERS;
+                    br_d = robot.br.getCurrentPosition()*TICKS_TO_METERS;
+                    bl_d = robot.bl.getCurrentPosition()*TICKS_TO_METERS;
                     Thread.sleep(10);
                 }
             } catch (Exception e) {}
