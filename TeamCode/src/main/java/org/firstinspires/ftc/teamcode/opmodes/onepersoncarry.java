@@ -12,8 +12,8 @@ import org.firstinspires.ftc.teamcode.wrappers.Position;
 
 import java.util.Date;
 
-@TeleOp(name="teleop")
-public class teleop extends LinearOpMode {
+@TeleOp(name="onepersoncarry")
+public class onepersoncarry extends LinearOpMode {
     MecanumChassis robot;
     Position pos;
     Controller control;
@@ -54,34 +54,20 @@ public class teleop extends LinearOpMode {
             robot.bl.setPower((ly+lx-0.7*rx)*dn * coefficient);
 
             // === open -- // close
-            if (gamepad2.left_bumper) openIntake();
+            if (gamepad1.left_bumper) openIntake();
             else closeIntake();
 
             // --- arm position
-            if (gamepad2.dpad_up) setArmPosition(520, 0.3);
-            else if (gamepad2.b) setArmPosition(365, 0.3);
-            else if (gamepad2.y) setArmPosition(260, 0.3);
-            else if (gamepad2.x) setArmPosition(70, 0.3);
-            else if (gamepad2.dpad_down) setArmPosition(5, 0.2);
-            // either stick works for this
-            else if (gamepad2.right_stick_y > 0 || gamepad2.left_stick_y > 0)
+            // moving up and down --
+            if (gamepad1.right_trigger>0)
                 setArmPosition(clamp(5, 520, robot.leftArm.getCurrentPosition() -
                         (int)(50 * (gamepad2.left_bumper && robot.leftArm.getCurrentPosition() < armMedHeight ? 0.5 : 1.0))), 0.4);
-            else if(gamepad2.right_stick_y < 0 || gamepad2.left_stick_y < 0)
+            if(gamepad1.left_trigger>0)
                 setArmPosition(clamp(5, 520, robot.leftArm.getCurrentPosition() +
                         (int)(50 * (gamepad2.left_bumper && robot.leftArm.getCurrentPosition() < armMedHeight ? 0.5 : 1.0))), 0.4);
-            // buttons for aiden
-            if(gamepad2.right_bumper && !bumperToggle){
-                bumperToggle = true;
-                setArmPosition(clamp(5, 520, robot.leftArm.getCurrentPosition() + 5), 0.4);
-            }else bumperToggle = false;
-            if(gamepad2.right_trigger > 0 && !bumperToggle){
-                triggerToggle = true;
-                setArmPosition(clamp(5, 520, robot.leftArm.getCurrentPosition() + 20), 0.4);
-            }else triggerToggle = false;
+            // === other
+
         }
-
-
     }
     public double clamp(double min, double max, double val){
         if(val<min) return min; else if(val > max) return max; return val;
