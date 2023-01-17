@@ -51,37 +51,27 @@ public class oneperson extends LinearOpMode {
             telemetry.addData("Arm Position ", robot.leftArm.getCurrentPosition());
             telemetry.addData("Position Data", String.format("%.2f %.2f %.2f",pos.x,pos.y,pos.angle));
             telemetry.update();
-            double lx = gamepad1.left_stick_x, ly = gamepad1.left_stick_y, rx = gamepad1.right_stick_x;
-            double ry = gamepad1.right_trigger;
+            double lx = gamepad1.left_stick_x, ly = gamepad1.left_stick_y, rx = gamepad1.right_stick_x, ry = gamepad1.right_trigger;
             double dn = 0.6/Math.max(Math.abs(lx)+0.7*Math.abs(rx)+Math.abs(ly),1);
             robot.fr.setPower((ly+lx+rx)*dn);
             robot.fl.setPower((ly-lx-rx)*dn);
             robot.br.setPower((ly-lx-rx)*dn);
             robot.bl.setPower((ly+lx-rx)*dn);
-//            if (gamepad2.dpad_up) {
-//                currentArmPosition = 520;
-//                setArmPosition(currentArmPosition, 0.3);
-//            } else if (gamepad2.b) {
-//                currentArmPosition = 365;
-//                setArmPosition(currentArmPosition, 0.3);
-//            } else if (gamepad2.y) {
-//                currentArmPosition = 260;
-//                setArmPosition(currentArmPosition, 0.3);
-//            } else if (gamepad2.x) {
-//                currentArmPosition = 70;
-//                setArmPosition(currentArmPosition, 0.3);
-//            } else if (gamepad2.dpad_down) {
-//                currentArmPosition = 20;
-//                setArmPosition(currentArmPosition, 0.2);
-            // reset encoders
+            // ===== arm movement
+            float am = gamepad1.right_trigger - gamepad1.left_trigger;
+            if(Math.abs(am) > 0.05){
+                currentArmPosition = (int)clamp(-100, 520,
+                        robot.leftArm.getCurrentPosition() - am * 50);
+                setArmPosition(currentArmPosition, ((am > 0f) ? 0.3 : 0.14));
+                // check if arm is actually moving tho :l
+            }
+            // ===== reset arm encoders
             if (gamepad1.dpad_left) {
                 currentArmPosition = 0;
                 robot.leftArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 robot.rightArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            } else if (Math.abs(ry)>0.1) {
-                currentArmPosition=(int)clamp(-200,520,robot.leftArm.getCurrentPosition()-35*ry);
-                setArmPosition(currentArmPosition,Math.abs(ry)*(ry>0?0.15:0.25));
             }
+            // ===== opening arm handle thing
             if (gamepad1.left_bumper) robot.intake.setPosition(0.55);
             else robot.intake.setPosition(0.8);
         }
