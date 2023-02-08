@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.autonomous;
 
-import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -28,6 +27,8 @@ public class AutonRight extends LinearOpMode {
     private WebcamName webcamName;
     private OpenCvCamera camera, camera2;
     private String route;
+    public static double posX1=0.05, posY1=1.4, poleX1 =-0.18, poleY1 =1.55, conesX1 =0.58, conesY1 =1.39, poleX2=-0.09, poleY2=1.51, conesX2=0.61, conesY2=1.39;
+
 
     public static double CENTERX = 0.05, CENTERY = 1.4;
 
@@ -67,29 +68,29 @@ public class AutonRight extends LinearOpMode {
 
 
         // start movement
-        setArmPositionTiming(520,0.2,1000);
+        setArmPositionTiming(520, 0.2,1000);
 //        goTo(0,1.5,0,1.2,50,0.04,2,true);
-        goTo(0.05,1.4,-45,1.2,50,0.04,2,true);
-        goTo(-0.18,1.55,-45,1.2,50,0.04,2,true);
+        goTo(posX1,posY1,-45,1.2,50,0.04,2,true);
+        goTo(poleX1, poleY1,-45,1.2,50,0.04,2,true);
 //        goToPole();
-        setArmPositionWait(350,0.2);
+        setArmPositionWait(350, 0.2);
         openIntake();
-        setArmPositionWait(520,0.2);
-        goTo(0.05,1.4,20,0.6,180,0.08,15,false);
-        setArmPositionTiming(95,0.2,0);
-        goTo(0.58,1.39,90,0.6,180,0.04,2,true);
+        setArmPositionWait(520, 0.2);
+        goTo(posX1,posY1,20,0.6,180,0.08,15,false);
+        setArmPositionTiming(95, 0.2,0);
+        goTo(conesX1, conesY1,90,0.6,180,0.04,2,true);
         closeIntake();
         sleep(300);
         setArmPositionWait(125, 0.2);
         setArmPositionTiming(520, 0.2, 0);
-        goTo(-0.09,1.51,-45,1.2,180,0.04,2,true);
+        goTo(poleX2,poleY2,-45,1.2,180,0.04,2,true);
 //        goToPole();
         setArmPositionWait(350, 0.2);
         openIntake();
-        setArmPositionWait(520,0.2);
-        goTo(0.05,1.4,20,0.6,180,0.08,15,false);
-        setArmPositionTiming(85,0.2,0);
-        goTo(0.61,1.39,90,0.6,240, 0.04,2,true);
+        setArmPositionWait(520, 0.2);
+        goTo(posX1,posY1,20,0.6,180,0.08,15,false);
+        setArmPositionTiming(85, 0.2,0);
+        goTo(conesX2,conesY2,90,0.6,240, 0.04,2,true);
         closeIntake();
         sleep(300);
         setArmPositionWait(185, 0.2);
