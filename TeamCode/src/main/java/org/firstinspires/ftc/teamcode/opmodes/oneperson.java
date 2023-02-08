@@ -55,9 +55,9 @@ public class oneperson extends LinearOpMode {
             double dn = 0.6/Math.max(Math.abs(lx)+0.7*Math.abs(rx)+Math.abs(ly),1);
             robot.fr.setPower((ly+lx+rx)*dn);
             robot.fl.setPower((ly-lx-rx)*dn);
-            robot.br.setPower((ly-lx-rx)*dn);
+            robot.br.setPower((ly-lx+rx)*dn);
             robot.bl.setPower((ly+lx-rx)*dn);
-            // ===== arm movement
+            // ===== moving the arm up and down
             float am = gamepad1.right_trigger - gamepad1.left_trigger;
             if(Math.abs(am) > 0.05){
                 currentArmPosition = (int)clamp(-100, 520,
@@ -65,13 +65,13 @@ public class oneperson extends LinearOpMode {
                 setArmPosition(currentArmPosition, ((am > 0f) ? 0.3 : 0.14));
                 // check if arm is actually moving tho :l
             }
-            // ===== reset arm encoders
+            // ===== resetting arm encoders
             if (gamepad1.dpad_left) {
                 currentArmPosition = 0;
                 robot.leftArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 robot.rightArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             }
-            // ===== opening arm handle thing
+            // ===== intake controls
             if (gamepad1.left_bumper) robot.intake.setPosition(0.55);
             else robot.intake.setPosition(0.8);
         }

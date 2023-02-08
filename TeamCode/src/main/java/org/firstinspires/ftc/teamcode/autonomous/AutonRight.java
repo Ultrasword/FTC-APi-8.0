@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.autonomous;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -13,7 +15,9 @@ import org.firstinspires.ftc.teamcode.wrappers.Vision;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
+import org.openftc.easyopencv.OpenCvInternalCamera2;
 
+@Config
 @Autonomous(name="Auton Right")
 public class AutonRight extends LinearOpMode {
     private MecanumChassis robot;
@@ -22,17 +26,24 @@ public class AutonRight extends LinearOpMode {
     private Vision sleeveDetection;
     private DetectPoleDisplay poleDetection;
     private WebcamName webcamName;
-    private OpenCvCamera camera;
+    private OpenCvCamera camera, camera2;
     private String route;
+
+    public static double CENTERX = 0.05, CENTERY = 1.4;
 
     @Override
     public void runOpMode() throws InterruptedException {
+
         robot = new MecanumChassis(hardwareMap);
         pos = new Position(robot);
         control = new Controller(robot, pos);
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         webcamName = hardwareMap.get(WebcamName.class, "Camera");
-        camera = OpenCvCameraFactory.getInstance().createWebcam(webcamName, cameraMonitorViewId);
+
+//        camera = OpenCvCameraFactory.getInstance().createWebcam(webcamName, cameraMonitorViewId);
+//        camera2 = OpenCvCameraFactory.getInstance().createInternalCamera2(OpenCvInternalCamera2.CameraDirection.FRONT, cameraMonitorViewId);
+        camera = OpenCvCameraFactory.getInstance().createInternalCamera2(OpenCvInternalCamera2.CameraDirection.FRONT, cameraMonitorViewId);
+
         sleeveDetection = new Vision();
         poleDetection = new DetectPoleDisplay();
         camera.setPipeline(sleeveDetection);
@@ -52,6 +63,10 @@ public class AutonRight extends LinearOpMode {
         waitForStart();
         camera.setPipeline(poleDetection);
         closeIntake();
+
+
+
+        // start movement
         setArmPositionTiming(520,0.2,1000);
 //        goTo(0,1.5,0,1.2,50,0.04,2,true);
         goTo(0.05,1.4,-45,1.2,50,0.04,2,true);

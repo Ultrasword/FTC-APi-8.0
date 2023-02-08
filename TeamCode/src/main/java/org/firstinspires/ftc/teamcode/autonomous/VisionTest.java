@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode.autonomous;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.ftccommon.FtcAdvancedRCSettingsActivity;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -11,7 +14,9 @@ import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.firstinspires.ftc.teamcode.wrappers.Vision;
+import org.openftc.easyopencv.OpenCvInternalCamera2;
 
+@Config
 @Autonomous(name="VisionTest")
 public class VisionTest extends LinearOpMode {
     private Vision sleeveDetection;
@@ -20,15 +25,20 @@ public class VisionTest extends LinearOpMode {
     private WebcamName webcamName;
     private OpenCvCamera camera;
 
+    public static double POWERTEST = 0.0;
+
     @Override
     public void runOpMode() throws InterruptedException {
         robot = new MecanumChassis(hardwareMap);
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        // webcam
+        camera = OpenCvCameraFactory.getInstance().createInternalCamera2(OpenCvInternalCamera2.CameraDirection.BACK, cameraMonitorViewId);
         webcamName = hardwareMap.get(WebcamName.class, "Camera");
-        camera = OpenCvCameraFactory.getInstance().createWebcam(webcamName, cameraMonitorViewId);
+
         sleeveDetection = new Vision();
         poleDetection = new DetectPoleDisplay();
-        camera.setPipeline(poleDetection);
+        // pipeline
+        camera.setPipeline(sleeveDetection);
         camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
             public void onOpened() {
@@ -38,12 +48,14 @@ public class VisionTest extends LinearOpMode {
             public void onError(int errorCode) {}
         });
 
+        FtcDashboard.getInstance().startCameraStream(camera, 60);
         while (!isStarted()) {
-            telemetry.addData("error: ", poleDetection.error);
-            telemetry.addData("width error: ", poleDetection.widthError);
+            telemetry.addData("route: ", sleeveDetection.route);
             telemetry.update();
         }
+
         waitForStart();
+        // start
         camera.setPipeline(poleDetection);
         goToPole();
     }
