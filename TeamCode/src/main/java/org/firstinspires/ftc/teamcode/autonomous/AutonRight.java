@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.autonomous;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -27,10 +28,11 @@ public class AutonRight extends LinearOpMode {
     private WebcamName webcamName;
     private OpenCvCamera camera, camera2;
     private String route;
-    public static double posX1=0.05, posY1=1.4, poleX1 =-0.18, poleY1 =1.55, conesX1 =0.58, conesY1 =1.39, poleX2=-0.09, poleY2=1.51, conesX2=0.61, conesY2=1.39;
 
 
-    public static double CENTERX = 0.05, CENTERY = 1.4;
+    public static double POSX1=0.05, POSY1=1.4, POLEX1 =-0.18, POLEY1 =1.55,
+            CONESX1 =0.58, CONESY1 =1.39, POLEX2=-0.09, POLEY2=1.51, CONESX2=0.61, CONESY2=1.39,
+            CENTERX = 0.05, CENTERY = 1.4;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -39,8 +41,8 @@ public class AutonRight extends LinearOpMode {
         pos = new Position(robot);
         control = new Controller(robot, pos);
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        webcamName = hardwareMap.get(WebcamName.class, "Camera");
-
+//        webcamName = hardwareMap.get(WebcamName.class, "Camera");
+//
 //        camera = OpenCvCameraFactory.getInstance().createWebcam(webcamName, cameraMonitorViewId);
 //        camera2 = OpenCvCameraFactory.getInstance().createInternalCamera2(OpenCvInternalCamera2.CameraDirection.FRONT, cameraMonitorViewId);
         camera = OpenCvCameraFactory.getInstance().createInternalCamera2(OpenCvInternalCamera2.CameraDirection.FRONT, cameraMonitorViewId);
@@ -56,6 +58,10 @@ public class AutonRight extends LinearOpMode {
             @Override
             public void onError(int errorCode) {}
         });
+
+        // dashboard
+        FtcDashboard.getInstance().startCameraStream(camera, 30);
+
         while (!isStarted()) {
             telemetry.addData("route: ", sleeveDetection.route);
             telemetry.update();
@@ -70,27 +76,27 @@ public class AutonRight extends LinearOpMode {
         // start movement
         setArmPositionTiming(520, 0.2,1000);
 //        goTo(0,1.5,0,1.2,50,0.04,2,true);
-        goTo(posX1,posY1,-45,1.2,50,0.04,2,true);
-        goTo(poleX1, poleY1,-45,1.2,50,0.04,2,true);
+        goTo(POSX1,POSY1,-45,1.2,50,0.04,2,true);
+        goTo(POLEX1, POLEY1,-45,1.2,50,0.04,2,true);
 //        goToPole();
         setArmPositionWait(350, 0.2);
         openIntake();
         setArmPositionWait(520, 0.2);
-        goTo(posX1,posY1,20,0.6,180,0.08,15,false);
+        goTo(POSX1,POSY1,20,0.6,180,0.08,15,false);
         setArmPositionTiming(95, 0.2,0);
-        goTo(conesX1, conesY1,90,0.6,180,0.04,2,true);
+        goTo(CONESX1, CONESY1,90,0.6,180,0.04,2,true);
         closeIntake();
         sleep(300);
         setArmPositionWait(125, 0.2);
         setArmPositionTiming(520, 0.2, 0);
-        goTo(poleX2,poleY2,-45,1.2,180,0.04,2,true);
+        goTo(POLEX2,POLEY2,-45,1.2,180,0.04,2,true);
 //        goToPole();
         setArmPositionWait(350, 0.2);
         openIntake();
         setArmPositionWait(520, 0.2);
-        goTo(posX1,posY1,20,0.6,180,0.08,15,false);
+        goTo(POSX1,POSY1,20,0.6,180,0.08,15,false);
         setArmPositionTiming(85, 0.2,0);
-        goTo(conesX2,conesY2,90,0.6,240, 0.04,2,true);
+        goTo(CONESX2,CONESY2,90,0.6,240, 0.04,2,true);
         closeIntake();
         sleep(300);
         setArmPositionWait(185, 0.2);

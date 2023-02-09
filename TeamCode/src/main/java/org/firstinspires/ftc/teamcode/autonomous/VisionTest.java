@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.autonomous;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
-import com.qualcomm.ftccommon.FtcAdvancedRCSettingsActivity;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -25,20 +24,32 @@ public class VisionTest extends LinearOpMode {
     private WebcamName webcamName;
     private OpenCvCamera camera;
 
-    public static double POWERTEST = 0.0;
+    /*
+        NOTES FOR TMR OR SMTH
+        1. camera oritneted so that final position of junction == left side of screen
+            a. so we dont need to worry abt orientation or stuff
+            b. prerequisites for it to work!
+                i. must be heading towards junction initially
+            c. code just orients heading to face the junction THAT IS ALREADY in the vision scope
+                of robot
+        2. tape camera to good orientation :)
+            a. or zip tie or smth
+
+     */
 
     @Override
     public void runOpMode() throws InterruptedException {
         robot = new MecanumChassis(hardwareMap);
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        // webcam
+//        webcamName = hardwareMap.get(WebcamName.class, "Camera");
+//        camera = OpenCvCameraFactory.getInstance().createWebcam(webcamName, cameraMonitorViewId);
         camera = OpenCvCameraFactory.getInstance().createInternalCamera2(OpenCvInternalCamera2.CameraDirection.BACK, cameraMonitorViewId);
-        webcamName = hardwareMap.get(WebcamName.class, "Camera");
-
         sleeveDetection = new Vision();
         poleDetection = new DetectPoleDisplay();
-        // pipeline
-        camera.setPipeline(sleeveDetection);
+
+
+        // set pipeline
+        camera.setPipeline(poleDetection);
         camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
             public void onOpened() {
@@ -47,17 +58,17 @@ public class VisionTest extends LinearOpMode {
             @Override
             public void onError(int errorCode) {}
         });
+        FtcDashboard.getInstance().startCameraStream(camera, 30);
 
-        FtcDashboard.getInstance().startCameraStream(camera, 60);
+        // pause
         while (!isStarted()) {
-            telemetry.addData("route: ", sleeveDetection.route);
+            telemetry.addData("error: ", poleDetection.error);
+            telemetry.addData("width error: ", poleDetection.widthError);
             telemetry.update();
         }
-
         waitForStart();
-        // start
         camera.setPipeline(poleDetection);
-        goToPole();
+//        goToPole();
     }
     private void goToPole() {
         while (!isStopRequested() && (!(Math.abs(poleDetection.widthError) < 4 && Math.abs(poleDetection.error) < 5))) {
