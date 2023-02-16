@@ -24,6 +24,8 @@ public class VisionTest extends LinearOpMode {
     private WebcamName webcamName;
     private OpenCvCamera camera;
 
+    public static double COEF = 0.002, ERRORCOEF = 0.01;
+
     /*
         NOTES FOR TMR OR SMTH
         1. camera oritneted so that final position of junction == left side of screen
@@ -41,12 +43,11 @@ public class VisionTest extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         robot = new MecanumChassis(hardwareMap);
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-//        webcamName = hardwareMap.get(WebcamName.class, "Camera");
+        webcamName = hardwareMap.get(WebcamName.class, "Camera");
 //        camera = OpenCvCameraFactory.getInstance().createWebcam(webcamName, cameraMonitorViewId);
         camera = OpenCvCameraFactory.getInstance().createInternalCamera2(OpenCvInternalCamera2.CameraDirection.BACK, cameraMonitorViewId);
         sleeveDetection = new Vision();
         poleDetection = new DetectPoleDisplay();
-
 
         // set pipeline
         camera.setPipeline(poleDetection);
@@ -68,14 +69,15 @@ public class VisionTest extends LinearOpMode {
         }
         waitForStart();
         camera.setPipeline(poleDetection);
-//        goToPole();
+        // go to pole
+        goToPole();
     }
     private void goToPole() {
         while (!isStopRequested() && (!(Math.abs(poleDetection.widthError) < 4 && Math.abs(poleDetection.error) < 5))) {
-            robot.fl.setPower(-poleDetection.error * 0.002+poleDetection.widthError * 0.01);
-            robot.fr.setPower(poleDetection.error * 0.002+poleDetection.widthError * 0.01);
-            robot.bl.setPower(-poleDetection.error * 0.002+poleDetection.widthError * 0.01);
-            robot.br.setPower(poleDetection.error * 0.002+poleDetection.widthError * 0.01);
+            robot.fl.setPower(-poleDetection.error * COEF + poleDetection.widthError * ERRORCOEF);
+            robot.fr.setPower(poleDetection.error * COEF + poleDetection.widthError * ERRORCOEF);
+            robot.bl.setPower(-poleDetection.error * COEF + poleDetection.widthError * ERRORCOEF);
+            robot.br.setPower(poleDetection.error * COEF + poleDetection.widthError * ERRORCOEF);
             telemetry.addData("error: ", poleDetection.error);
             telemetry.addData("widthError: ", poleDetection.widthError);
 //            telemetry.addData("noPole: ", poleDetection.noPole);

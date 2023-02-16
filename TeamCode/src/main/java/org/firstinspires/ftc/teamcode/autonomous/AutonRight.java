@@ -45,7 +45,7 @@ public class AutonRight extends LinearOpMode {
 //
 //        camera = OpenCvCameraFactory.getInstance().createWebcam(webcamName, cameraMonitorViewId);
 //        camera2 = OpenCvCameraFactory.getInstance().createInternalCamera2(OpenCvInternalCamera2.CameraDirection.FRONT, cameraMonitorViewId);
-        camera = OpenCvCameraFactory.getInstance().createInternalCamera2(OpenCvInternalCamera2.CameraDirection.FRONT, cameraMonitorViewId);
+        camera = OpenCvCameraFactory.getInstance().createInternalCamera2(OpenCvInternalCamera2.CameraDirection.BACK, cameraMonitorViewId);
 
         sleeveDetection = new Vision();
         poleDetection = new DetectPoleDisplay();
@@ -67,11 +67,11 @@ public class AutonRight extends LinearOpMode {
             telemetry.update();
         }
         route = sleeveDetection.route;
-        waitForStart();
         camera.setPipeline(poleDetection);
-        closeIntake();
 
+        waitForStart();
 
+        //        closeIntake();
 
         // start movement
         setArmPositionTiming(520, 0.2,1000);
@@ -80,24 +80,30 @@ public class AutonRight extends LinearOpMode {
         goTo(POLEX1, POLEY1,-45,1.2,50,0.04,2,true);
 //        goToPole();
         setArmPositionWait(350, 0.2);
-        openIntake();
+
+//        openIntake();
         setArmPositionWait(520, 0.2);
         goTo(POSX1,POSY1,20,0.6,180,0.08,15,false);
         setArmPositionTiming(95, 0.2,0);
         goTo(CONESX1, CONESY1,90,0.6,180,0.04,2,true);
-        closeIntake();
+//        closeIntake();
+
         sleep(300);
         setArmPositionWait(125, 0.2);
         setArmPositionTiming(520, 0.2, 0);
         goTo(POLEX2,POLEY2,-45,1.2,180,0.04,2,true);
 //        goToPole();
         setArmPositionWait(350, 0.2);
-        openIntake();
+
+//        openIntake();
+
         setArmPositionWait(520, 0.2);
         goTo(POSX1,POSY1,20,0.6,180,0.08,15,false);
         setArmPositionTiming(85, 0.2,0);
         goTo(CONESX2,CONESY2,90,0.6,240, 0.04,2,true);
-        closeIntake();
+
+//        closeIntake();
+
         sleep(300);
         setArmPositionWait(185, 0.2);
         switch (route) {

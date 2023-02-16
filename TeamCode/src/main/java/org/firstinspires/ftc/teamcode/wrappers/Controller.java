@@ -99,7 +99,9 @@ public class Controller {
                         Thread.sleep(10);
                     }
                 }
-            } catch (Exception e) {}
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 }
