@@ -51,7 +51,7 @@ public class DetectPoleDisplay extends OpenCvPipeline {
         Imgproc.cvtColor(input, hsv, Imgproc.COLOR_RGB2HSV);
         Core.inRange(hsv, lower_yellow, upper_yellow, mask);
         Core.bitwise_and(hsv, hsv, res, mask);
-        Imgproc.Canny(res, edges, 20, 80, 3);
+        Imgproc.Canny(res, edges, 50, 160, 3);
         Imgproc.HoughLinesP(edges, lines, 1, Math.PI/180, 100, 20, 100);
         maxWidth = 0;
         m = 0;

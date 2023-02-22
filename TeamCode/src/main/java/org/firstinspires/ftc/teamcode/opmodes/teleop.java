@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode.opmodes;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -9,6 +12,7 @@ import org.firstinspires.ftc.teamcode.wrappers.MecanumChassis;
 import org.firstinspires.ftc.teamcode.wrappers.Position;
 
 @TeleOp(name="teleop")
+
 public class teleop extends LinearOpMode {
     private MecanumChassis robot;
     private Position pos;
@@ -20,13 +24,12 @@ public class teleop extends LinearOpMode {
     }
     @Override
     public void runOpMode() throws InterruptedException {
+        FtcDashboard dashboard = FtcDashboard.getInstance();
+        telemetry = dashboard.getTelemetry();
         int currentArmPosition=0;
         robot = new MecanumChassis(hardwareMap);
         pos = new Position(robot);
         waitForStart();
-
-        // daniel is "super" gay
-
         setArmPosition(20, 0.3);
         while (opModeIsActive()) {
             telemetry.addData("Servo Position ", robot.intake.getPosition());

@@ -13,7 +13,7 @@ import java.util.List;
 
 public class DisplayVision extends OpenCvPipeline {
     private static final Scalar
-            lower_yellow = new Scalar(20,140,140),
+            lower_yellow = new Scalar(10,100,100),
             upper_yellow = new Scalar(30,255,255),
             lower_cyan = new Scalar(95,100,100),
             upper_cyan = new Scalar(105,255,255),
@@ -22,6 +22,7 @@ public class DisplayVision extends OpenCvPipeline {
     private Mat hsv = new Mat(), yellow = new Mat(), cyan = new Mat(), magenta = new Mat(), mask = new Mat(), hierarchy = new Mat();
     private List<MatOfPoint> contours = new java.util.ArrayList<>();
     public int route = 0;
+    public double[] hsvColor = new double[3];
     @Override
     public Mat processFrame(Mat input) {
         Imgproc.cvtColor(input, hsv, Imgproc.COLOR_RGB2HSV);
@@ -58,6 +59,10 @@ public class DisplayVision extends OpenCvPipeline {
             }
         }
         contours.clear();
+        // center pixel
+        Imgproc.circle(input, new Point(input.width() / 2, input.height() / 2), 5, new Scalar(0, 0, 255), 2);
+        // find hsv value of center pixel
+        hsvColor = hsv.get(input.height() / 2, input.width() / 2);
         return input;
     }
 }
