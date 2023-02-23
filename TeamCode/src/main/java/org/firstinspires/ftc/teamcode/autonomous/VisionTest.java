@@ -41,6 +41,14 @@ public class VisionTest extends LinearOpMode {
             dashboard.sendTelemetryPacket(telemetry);
             sleep(200);
         }
+
+        while (!isStopRequested()) {
+            telemetry.addData("route",sleeveDetection.route);
+            // telemetry add sleeveDetection.color
+
+            telemetry.update();
+        }
+
         camera.closeCameraDeviceAsync(() -> {
             dashboard.stopCameraStream();
         });
