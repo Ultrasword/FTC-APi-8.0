@@ -22,6 +22,7 @@ public class DisplayVision extends OpenCvPipeline {
     private Mat hsv = new Mat(), yellow = new Mat(), cyan = new Mat(), magenta = new Mat(), mask = new Mat(), hierarchy = new Mat();
     private List<MatOfPoint> contours = new java.util.ArrayList<>();
     public int route = 0;
+    public Scalar  centerColor = new Scalar(0,0,0);
     public double[] hsvColor = new double[3];
     @Override
     public Mat processFrame(Mat input) {

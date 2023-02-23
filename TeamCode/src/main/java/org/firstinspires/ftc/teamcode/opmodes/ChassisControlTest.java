@@ -22,12 +22,13 @@ public class ChassisControlTest extends LinearOpMode {
     public void runOpMode() {
         robot = new MecanumChassis(hardwareMap);
         pos = new Position(robot);
+//        pos.y = 100;
         controller = new Controller(robot, pos);
         FtcDashboard dashboard = FtcDashboard.getInstance();
         telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
         dashboard.updateConfig();
         waitForStart();
-        controller.goTo(x, y, theta, 0, 0, 1, 1, true);
+        controller.goTo(x, y, theta, 0.1, 10, 1, 1, true);
         while (!controller.finished) {
             if (isStopRequested()) controller.stop();
         }

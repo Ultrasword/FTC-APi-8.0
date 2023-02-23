@@ -37,6 +37,14 @@ public class VisionTest extends LinearOpMode {
             
             telemetry.update();
         }
+
+        while (!isStopRequested()) {
+            telemetry.addData("route",sleeveDetection.route);
+            // telemetry add sleeveDetection.color
+
+            telemetry.update();
+        }
+
         camera.closeCameraDeviceAsync(() -> {
             FtcDashboard.getInstance().stopCameraStream();
         });
