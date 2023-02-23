@@ -13,12 +13,12 @@ import java.util.List;
 
 public class DisplayVision extends OpenCvPipeline {
     private static final Scalar
-            lower_yellow = new Scalar(10,100,100),
-            upper_yellow = new Scalar(30,255,255),
-            lower_cyan = new Scalar(95,100,100),
-            upper_cyan = new Scalar(105,255,255),
-            lower_magenta = new Scalar(160,100,100),
-            upper_magenta = new Scalar(170,255,255);
+            lower_yellow = new Scalar(20,80,80),
+            upper_yellow = new Scalar(35,255,255),
+            lower_cyan = new Scalar(90,100,100),
+            upper_cyan = new Scalar(110,255,255),
+            lower_magenta = new Scalar(155,110,110),
+            upper_magenta = new Scalar(175,255,255);
     private Mat hsv = new Mat(), yellow = new Mat(), cyan = new Mat(), magenta = new Mat(), mask = new Mat(), hierarchy = new Mat();
     private List<MatOfPoint> contours = new java.util.ArrayList<>();
     public int route = 0;
